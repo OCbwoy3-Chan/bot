@@ -2,7 +2,8 @@
   "name": "112",
   "version": "1.0.0",
   "description": "112 - The SB Bot",
-  "main": "dist/index.js",
+  "main": "dist/services/Bot/index.js",
+  "exports": "./dist/index.js",
   "scripts": {
     "dev": "trap \"rm -rf dist\" EXIT && npx tsc && clear && node dist/index.js | pino-pretty"
   },
@@ -22,6 +23,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "@sapphire/cli": "^1.9.3",
     "@sapphire/framework": "^5.2.1",
     "@sapphire/plugin-subcommands": "^7.0.0",
     "@sapphire/utilities": "^3.17.0",

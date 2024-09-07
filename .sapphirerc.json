@@ -1,0 +1,16 @@
+{
+  "projectLanguage": "ts",
+  "locations": {
+    "base": "src/",
+    "arguments": "services/bot/arguments/",
+    "commands": "services/Bot/commands/",
+    "listeners": "services/Bot/listeners/",
+    "preconditions": "services/bot/preconditions/",
+    "interaction-handlers": "services/bot/interaction-handlers/",
+    "routes": "services/bot/routes/"
+  },
+  "customFileTemplates": {
+    "enabled": false,
+    "location": ""
+  }
+}

@@ -1,6 +1,7 @@
 import { Command } from '@sapphire/framework';
+import { infoCommand } from '../../../locale/commands';
 
-export class SlashCommand extends Command {
+class SlashCommand extends Command {
 	public constructor(context: Command.LoaderContext, options: Command.Options) {
 		super(context, {
 			...options,
@@ -17,9 +18,14 @@ export class SlashCommand extends Command {
 	}
 
 	public override async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-		await interaction.reply({
-			content: "test"
+		const msg = await interaction.reply({
+			content: "> Ping..."
 		})
+		const diff = msg.createdTimestamp - interaction.createdTimestamp;
+		const ping = Math.round(this.container.client.ws.ping);
+		const mo = await infoCommand.genContent(diff.toString(),ping.toString())
+		return interaction.editReply(mo);
 	}
 }
 
+export default SlashCommand

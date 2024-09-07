@@ -1,5 +1,5 @@
 import { Logger } from "pino";
-import { client, loadAllCommands } from "./bot";
+import { client } from "./bot";
 import { infoCommand } from "../../locale/commands";
 
 class BotService {
@@ -7,12 +7,10 @@ class BotService {
 
 	/* Starts the service */
 	public async _StartService(): Promise<void> {
-		this.logger.info(await infoCommand.genContent())
-		this.logger.info("Registering all commands");
-		await loadAllCommands()
 		this.logger.info("Starting Discord Bot");
-		client.login(process.env.DISCORD_TOKEN).catch(()=>{
-			this.logger.info("Bot threw an exception!");
+		// client.on('interactionCreate',console.log)
+		client.login(process.env.DISCORD_TOKEN).catch((e_)=>{
+			this.logger.child({error: e_}).error("Bot threw an exception!");
 			process.exit(1)
 		})
 	}

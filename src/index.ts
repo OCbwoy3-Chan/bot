@@ -20,7 +20,7 @@ async function loadServices() {
 			logger.child({ service: service, err: e }).error(`Error loading service "${service}"`, e);
 		}
 	}
-	logger.info(`112 loaded successfully!"`);
+	logger.info(`112 loaded successfully!`);
 }
 
 loadServices()
