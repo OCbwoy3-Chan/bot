@@ -5,7 +5,9 @@
   "main": "dist/services/Bot/index.js",
   "exports": "./dist/index.js",
   "scripts": {
-    "dev": "trap \"rm -rf dist\" EXIT && npx tsc && clear && node dist/index.js | pino-pretty"
+    "start": "clear && node dist/index.js | pino-pretty",
+    "dev": "trap \"rm -rf dist\" EXIT && npx tsc && clear && node dist/index.js | pino-pretty",
+    "watch:start": "tsc-watch --onSuccess \"npm run start\""
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,7 @@
   "devDependencies": {
     "@types/getos": "^3.0.4",
     "@types/node": "^22.5.4",
+    "prisma": "^5.19.1",
     "typescript": "^5.5.4"
   },
   "dependencies": {
@@ -29,8 +32,8 @@
     "@sapphire/utilities": "^3.17.0",
     "discord.js": "^14.16.1",
     "dotenv": "^16.4.5",
-    "getos": "^3.2.1",
     "pino": "^9.4.0",
-    "pino-pretty": "^11.2.2"
+    "pino-pretty": "^11.2.2",
+    "tsc-watch": "^6.2.0"
   }
 }

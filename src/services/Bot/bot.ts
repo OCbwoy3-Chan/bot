@@ -1,14 +1,25 @@
-import { ApplicationCommandRegistries, Command, CommandStore, SapphireClient, Store } from '@sapphire/framework';
-import { GatewayIntentBits } from 'discord.js';
+import { ApplicationCommandRegistries, Command, CommandStore, RegisterBehavior, SapphireClient, Store } from '@sapphire/framework';
+import { ActivityType, GatewayIntentBits } from 'discord.js';
 import { readdirSync } from 'fs';
 import { join } from 'path';
+import { getDistroNameSync } from '../../lib/Utility';
 
-let logger = require('pino')()
+const logger = require('pino')()
+
+ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.BulkOverwrite)
 
 export const client = new SapphireClient({
-    intents: [GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
-    defaultPrefix: "!",
-    loadMessageCommandListeners: true,
-    caseInsensitiveCommands: true,
-    caseInsensitivePrefixes: true,
+	intents: [GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+	defaultPrefix: "!",
+	loadMessageCommandListeners: true,
+	caseInsensitiveCommands: true,
+	caseInsensitivePrefixes: true,
+	presence: {
+		activities: [
+			{
+				name: `${getDistroNameSync()} ${process.arch}`,
+				type: ActivityType.Playing
+			}
+		]
+	}
 })
