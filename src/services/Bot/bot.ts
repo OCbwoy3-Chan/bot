@@ -1,12 +1,11 @@
 import { ApplicationCommandRegistries, Command, CommandStore, RegisterBehavior, SapphireClient, Store } from '@sapphire/framework';
 import { ActivityType, GatewayIntentBits } from 'discord.js';
-import { readdirSync } from 'fs';
-import { join } from 'path';
 import { getDistroNameSync } from '../../lib/Utility';
 
 const logger = require('pino')()
 
-ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.BulkOverwrite)
+// fucking magic
+ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.BulkOverwrite);
 
 export const client = new SapphireClient({
 	intents: [GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],

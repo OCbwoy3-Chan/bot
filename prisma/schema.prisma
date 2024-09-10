@@ -1,0 +1,27 @@
+// Database shit
+
+generator client {
+	provider = "prisma-client-js"
+}
+
+datasource db {
+	provider = "sqlite"
+	url      = env("DATABASE_URL")
+}
+
+// User System
+
+model User {
+	username   String  @unique      //  Something like Twitter/Insta/BeReal handles 
+	discordId  String  @id @unique  //  The User's Discord User ID
+}
+
+// 112 Ban System
+
+model RobloxUserBan {
+	userId         String   @id @unique  //  The User ID of the person who is banned
+	reason         String                //  The reason why the person is banned
+	privateReason  String?               //  The optional private reason submitted by the moderator 
+	moderatorId    String                //  The Moderator's Discord User ID
+	bannedFrom     String                //  Where the user is banned from. Options: SB, OCbwoy3sMultiverse, Global
+}

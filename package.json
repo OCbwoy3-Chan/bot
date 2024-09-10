@@ -1,39 +1,31 @@
 {
   "name": "112",
   "version": "1.0.0",
-  "description": "112 - The SB Bot",
+  "description": "112, the SB bot.",
   "main": "dist/services/Bot/index.js",
-  "exports": "./dist/index.js",
   "scripts": {
-    "start": "clear && node dist/index.js | pino-pretty",
-    "dev": "trap \"rm -rf dist\" EXIT && npx tsc && clear && node dist/index.js | pino-pretty",
-    "watch:start": "tsc-watch --onSuccess \"npm run start\""
+    "dev": "trap \"rm -rf dist\" EXIT && tsc && node dist/index.js | pino-pretty",
+    "watch": "tsc-watch --onSuccess \"node dist/index.js\" | pino-pretty"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ocbwoy3/112.git"
-  },
+  "keywords": [],
   "author": "OCbwoy3",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ocbwoy3/112/issues"
-  },
-  "homepage": "https://github.com/ocbwoy3/112",
-  "devDependencies": {
-    "@types/getos": "^3.0.4",
-    "@types/node": "^22.5.4",
-    "prisma": "^5.19.1",
-    "typescript": "^5.5.4"
-  },
   "dependencies": {
-    "@sapphire/cli": "^1.9.3",
+    "@prisma/client": "^5.12.1",
     "@sapphire/framework": "^5.2.1",
-    "@sapphire/plugin-subcommands": "^7.0.0",
-    "@sapphire/utilities": "^3.17.0",
+    "@types/dotenv": "^8.2.0",
+    "@types/pino": "^7.0.5",
     "discord.js": "^14.16.1",
     "dotenv": "^16.4.5",
     "pino": "^9.4.0",
-    "pino-pretty": "^11.2.2",
+    "sapphire": "^0.0.3",
     "tsc-watch": "^6.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.4",
+    "pino-pretty": "^11.2.2",
+    "prisma": "^5.19.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
   }
 }

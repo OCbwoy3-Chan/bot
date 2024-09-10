@@ -2,3 +2,7 @@ node_modules/
 dist/
 .env
 prisma-engines/
+prisma/*.db
+prisma/*.db-journal
+prisma/prod.db
+prisma/migrations

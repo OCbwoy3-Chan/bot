@@ -1,9 +1,8 @@
-import { configDotenv } from "dotenv";
 import { Logger } from "pino";
 const logger: Logger = require('pino')();
 
 console.log("112 - SB Toolkit by OCbwoy3");
-configDotenv()
+require("dotenv").configDotenv(); // chad workaround typescript
 
 const SERVICE_LOAD_ORDER = ["Bot"];
 
