@@ -4,7 +4,7 @@ const logger: Logger = require('pino')();
 console.log("112 - SB Toolkit by OCbwoy3");
 require("dotenv").configDotenv(); // chad workaround typescript
 
-const SERVICE_LOAD_ORDER = ["Bot"];
+const SERVICE_LOAD_ORDER = ["Database","Bot"];
 
 async function loadServices() {
 	for (var service of SERVICE_LOAD_ORDER) {

@@ -1,7 +1,8 @@
-// Database shit
+// wtf??
 
 generator client {
 	provider = "prisma-client-js"
+	// binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -12,16 +13,28 @@ datasource db {
 // User System
 
 model User {
-	username   String  @unique      //  Something like Twitter/Insta/BeReal handles 
-	discordId  String  @id @unique  //  The User's Discord User ID
+	username     String    @unique       //  Something like Twitter handles, like @elon, @zuck, @charli etc.
+	discordId    String    @id @unique   //  The User's Discord User ID
+	joinDate     String                  //  The User's 112 Join date in UNIX millis
+	role         Int       @default(0)   //  Role ID for the user
 }
 
-// 112 Ban System
+// 112 - Ban and Appeals System
 
 model RobloxUserBan {
 	userId         String   @id @unique  //  The User ID of the person who is banned
 	reason         String                //  The reason why the person is banned
-	privateReason  String?               //  The optional private reason submitted by the moderator 
+	bannedUntil    String                //  The UNIX millis when the user is unbanned, -1 = Banned FOREVER
+	privateReason  String?               //  The optional private reason submitted by the moderator
 	moderatorId    String                //  The Moderator's Discord User ID
-	bannedFrom     String                //  Where the user is banned from. Options: SB, OCbwoy3sMultiverse, Global
+	bannedFrom     String                //  Where the user is banned from. Options: SB, OCbwoy3sMultiverse, All
+	nature         String                //  Any of AllBanCauses
 }
+
+model RobloxUserAppeal {
+	robloxUserId   String  @id @unique  //  The user's Roblox User ID
+	ipAddress      String  @unique      //  The user's IP address
+	email          String  @unique      //  The user's E-Mail address
+	appealMessage  String               //  The user's appeal messsage
+}
+
