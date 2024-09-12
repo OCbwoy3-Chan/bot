@@ -1,6 +1,9 @@
 import { readFileSync } from 'fs';
 import { platform } from 'os';
 import { performance } from 'perf_hooks';
+import { Logger } from 'pino';
+
+export const logger: Logger = require('pino')();
 
 export function measureCPULatency(): string {
 	const start = performance.now();
@@ -13,13 +16,13 @@ export function measureCPULatency(): string {
 export async function getDistroName(): Promise<string> {
 	return await new Promise((resolve)=>{
 		try {
-			const d = readFileSync("/etc/os-release").toString().split("\n")
+			const d = readFileSync("/etc/os-release").toString().split("\n");
 			d.forEach((a:string)=>{
-				if (a.startsWith("NAME=")) {
-					resolve(a.replace(/^NAME=/,'').trim())
+				if (a.startsWith("PRETTY_NAME=")) {
+					resolve(a.replace(/(^PRETTY_NAME=\")|(\"$)/g,'').trim());
 				}
 			})
-			resolve("Unknown Distro")
+			resolve("Unknown Distro");
 		} catch {
 			resolve(platform());
 		}
@@ -28,15 +31,15 @@ export async function getDistroName(): Promise<string> {
 
 export function getDistroNameSync(): string {
 	try {
-		const d = readFileSync("/etc/os-release").toString().split("\n")
-		let retval: string = platform()
+		const d = readFileSync("/etc/os-release").toString().split("\n");
+		let retval: string = platform();
 		d.forEach((a:string)=>{
-			if (a.startsWith("NAME=")) {
-				retval = a.replace(/^NAME=/,'').trim()
+			if (a.startsWith("PRETTY_NAME=")) {
+				retval = a.replace(/(^PRETTY_NAME=\")|(\"$)/g,'').trim();
 			}
 		})
-		return retval
+		return retval;
 	} catch {
-		return platform()
+		return platform();
 	}
 }

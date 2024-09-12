@@ -2,7 +2,6 @@
 
 generator client {
 	provider = "prisma-client-js"
-	// binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -13,9 +12,9 @@ datasource db {
 // User System
 
 model User {
-	username     String    @unique       //  Something like Twitter handles, like @elon, @zuck, @charli etc.
+	username     String    @unique       //  Something like Twitter handles, like @elon, @skidtru etc.
 	discordId    String    @id @unique   //  The User's Discord User ID
-	joinDate     String                  //  The User's 112 Join date in UNIX millis
+	joinDate     String                  //  The User's 112 Join date in UNIX seconds
 	role         Int       @default(0)   //  Role ID for the user
 }
 
@@ -24,9 +23,10 @@ model User {
 model RobloxUserBan {
 	userId         String   @id @unique  //  The User ID of the person who is banned
 	reason         String                //  The reason why the person is banned
-	bannedUntil    String                //  The UNIX millis when the user is unbanned, -1 = Banned FOREVER
+	bannedUntil    String                //  The UNIX seconds when the user is unbanned, -1 = Banned FOREVER
 	privateReason  String?               //  The optional private reason submitted by the moderator
 	moderatorId    String                //  The Moderator's Discord User ID
+	moderatorName  String                //  The Moderator's Name
 	bannedFrom     String                //  Where the user is banned from. Options: SB, OCbwoy3sMultiverse, All
 	nature         String                //  Any of AllBanCauses
 }
