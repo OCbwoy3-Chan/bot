@@ -21,7 +21,13 @@ function IsValidBanningScope(scope: string): boolean {
  * @returns All banned users
  */
 export async function GetAllBans(): Promise<RobloxUserBan[]> {
-	return await prisma.robloxUserBan.findMany();
+	try {
+		const b = await prisma.robloxUserBan.findMany();
+		return b;
+	} catch(e_) {
+		logger.child({error: e_}).error("An error has occoured");
+		return [];
+	}
 }
 
 /**
