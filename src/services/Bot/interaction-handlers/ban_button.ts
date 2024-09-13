@@ -23,10 +23,17 @@ export class MessageComponentHandler extends InteractionHandler {
 		if (interaction.customId.startsWith("112-confirm-unban-")) {
 
 			const userid = interaction.customId.replace("112-confirm-unban-","")
-
-			await UnbanUser(userid);
-
 			const ru = await GetUserDetails(parseInt(userid))
+
+			try {
+				await UnbanUser(userid);
+			} catch(e_) {
+				return interaction.reply({
+					content: `> ${e_}`,
+					ephemeral: true
+				});
+			}
+
 
 			await interaction.reply({
 				content: `> [${ru.displayName}](https://fxroblox.com/users/${userid}) has been unbanned.`,

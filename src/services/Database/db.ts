@@ -2,8 +2,19 @@ import { PrismaClient, RobloxUserBan } from "@prisma/client";
 import { BanParams } from "../../lib/Types";
 import { RefreshAllBanlands } from "../../lib/BanlandCacheHelper";
 import { logger } from "../../lib/Utility";
+import { AllBanlandScopes } from "../../lib/Constants";
 
 export const prisma = new PrismaClient();
+
+function IsValidBanningScope(scope: string): boolean {
+	let retval = false;
+	AllBanlandScopes.forEach(s=>{
+		if (scope === s) {
+			retval = true;
+		}
+	})
+	return retval;
+}
 
 /**
  * Gets all banned users
@@ -35,6 +46,7 @@ export async function BanUser(params: BanParams): Promise<void> {
 		throw "User is already banned";
 		return;
 	}
+	if (!IsValidBanningScope(params.BannedFrom)) throw `Invalid banning scope \`${params.BannedFrom}\``;
 	logger.info(`[NEW BAN] ${params.UserID} by ${params.ModeratorName}, ${(new Date(parseInt(params.BannedUntil)*1000).toISOString())} (${params.Nature}, ${params.Reason})`)
 	await prisma.robloxUserBan.create({
 		data: {

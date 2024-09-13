@@ -42,6 +42,7 @@ export const AllBanReasons = {
 
 	ILLEGAL_OR_REGULATED: "Illegal or regulated content",
 
+	TERRORISM: "Terrorism",
 	CHILD_SAFETY: "Child safety concerns"
 
 }

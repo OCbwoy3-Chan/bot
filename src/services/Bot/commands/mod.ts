@@ -5,6 +5,7 @@ import { AllBanReasons } from '../../../lib/AllBanReasons';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { GetUserDetails, GetUserIdFromName } from '../../../lib/roblox';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { BanlandScope } from '../../../lib/Constants';
 
 class SlashCommand extends Subcommand {
 	public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -46,8 +47,8 @@ class SlashCommand extends Subcommand {
 						.setDescription('Ban a user')
 						.addStringOption((option) => option.setName('user').setDescription('The person to ban').setRequired(true))
 						.addStringOption((option) => option.setName('reason').setDescription('The reason for the ban').setRequired(true))
-						.addStringOption((option) => option.setName('duration').setDescription('The duration for the ban').setRequired(false))
-						.addStringOption((option) => option.setName('scope').setDescription('The scope for the ban').setRequired(false),
+						.addNumberOption((option) => option.setName('duration').setDescription('The duration for the ban').setRequired(false).setAutocomplete(true))
+						.addStringOption((option) => option.setName('scope').setDescription('The scope for the ban').setRequired(false).setAutocomplete(true),
 					)
 				)
 				.addSubcommand((command) =>
@@ -68,16 +69,6 @@ class SlashCommand extends Subcommand {
 		if (!userid) { await interaction.reply({ content: `> ${banningCommands.errors.usernameResolveFail()}`, ephemeral: true }); return;	}
 		const ud = await GetUserDetails(userid);
 
-		// BanUser({
-		// 	UserID: "1083030325",
-		// 	ModeratorId: "486147449703104523",
-		// 	ModeratorName: "OCbwoy3",
-		// 	BannedFrom: "All",
-		// 	BannedUntil: "-1",
-		// 	Reason: AllBanReasons.EUROPEAN_UNION_DSA,
-		// 	Nature: "EUROPEAN_UNION_DSA"
-		// })
-
 		const stupidFuckingButton = new ButtonBuilder()
 			.setLabel('ocbwoy3.dev/lookup')
 			.setURL(banningCommands.lookups.lookupWebsiteLink(ud.username))
@@ -94,11 +85,95 @@ class SlashCommand extends Subcommand {
 			row.addComponents(stupidFuckingButton2);
 		}
 
-
-
-
 		const wtf = await banningCommands.success.lookupResultMessage(ud,userid);
 		return interaction.reply({ content: wtf, components: [<unknown>row as any] });
+	}
+
+	public async chatInputBan(interaction: Command.ChatInputCommandInteraction) {
+		if (!interaction.options.get('user')?.value) { await interaction.reply({ content: ":skull:", ephemeral: true }); return; };
+		const reason = interaction.options.get('reason')?.value as string || "Unspecified reason";
+		const duration = interaction.options.get('duration')?.value as number || -1;
+		const scope = interaction.options.get('scope')?.value as string || "All";
+
+		// console.log(Math.ceil(Date.now()/1000),duration);
+
+		let date: number = (Math.ceil(Date.now()/1000) + Math.abs(duration));
+
+		if (duration === -1) {
+			date = -1;
+		}
+
+		const userid = await GetUserIdFromName(interaction.options.get('user')?.value as string);
+		if (!userid) { await interaction.reply({ content: `> ${banningCommands.errors.usernameResolveFail()}`, ephemeral: true }); return;	}
+		const ud = await GetUserDetails(userid);
+
+		try {
+			await BanUser({
+				UserID: userid.toString(),
+				ModeratorId: interaction.user.id,
+				ModeratorName: interaction.user.displayName,
+				BannedFrom: scope as BanlandScope,
+				BannedUntil: date.toString(),
+				Reason: reason,
+				Nature: "CUSTOM_REASON"
+			})
+		} catch (e_) {
+			return interaction.reply({ content: `> ${e_}`, ephemeral: true })
+		}
+
+		const stupidFuckingButton = new ButtonBuilder()
+			.setLabel('ocbwoy3.dev/lookup')
+			.setURL(banningCommands.lookups.lookupWebsiteLink(ud.username))
+			.setStyle(ButtonStyle.Link);
+
+		const row = new ActionRowBuilder()
+			.addComponents(stupidFuckingButton);
+
+		return interaction.reply({ content: `> Sucessfully banned [${ud.displayName}](https://fxroblox.com/users/${userid}) from \`${scope}\`!`, components: [<unknown>row as any] });
+	}
+
+	public async chatInputQuickBan(interaction: Command.ChatInputCommandInteraction) {
+		if (!interaction.options.get('user')?.value) { await interaction.reply({ content: ":skull:", ephemeral: true }); return; };
+		const reason = interaction.options.get('preset_reason')?.value as string || "CUSTOM_REASON";
+		const scope = interaction.options.get('scope')?.value as string || "All";
+
+		let date: number = -1;
+		let d = "";
+		let r = "";
+		Object.entries(AllBanReasons).forEach((a:[string,string])=>{
+			if (a[0] === reason) {
+				d = a[0];
+				r = a[1];
+			}
+		})
+
+		const userid = await GetUserIdFromName(interaction.options.get('user')?.value as string);
+		if (!userid) { await interaction.reply({ content: `> ${banningCommands.errors.usernameResolveFail()}`, ephemeral: true }); return;	}
+		const ud = await GetUserDetails(userid);
+
+		try {
+			await BanUser({
+				UserID: userid.toString(),
+				ModeratorId: interaction.user.id,
+				ModeratorName: interaction.user.displayName,
+				BannedFrom: scope as BanlandScope,
+				BannedUntil: date.toString(),
+				Reason: r,
+				Nature: d
+			})
+		} catch (e_) {
+			return interaction.reply({ content: `> ${e_}`, ephemeral: true })
+		}
+
+		const stupidFuckingButton = new ButtonBuilder()
+			.setLabel('ocbwoy3.dev/lookup')
+			.setURL(banningCommands.lookups.lookupWebsiteLink(ud.username))
+			.setStyle(ButtonStyle.Link);
+
+		const row = new ActionRowBuilder()
+			.addComponents(stupidFuckingButton);
+
+		return interaction.reply({ content: `> Sucessfully banned [${ud.displayName}](https://fxroblox.com/users/${userid}) from \`${scope}\`!`, components: [<unknown>row as any] });
 	}
 }
 

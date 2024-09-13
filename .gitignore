@@ -3,6 +3,8 @@ dist/
 .env
 .direnv
 
+temp.md
+
 prisma-engines/
 prisma/*.db
 prisma/*.db-journal
