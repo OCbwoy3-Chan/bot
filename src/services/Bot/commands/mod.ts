@@ -65,7 +65,7 @@ class SlashCommand extends Subcommand {
 
 	public async chatInputLookup(interaction: Command.ChatInputCommandInteraction) {
 		if (!interaction.options.get('user')?.value) { await interaction.reply({ content: ":skull:", ephemeral: true }); return; };
-		const userid = await GetUserIdFromName(interaction.options.get('user')?.value as string);
+		const userid = await GetUserIdFromName((interaction.options.get('user')?.value as string).trim());
 		if (!userid) { await interaction.reply({ content: `> ${banningCommands.errors.usernameResolveFail()}`, ephemeral: true }); return;	}
 		const ud = await GetUserDetails(userid);
 
@@ -103,7 +103,7 @@ class SlashCommand extends Subcommand {
 			date = -1;
 		}
 
-		const userid = await GetUserIdFromName(interaction.options.get('user')?.value as string);
+		const userid = await GetUserIdFromName((interaction.options.get('user')?.value as string).trim());
 		if (!userid) { await interaction.reply({ content: `> ${banningCommands.errors.usernameResolveFail()}`, ephemeral: true }); return;	}
 		const ud = await GetUserDetails(userid);
 
@@ -147,7 +147,7 @@ class SlashCommand extends Subcommand {
 			}
 		})
 
-		const userid = await GetUserIdFromName(interaction.options.get('user')?.value as string);
+		const userid = await GetUserIdFromName((interaction.options.get('user')?.value as string).trim());
 		if (!userid) { await interaction.reply({ content: `> ${banningCommands.errors.usernameResolveFail()}`, ephemeral: true }); return;	}
 		const ud = await GetUserDetails(userid);
 

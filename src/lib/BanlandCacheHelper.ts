@@ -25,7 +25,7 @@ export class BanlandCacheHelper {
 		const a = await GetAllBans()
 		let b: {[userid: string]: BanlandEntry} = {}
 		a.forEach((u: RobloxUserBan)=>{
-			if (u.bannedFrom !== "All") {
+			if (this.scope !== "All") {
 				if (u.bannedFrom !== this.scope) return;
 			}
 			b[u.userId] = {
