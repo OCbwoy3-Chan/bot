@@ -24,27 +24,16 @@ export const AllPermissions = {
 
 	// Developer Commands
 
-	DEV_BYPASS: "Dev/Bypass",
-	DEV_BASH: "Dev/BashCommand", // Invoke ANY bash command
-
-	// User management
-
-	USERS_ADD: "Users/Add",
-	USERS_MODIFY: "Users/Modify",
-	USERS_REMOVE: "Users/Remove",
-	USERS_API: "Users/API",
+	DEV_BYPASS: "Dev_Bypass",
 
 	// GBan management
 
-	GBANS_ADD: "112Bans/Add",
-	GBANS_REMOVE: "112Bans/Remove",
-	GBANS_MODIFY: "112Bans/Modify",
+	GBANS: "112Bans",
 
-	// Appeal management
+	// Appeal management (Later)
 
-	APPEALS_VIEW: "112Appeals/View",
-	APPEALS_ACT: "112Appeals/Act",
-	APPEALS_DELETE: "112Appeals/Delete"
+	APPEALS: "112Appeals"
+
 }
 
 // Role Permissions
@@ -52,14 +41,11 @@ export const AllPermissions = {
 export const OwnerPermissions = Object.values(AllPermissions)
 
 export const MemberPermissions = [
-	AllPermissions.GBANS_ADD,
-	AllPermissions.GBANS_MODIFY
+	AllPermissions.GBANS
 ];
 
 export const ModeratorPermissions = [
-	AllPermissions.GBANS_REMOVE,
-	AllPermissions.APPEALS_VIEW,
-	AllPermissions.APPEALS_ACT
+	AllPermissions.APPEALS
 ];
 
 // All Roles

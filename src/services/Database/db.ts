@@ -1,8 +1,8 @@
-import { PrismaClient, RobloxUserBan } from "@prisma/client";
+import { PrismaClient, RobloxUserBan, User } from "@prisma/client";
 import { BanParams } from "../../lib/Types";
 import { RefreshAllBanlands } from "../../lib/BanlandCacheHelper";
 import { logger } from "../../lib/Utility";
-import { AllBanlandScopes } from "../../lib/Constants";
+import { AllBanlandScopes, AllRoles } from "../../lib/Constants";
 
 export const prisma = new PrismaClient();
 
@@ -86,3 +86,66 @@ export async function UnbanUser(userid: string): Promise<void> {
 	});
 	await RefreshAllBanlands();
 }
+
+/**
+ * Returns a bool if the user is allowed for something or not.
+ * @param userId The user's User ID
+ * @param permission The permission's ID
+ * @returns If the user is allowed for the permission
+ */
+export async function IsAllowed(userId: string, permission: string): Promise<boolean> {
+	if (userId === process.env.OWNER_ID) {
+		return true;
+	}
+
+	const u: User | null = await prisma.user.findFirst({
+		where: {
+			discordId: { equals: userId }
+		}
+	});
+
+	if (!u) return false;
+
+	const role = AllRoles[u.role.toString()];
+	if (!role) return false;
+
+	if (role.permissions.includes(permission)) return true;
+
+	return false;
+}
+
+
+export async function SetPermissionLevel(userId: string, permissionLevel: number): Promise<void> {
+
+	if (permissionLevel === 0) {
+		try {
+			await prisma.user.delete({
+				where: {
+					discordId: userId
+				}
+			});
+		} catch {}
+		return;
+	}
+
+	try {
+		await prisma.user.update({
+			where: {
+				discordId: userId
+			},
+			data: {
+				role: permissionLevel
+			}
+		});
+	} catch {
+		await prisma.user.create({
+			data: {
+				discordId: userId,
+				role: permissionLevel
+			}
+		});
+
+	}
+
+}
+

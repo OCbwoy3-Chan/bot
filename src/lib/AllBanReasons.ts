@@ -25,7 +25,7 @@ export const AllBanReasons = {
 
 	// Bad stuff
 
-	PROFANITY: "Profanities / slurs",
+	PROFANITY: "Using Profanities and Derogatory Language",
 	HARASSMENT: "Harassment towards community members",
 	POLITICAL_CONTENT: "Political content",
 
@@ -35,15 +35,16 @@ export const AllBanReasons = {
 	IMPERSONATION: "Impersonation",
 	DISCRIMINATION: "Discriminatory behaviour",
 	SEXUAL_CONTENT: "Sexual Content",
-	EXTORTION_OR_BLACKMAIL: "Attempting to Extort/Blackmail someone",
+	EXTORTION_OR_BLACKMAIL: "Extortion/Blackmail",
 
 	ANTIFUR: "Antifur behaviour",
 	HOMOPHOBIA: "Homophobia",
 
 	ILLEGAL_OR_REGULATED: "Illegal or regulated content",
 
-	TERRORISM: "Terrorism",
-	CHILD_SAFETY: "Child safety concerns"
+	TERRORISM_ASSOCIATE: atob("U3VzcGVjdGVkIHRvIGJlIGFzc29jaWF0ZWQgd2l0aCBhIFRlcnJvcmlzdCBPcmdhbml6YXRpb24="),
+	TERRORISM: atob("U3VzcGVjdGVkIHRlcnJvcmlzdA=="),
+	CHILD_SAFETY: atob("U3VzcGVjdGVkIHBlZG9waGlsZQ==") // World's strongest encryption algorythm since 1992!
 
 }
 

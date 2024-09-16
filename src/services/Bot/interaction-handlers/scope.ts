@@ -1,7 +1,7 @@
 import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
 import type { AutocompleteInteraction } from 'discord.js';
 import { AllBanReasons } from '../../../lib/AllBanReasons';
-import { AllBanlandScopes } from '../../../lib/Constants';
+import { AllBanlandScopes, AllRoles } from '../../../lib/Constants';
 
 export class AutocompleteHandler extends InteractionHandler {
   public constructor(ctx: InteractionHandler.LoaderContext, options: InteractionHandler.Options) {
@@ -21,23 +21,37 @@ export class AutocompleteHandler extends InteractionHandler {
     const focusedOption = interaction.options.getFocused(true);
 
     switch (focusedOption.name) {
-      case 'scope': {
-        const searchResult = AllBanlandScopes
+		case 'scope': {
+			const searchResult = AllBanlandScopes
 
-		let sr: string[] = []
-		searchResult.forEach(element => {
-			if (element.toUpperCase().trim().replace("_"," ").includes(focusedOption.value.toUpperCase().trim().replace("_"," "))) {
-				sr.push(element);
-			}
-		});
+			let sr: string[] = []
+			searchResult.forEach(element => {
+				if (element.toUpperCase().trim().replace("_"," ").includes(focusedOption.value.toUpperCase().trim().replace("_"," "))) {
+					sr.push(element);
+				}
+			});
 
-		sr.splice(20,420); // 20 maximum enforced by discord
+			sr.splice(20,420); // 20 maximum enforced by discord
 
-		const srm = sr.map((match) => ({ name: match, value: match }));
-        return this.some(srm);
-      }
-      default:
-        return this.none();
-    }
-  }
+			const srm = sr.map((match) => ({ name: match, value: match }));
+			return this.some(srm);
+		}
+		case 'role_id': {
+			const searchResult = AllRoles
+
+			let sr: {name: string, value: number}[] = []
+			Object.entries(AllRoles).forEach(element => {
+				if (element[1].name.toUpperCase().trim().replace("_"," ").includes(focusedOption.value.toUpperCase().trim().replace("_"," "))) {
+					sr.push({ name: element[1].name, value: parseInt(element[0]) });
+				}
+			});
+
+			sr.splice(20,420); // 20 maximum enforced by discord
+			return this.some(sr);
+		}
+		default: {
+			return this.none();
+		}
+		}
+	}
 }

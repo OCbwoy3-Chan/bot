@@ -1,7 +1,9 @@
 import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
 import { type StringSelectMenuInteraction, type ButtonInteraction, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import { UnbanUser } from '../../Database/db';
+import { IsAllowed, UnbanUser } from '../../Database/db';
 import { GetUserDetails } from '../../../lib/roblox';
+import { general } from '../../../locale/commands';
+import { AllPermissions } from '../../../lib/Constants';
 
 export class MessageComponentHandler extends InteractionHandler {
 	public constructor(ctx: InteractionHandler.LoaderContext, options: InteractionHandler.Options) {
@@ -43,6 +45,13 @@ export class MessageComponentHandler extends InteractionHandler {
 		}
 
 		if (interaction.customId.startsWith("112-unban-")) {
+
+			if (!(await IsAllowed(interaction.user.id,AllPermissions.GBANS))) {
+				return interaction.reply({
+					content: general.errors.missingPermission(AllPermissions.GBANS),
+					ephemeral: true
+				});
+			}
 
 			const userid = interaction.customId.replace("112-unban-","")
 

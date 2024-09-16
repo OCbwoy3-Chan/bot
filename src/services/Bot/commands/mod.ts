@@ -1,4 +1,4 @@
-import { Command } from '@sapphire/framework';
+import { Command, PreconditionEntryResolvable } from '@sapphire/framework';
 import { banningCommands, infoCommand } from '../../../locale/commands';
 import { BanUser, GetBanData } from '../../Database/db';
 import { AllBanReasons } from '../../../lib/AllBanReasons';
@@ -12,6 +12,7 @@ class SlashCommand extends Subcommand {
 		super(context, {
 			...options,
 			description: 'Commands to manage global bans.',
+			preconditions: <unknown>["BanAccess"] as PreconditionEntryResolvable[],
 			subcommands: [
 				{
 				  name: 'lookup',
