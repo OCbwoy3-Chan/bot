@@ -11,7 +11,8 @@ export const infoCommand = {
 		const cpuLatency = (wtf[0] / 1000000000 + wtf[1] / 1000000)
 
 		return [
-			`> # [ocbwoy3.dev](<https://ocbwoy3.dev>) (${distro})`,
+			`> # [ocbwoy3.dev](<https://ocbwoy3.dev>) (${distro.match(/^[a-zA-Z ]+/)?.[0].trim()})`,
+			`> 112 - GayestSB`,
 			`> -# **NodeJS Runtime:** ${process.version}`,
 			`> -# **Gateway Latency:** ${gatewayPing}ms`,
 			`> -# **Network Latency:** ${roundTrip}ms`,

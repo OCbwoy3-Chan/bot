@@ -12,9 +12,7 @@ datasource db {
 // User System
 
 model User {
-	username     String    @unique       //  Something like Twitter handles, like @elon, @skidtru etc.
 	discordId    String    @id @unique   //  The User's Discord User ID
-	joinDate     String                  //  The User's 112 Join date in UNIX seconds
 	role         Int       @default(0)   //  Role ID for the user
 }
 
