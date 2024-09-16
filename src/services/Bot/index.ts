@@ -11,7 +11,7 @@ class BotService {
 			this.logger.child({error: e_}).error("Bot threw an exception!");
 			this.logger.info("You might have given 112 an invalid token!.");
 			this.logger.info("If the gateway did not send OP_HELLO in time, Discord has an outage!");
-			// process.exit(1)
+			process.exit(1)
 		})
 	}
 }
