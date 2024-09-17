@@ -1,7 +1,7 @@
 import { Command, PreconditionEntryResolvable } from '@sapphire/framework';
 import { BanUser, GetBanData, SetPermissionLevel } from '../../Database/db';
 import { Subcommand } from '@sapphire/plugin-subcommands';
-
+import { exec } from 'child_process';
 
 class SlashCommand extends Subcommand {
 	public constructor(context: Command.LoaderContext, options: Command.Options) {
@@ -13,6 +13,10 @@ class SlashCommand extends Subcommand {
 				{
 				  name: 'rank',
 				  chatInputRun: 'chatInputRank'
+				},
+				{
+					name: 'kill',
+					chatInputRun: 'chatInputKill'
 				}
 			  ]
 		});
@@ -31,6 +35,11 @@ class SlashCommand extends Subcommand {
 						.addNumberOption((option) => option.setName('role_id').setDescription('Target Role ID').setRequired(true).setAutocomplete(true),
 					)
 				)
+				.addSubcommand((command) =>
+					command
+						.setName('kill')
+						.setDescription('Kills the current process')
+				)
 				// .addStringOption(x=>x.setName("user").setDescription("The Username of the user to ban").setRequired(true))
 		);
 	}
@@ -45,6 +54,12 @@ class SlashCommand extends Subcommand {
 		SetPermissionLevel(user.toString(),roleid)
 
 		return interaction.reply({ content: `> Sucessfully ranked <@${user}> to ${roleid}`, ephemeral: true });
+	}
+
+	public async chatInputKill(interaction: Command.ChatInputCommandInteraction) {
+		await interaction.reply({ content: `> Killing Node.JS Process (Will restart if using PM2)\n> PID: ${process.pid}, Parent PID: ${process.ppid}`, ephemeral: true });
+		process.kill(process.pid,"SIGTERM");
+		// love this, absolutely amazing
 	}
 
 }
