@@ -5,6 +5,26 @@ import { logger } from "./Utility";
 let usernameIdCache: {[username: string]: number} = {};
 let playerInfoCache: {[userid: string]: PlayerInfo} = {};
 
+// https://users.roblox.com/v1/users/1083030325
+type RobloxAPIResponse = {
+	description: string,
+	created: string,
+	isBanned: boolean,
+	externalAppDisplayName: null,
+	hasVerifiedBadge: boolean,
+	id: string,
+	name: string,
+	displayName: string
+}
+
+// saving me
+
+async function getRawAccountDetails(userid: string): Promise<RobloxAPIResponse> {
+	const d = await fetch(`https://users.roblox.com/v1/users/${userid}`);
+	const j = await d.json() as RobloxAPIResponse;
+	return j;
+}
+
 // shitty code
 
 export async function GetUserIdFromName(username:string): Promise<number|null> {
@@ -24,9 +44,16 @@ export async function GetUserDetails(userid: number): Promise<PlayerInfo> {
 		return playerInfoCache[userid];
 	}
 	try {
-		const d = await getPlayerInfo(userid);
-		playerInfoCache[userid] = d;
-		return d;
+		const d = await getRawAccountDetails(userid.toString());
+		const ad: PlayerInfo = {
+			blurb: "",
+			username: d.name,
+			displayName: d.displayName,
+			isBanned: d.isBanned,
+			joinDate: new Date() // don't fucking care
+		}
+		playerInfoCache[userid] = ad;
+		return ad;
 	} catch(e_) {
 		logger.child({error:e_}).info("Shitty code, Error!");
 	};

@@ -51,9 +51,7 @@ export const banningCommands = {
 > **Unbanned:** ${bd.bannedUntil === "-1" ? "never" : `<t:${parseInt(bd.bannedUntil)}>`}`
 			}
 			return `> # [${d.displayName} (@${d.username})](https://fxroblox.com/users/${i})
-> **${d.friendCount}** friends
-> **${d.followerCount}** followers
-> **${d.followingCount}** following${ap}`; }
+> ${d.isBanned ? "**Banned from Roblox (Account Deleted)**" : "**Roblox Account**" }${ap}`; }
 	},
 	lookups: {
 		lookupWebsiteLink: (name: string) => `https://ocbwoy3.dev/lookup?u=${name}`,
