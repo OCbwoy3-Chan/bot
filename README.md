@@ -5,6 +5,10 @@
 OCbwoy3's Super Cool Global Ban Handler for Script Builders.
 You can ban players here. Games who use your instance of this will ban sync your bans with theirs. If they're banned in your list, all games using it will not let the user join the server. Self explanatory, really.
 
+Just make sure you don't go too far, or
+
+![Discord limited my account for 1 hour for using my selfbot](media/discord.png)
+
 You can see ALL preset ban reasons in `AllBanReasons.ts`.
 
 **NOTE: People can access ALL of your GBans by accessing the `/banland.json` endpoint! It's public!**
