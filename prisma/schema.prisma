@@ -5,34 +5,45 @@ generator client {
 }
 
 datasource db {
-	provider = "sqlite"
+	provider = "mongodb"
 	url      = env("DATABASE_URL")
 }
 
 // User System
 
 model User {
-	discordId    String    @id @unique   //  The User's Discord User ID
-	role         Int       @default(0)   //  Role ID for the user
+	discordId    String    @id @map("_id")  //  The User's Discord User ID
+	role         Int       @default(0)      //  Role ID for the user
 }
 
-// 112 - Ban and Appeals System
+// Bans
+
+model Infraction {
+	infractionId  String    @id @default(cuid()) @map("_id")
+	created       DateTime  @default(now())
+	userId        String                                      // The User ID of the person
+	moderator     String                                      // Discord ID of mod
+	evidence      String[]  @default([])
+	reason        String
+}
 
 model RobloxUserBan {
-	userId         String   @id @unique  //  The User ID of the person who is banned
-	reason         String                //  The reason why the person is banned
-	bannedUntil    String                //  The UNIX seconds when the user is unbanned, -1 = Banned FOREVER
-	privateReason  String?               //  The optional private reason submitted by the moderator
-	moderatorId    String                //  The Moderator's Discord User ID
-	moderatorName  String                //  The Moderator's Name
-	bannedFrom     String                //  Where the user is banned from. Options: SB, OCbwoy3sMultiverse, All
-	nature         String                //  Any of AllBanCauses
+	userId         String   @id @map("_id")  //  The User ID of the person who is banned
+	reason         String                    //  The reason why the person is banned
+	bannedUntil    String                    //  The UNIX seconds when the user is unbanned, -1 = Banned FOREVER
+	privateReason  String?                   //  The optional private reason submitted by the moderator
+	moderatorId    String                    //  The Moderator's Discord User ID
+	moderatorName  String                    //  The Moderator's Name
+	bannedFrom     String                    //  Where the user is banned from. Options: SB, OCbwoy3sMultiverse, All
+	nature         String                    //  Any of AllBanCauses
 }
 
+// wip
+
 model RobloxUserAppeal {
-	robloxUserId   String  @id @unique  //  The user's Roblox User ID
-	ipAddress      String  @unique      //  The user's IP address
-	email          String  @unique      //  The user's E-Mail address
-	appealMessage  String               //  The user's appeal messsage
+	robloxUserId   String  @id @map("_id")  //  The user's Roblox User ID
+	ipAddress      String  @unique          //  The user's IP address
+	email          String  @unique          //  The user's E-Mail address
+	appealMessage  String                   //  The user's appeal messsage
 }
 

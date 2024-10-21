@@ -39,9 +39,9 @@ export async function GetUserIdFromName(username:string): Promise<number|null> {
 	return null;
 }
 
-export async function GetUserDetails(userid: number): Promise<PlayerInfo> {
-	if (playerInfoCache[userid]) {
-		return playerInfoCache[userid];
+export async function GetUserDetails(userid: number|string): Promise<PlayerInfo> {
+	if (playerInfoCache[userid.toString()]) {
+		return playerInfoCache[userid.toString()];
 	}
 	try {
 		const d = await getRawAccountDetails(userid.toString());
@@ -52,12 +52,12 @@ export async function GetUserDetails(userid: number): Promise<PlayerInfo> {
 			isBanned: d.isBanned,
 			joinDate: new Date() // don't fucking care
 		}
-		playerInfoCache[userid] = ad;
+		playerInfoCache[userid.toString()] = ad;
 		return ad;
 	} catch(e_) {
 		logger.child({error:e_}).info("Shitty code, Error!");
 	};
-	return playerInfoCache[userid] || {} as PlayerInfo;
+	return playerInfoCache[userid.toString()] || {} as PlayerInfo;
 }
 
 // someone can switch their roblox username with someone elses, fucking up this caching thing or whatever the fuck this monstrosity is

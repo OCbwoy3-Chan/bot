@@ -3,6 +3,7 @@ dist/
 .env
 .direnv
 
+bun.lockb
 temp.md
 
 prisma-engines/

@@ -59,7 +59,7 @@ export function AddToBanlandCacheManager(helper: BanlandCacheHelper): void {
 }
 
 /**
- *  Rebilds ALL of the banlands registered with the  AddToBanlandCacheManager function.
+ *  Rebilds ALL of the banlands registered with the AddToBanlandCacheManager function.
  */
 export async function RefreshAllBanlands(): Promise<void> {
 	AllBanlandCacheHelpers.forEach(async(h: BanlandCacheHelper)=>{

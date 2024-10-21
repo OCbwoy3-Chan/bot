@@ -2,10 +2,11 @@
   "name": "112",
   "version": "1.0.0",
   "description": "112, the SB bot.",
-  "main": "dist/services/Bot/index.js",
+  "main": "src/services/Bot/index.js",
+  "type": "module",
   "scripts": {
-    "dev": "trap \"rm -rf dist\" EXIT && tsc && node dist/index.js | pino-pretty",
-    "watch": "tsc-watch --onSuccess \"node dist/index.js\" | pino-pretty"
+    "dev": "bun run src/index.ts | pino-pretty",
+    "watch": "tsc-watch --onSuccess \"bun src/index.ts\" | pino-pretty"
   },
   "keywords": [],
   "author": "OCbwoy3",
