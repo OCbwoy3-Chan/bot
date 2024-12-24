@@ -31,8 +31,7 @@ export class BanlandCacheHelper {
 			b[u.userId] = {
 				Reason: u.reason,
 				Moderator: u.moderatorName,
-				Expiry: u.bannedUntil,
-				Scope: u.bannedFrom
+				Expiry: u.bannedUntil
 			}
 		})
 		this.cachedBanlandJSON = JSON.stringify(b);

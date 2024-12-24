@@ -31,7 +31,7 @@ export class AutocompleteHandler extends InteractionHandler {
 			}
 		});
 
-		sr.splice(20,420); // 20 maximum enforced by discord
+		sr.splice(20,9999); // 20 maximum enforced by discord
 
 		const srm = sr.map((match) => ({ name: match , value: match }));
         return this.some(srm);

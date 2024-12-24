@@ -5,8 +5,9 @@
   "main": "src/services/Bot/index.js",
   "type": "module",
   "scripts": {
-    "dev": "bun run src/index.ts | pino-pretty",
-    "watch": "tsc-watch --onSuccess \"bun src/index.ts\" | pino-pretty"
+    "dev": "bun run --watch src/index.ts | pino-pretty",
+    "watch": "bun run --hot src/index.ts | pino-pretty",
+    "prod": "bun run src/index.ts | pino-pretty"
   },
   "keywords": [],
   "author": "OCbwoy3",

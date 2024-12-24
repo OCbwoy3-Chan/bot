@@ -21,13 +21,8 @@ app.get("/",async(req: Request, res: Response)=>{
 });
 
 const AllBanlandCacheHelper = new BanlandCacheHelper("All");
-const SBBanlandCacheHelper = new BanlandCacheHelper("SB");
-const MultiverseBanlandCacheHelper = new BanlandCacheHelper("OCbwoy3sMultiverse");
 
-[AllBanlandCacheHelper,SBBanlandCacheHelper,MultiverseBanlandCacheHelper].forEach((h: BanlandCacheHelper)=>{ AddToBanlandCacheManager(h); });
+AddToBanlandCacheManager(AllBanlandCacheHelper);
 
 app.get("/banland.json",async(req: Request, res: Response)=>{ res.send(await AllBanlandCacheHelper.GetCachedBanland()); });
 app.get("/.prikolshub/banland.json",async(req: Request, res: Response)=>{ res.send(await AllBanlandCacheHelper.GetCachedBanland()); });
-
-app.get("/sb.json",async(req: Request, res: Response)=>{ res.send(await SBBanlandCacheHelper.GetCachedBanland()); });
-app.get("/multiverse.json",async(req: Request, res: Response)=>{ res.send(await MultiverseBanlandCacheHelper.GetCachedBanland()); });

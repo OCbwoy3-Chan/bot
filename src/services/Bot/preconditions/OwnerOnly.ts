@@ -1,8 +1,12 @@
-import { Precondition } from '@sapphire/framework';
-import type { CommandInteraction, ContextMenuCommandInteraction, Message } from 'discord.js';
-import { general } from '../../../locale/commands';
-import { AllPermissions, AllRoles } from '../../../lib/Constants';
-import { IsAllowed } from '../../Database/db';
+import { Precondition } from "@sapphire/framework";
+import type {
+	CommandInteraction,
+	ContextMenuCommandInteraction,
+	Message,
+} from "discord.js";
+import { general } from "../../../locale/commands";
+import { AllPermissions, AllRoles } from "../../../lib/Constants";
+import { IsAllowed } from "../../Database/db";
 
 export class OwnerOnlyPrecondition extends Precondition {
 	public override async messageRun(message: Message) {
@@ -15,14 +19,15 @@ export class OwnerOnlyPrecondition extends Precondition {
 		} else {
 			interaction.reply({
 				content: general.errors.notOwner(),
-				ephemeral: true
+				ephemeral: true,
 			});
 			return this.error({ message: "Disallowed" });
 		}
 	}
 
-	public override async contextMenuRun(interaction: ContextMenuCommandInteraction) {
+	public override async contextMenuRun(
+		interaction: ContextMenuCommandInteraction
+	) {
 		return this.error({ message: "Unsupported" });
 	}
-
 }

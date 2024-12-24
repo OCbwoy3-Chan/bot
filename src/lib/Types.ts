@@ -17,5 +17,4 @@ export type BanlandEntry = {
 	Reason: string
 	Moderator: string
 	Expiry: string
-	Scope: string
 }

@@ -13,7 +13,7 @@ export const infoCommand = {
 		return [
 			`> # [ocbwoy3.dev](<https://ocbwoy3.dev>) (${distro.match(/^[a-zA-Z ]+/)?.[0].trim()})`,
 			`> [**112, GayestSB**](<https://github.com/ocbwoy3/112>)`,
-			`> -# **NodeJS Runtime:** ${process.version}`,
+			`> -# **Runtime:** ${process.version}`,
 			`> -# **Gateway Latency:** ${gatewayPing}ms`,
 			`> -# **Network Latency:** ${roundTrip}ms`,
 			`> -# **CPU Latency:** ${measureCPULatency()}μs`
