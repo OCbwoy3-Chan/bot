@@ -1,5 +1,6 @@
 import { Command } from "@sapphire/framework";
 import { infoCommand } from "../../../locale/commands";
+import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
 
 class SlashCommand extends Command {
 	public constructor(
@@ -14,7 +15,18 @@ class SlashCommand extends Command {
 
 	public override registerApplicationCommands(registry: Command.Registry) {
 		registry.registerChatInputCommand((builder) =>
-			builder.setName(this.name).setDescription(this.description)
+			builder
+				.setName(this.name)
+				.setDescription(this.description)
+				.setContexts(
+					InteractionContextType.BotDM,
+					InteractionContextType.Guild,
+					InteractionContextType.PrivateChannel
+				)
+				.setIntegrationTypes(
+					ApplicationIntegrationType.GuildInstall,
+					ApplicationIntegrationType.UserInstall
+				)
 		);
 	}
 
@@ -28,7 +40,7 @@ class SlashCommand extends Command {
 			diff.toString(),
 			ping.toString()
 		);
-		return interaction.reply(mo);
+		return await interaction.reply(mo);
 	}
 }
 

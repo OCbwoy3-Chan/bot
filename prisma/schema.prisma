@@ -19,14 +19,19 @@ model RobloxUserBan {
     moderatorId   String
     moderatorName String
     bannedFrom    String // SB, OCbwoy3sMultiverse, All
-    nature        String
 }
 
-// wip
+// Appeals
 
 model RobloxUserAppeal {
     robloxUserId  String @id @unique
     ipAddress     String @unique
     email         String @unique
     appealMessage String
+}
+
+// Whitelist
+
+model Whitelist {
+    id String @id @unique
 }

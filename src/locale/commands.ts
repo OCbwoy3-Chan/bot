@@ -11,9 +11,9 @@ export const infoCommand = {
 		const cpuLatency = (wtf[0] / 1000000000 + wtf[1] / 1000000)
 
 		return [
-			`> # [ocbwoy3.dev](<https://ocbwoy3.dev>) (${distro.match(/^[a-zA-Z ]+/)?.[0].trim()})`,
+			`> # [ocbwoy3.dev](<https://ocbwoy3.dev>) (${distro.trim()})`,
 			`> [**112, GayestSB**](<https://github.com/ocbwoy3/112>)`,
-			`> -# **Runtime:** ${process.version}`,
+			`> -# **\`process.version\`:** ${process.version}`,
 			`> -# **Gateway Latency:** ${gatewayPing}ms`,
 			`> -# **Network Latency:** ${roundTrip}ms`,
 			`> -# **CPU Latency:** ${measureCPULatency()}μs`
@@ -47,7 +47,6 @@ export const banningCommands = {
 > **Banned from:** \`${bd.bannedFrom}\`
 > **Moderator:** <@${bd.moderatorId}>
 > **Reason:** ${bd.reason}
-> **Cause:** \`${bd.nature}\`
 > **Unbanned:** ${bd.bannedUntil === "-1" ? "never" : `<t:${parseInt(bd.bannedUntil)}>`}`
 			}
 			return `> # [${d.displayName} (@${d.username})](https://fxroblox.com/users/${i})

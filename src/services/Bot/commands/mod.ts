@@ -1,10 +1,15 @@
 import { Command, PreconditionEntryResolvable } from "@sapphire/framework";
 import { banningCommands, infoCommand } from "../../../locale/commands";
 import { BanUser, GetBanData } from "../../Database/db";
-import { AllBanReasons } from "../../../lib/AllBanReasons";
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import { GetUserDetails, GetUserIdFromName } from "../../../lib/roblox";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
+import {
+	ActionRowBuilder,
+	ApplicationIntegrationType,
+	ButtonBuilder,
+	ButtonStyle,
+	InteractionContextType,
+} from "discord.js";
 import { BanlandScope } from "../../../lib/Constants";
 
 class SlashCommand extends Subcommand {
@@ -37,6 +42,15 @@ class SlashCommand extends Subcommand {
 				builder
 					.setName(this.name)
 					.setDescription(this.description)
+					.setContexts(
+						InteractionContextType.BotDM,
+						InteractionContextType.Guild,
+						InteractionContextType.PrivateChannel
+					)
+					.setIntegrationTypes(
+						ApplicationIntegrationType.GuildInstall,
+						ApplicationIntegrationType.UserInstall
+					)
 					.addSubcommand((command) =>
 						command
 							.setName("lookup")
@@ -80,18 +94,19 @@ class SlashCommand extends Subcommand {
 		interaction: Command.ChatInputCommandInteraction
 	) {
 		if (!interaction.options.get("user")?.value) {
-			await interaction.reply({ content: ":skull:", ephemeral: true });
-			return;
+			return await interaction.reply({
+				content: ":skull:",
+				ephemeral: true,
+			});
 		}
 		const userid = await GetUserIdFromName(
 			(interaction.options.get("user")?.value as string).trim()
 		);
 		if (!userid) {
-			await interaction.reply({
+			return await interaction.reply({
 				content: `> ${banningCommands.errors.usernameResolveFail()}`,
 				ephemeral: true,
 			});
-			return;
 		}
 		const ud = await GetUserDetails(userid);
 
@@ -114,7 +129,7 @@ class SlashCommand extends Subcommand {
 			ud,
 			userid
 		);
-		return interaction.reply({
+		return await interaction.reply({
 			content: wtf,
 			components: [(<unknown>row) as any],
 		});
@@ -147,11 +162,10 @@ class SlashCommand extends Subcommand {
 			(interaction.options.get("user")?.value as string).trim()
 		);
 		if (!userid) {
-			await interaction.reply({
+			return await interaction.reply({
 				content: `> ${banningCommands.errors.usernameResolveFail()}`,
 				ephemeral: true,
 			});
-			return;
 		}
 		const ud = await GetUserDetails(userid);
 
@@ -163,7 +177,6 @@ class SlashCommand extends Subcommand {
 				BannedFrom: scope as BanlandScope,
 				BannedUntil: date.toString(),
 				Reason: reason,
-				Nature: "CUSTOM_REASON",
 			});
 		} catch (e_) {
 			return interaction.reply({ content: `> ${e_}`, ephemeral: true });
@@ -176,12 +189,11 @@ class SlashCommand extends Subcommand {
 
 		const row = new ActionRowBuilder().addComponents(stupidFuckingButton);
 
-		return interaction.reply({
+		return await interaction.reply({
 			content: `> Sucessfully banned [${ud.displayName}](https://fxroblox.com/users/${userid}) from \`${scope}\`!`,
 			components: [(<unknown>row) as any],
 		});
 	}
-
 }
 
 export default SlashCommand;

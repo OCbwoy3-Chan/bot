@@ -1,5 +1,7 @@
 import { Command, PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
+import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
+import { prisma } from "../../Database/db";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -8,14 +10,14 @@ class SlashCommand extends Subcommand {
 	) {
 		super(context, {
 			...options,
-			description: "Commands to manage global bans.",
+			description: "Commands to manage 112.",
 			preconditions: (<unknown>[
 				"OwnerOnly",
 			]) as PreconditionEntryResolvable[],
 			subcommands: [
 				{
-					name: "rank",
-					chatInputRun: "chatInputRank",
+					name: "listwl",
+					chatInputRun: "chatInputListWhitelist",
 				},
 				{
 					name: "kill",
@@ -31,23 +33,19 @@ class SlashCommand extends Subcommand {
 				builder
 					.setName(this.name)
 					.setDescription(this.description)
+					.setContexts(
+						InteractionContextType.BotDM,
+						InteractionContextType.Guild,
+						InteractionContextType.PrivateChannel
+					)
+					.setIntegrationTypes(
+						ApplicationIntegrationType.GuildInstall,
+						ApplicationIntegrationType.UserInstall
+					)
 					.addSubcommand((command) =>
 						command
-							.setName("rank")
-							.setDescription("Rank a user")
-							.addUserOption((option) =>
-								option
-									.setName("user")
-									.setDescription("User to rank")
-									.setRequired(true)
-							)
-							.addNumberOption((option) =>
-								option
-									.setName("role_id")
-									.setDescription("Target Role ID")
-									.setRequired(true)
-									.setAutocomplete(true)
-							)
+							.setName("listwl")
+							.setDescription("Lists the current whitelist")
 					)
 					.addSubcommand((command) =>
 						command
@@ -58,22 +56,13 @@ class SlashCommand extends Subcommand {
 		);
 	}
 
-	public async chatInputRank(
+	public async chatInputListWhitelist(
 		interaction: Command.ChatInputCommandInteraction
 	) {
-		if (!interaction.options.get("user")?.value) {
-			await interaction.reply({ content: ":skull:", ephemeral: true });
-			return;
-		}
-		// if (!interaction.options.get('role_id')?.value) { await interaction.reply({ content: ":skull:", ephemeral: true }); return; };
-
-		const user = interaction.options.get("user")?.value as number;
-		const roleid = interaction.options.get("role_id")?.value as number;
-
-		// SetPermissionLevel(user.toString(), roleid);
+		const wl = await prisma.whitelist.findMany();
 
 		return interaction.reply({
-			content: `> Sucessfully ranked <@${user}> to ${roleid}`,
+			content: `> **${wl.length} users whitelisted**${wl.map(a=>`\n> <@${a.id}>`)}`,
 			ephemeral: true,
 		});
 	}

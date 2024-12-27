@@ -9,10 +9,9 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 } from "discord.js";
-import { UnbanUser } from "../../Database/db";
+import { IsWhitelisted, UnbanUser } from "../../Database/db";
 import { GetUserDetails } from "../../../lib/roblox";
 import { general } from "../../../locale/commands";
-import { AllPermissions } from "../../../lib/Constants";
 
 export class MessageComponentHandler extends InteractionHandler {
 	public constructor(
@@ -28,9 +27,11 @@ export class MessageComponentHandler extends InteractionHandler {
 	public override parse(
 		interaction: ButtonInteraction | StringSelectMenuInteraction
 	) {
-		if (!interaction.customId.startsWith(`112-`)) return this.none();
+		// console.log("ban",(/^112\-(confirm\-)?unban\-/.test(interaction.customId)),interaction.customId)
+		if (/^112\-(confirm\-)?unban\-/.test(interaction.customId))
+			return this.some();
 
-		return this.some();
+		return this.none();
 	}
 
 	public async run(
@@ -45,28 +46,32 @@ export class MessageComponentHandler extends InteractionHandler {
 			);
 			const ru = await GetUserDetails(parseInt(userid));
 
+			if (!(await IsWhitelisted(interaction.user.id))) {
+				return await interaction.reply({
+					content: general.errors.missingPermission("WHITELIST"),
+					ephemeral: true,
+				});
+			}
+
 			try {
 				await UnbanUser(userid);
 			} catch (e_) {
-				return interaction.reply({
+				return await interaction.reply({
 					content: `> ${e_}`,
 					ephemeral: true,
 				});
 			}
 
-			await interaction.reply({
+			return await interaction.reply({
 				content: `> [${ru.displayName}](https://fxroblox.com/users/${userid}) has been unbanned.`,
 				ephemeral: false,
 			});
-			return;
 		}
 
 		if (interaction.customId.startsWith("112-unban-")) {
-			if (!true) {
-				return interaction.reply({
-					content: general.errors.missingPermission(
-						AllPermissions.GBANS
-					),
+			if (!(await IsWhitelisted(interaction.user.id))) {
+				return await interaction.reply({
+					content: general.errors.missingPermission("WHITELIST"),
 					ephemeral: true,
 				});
 			}
@@ -84,12 +89,11 @@ export class MessageComponentHandler extends InteractionHandler {
 
 			const ru = await GetUserDetails(parseInt(userid));
 
-			await interaction.reply({
+			return await interaction.reply({
 				content: `> Are you sure you want to unban [${ru.displayName}](https://fxroblox.com/users/${userid})?`,
 				components: [row as any],
 				ephemeral: true,
 			});
-			return;
 		}
 	}
 }

@@ -2,32 +2,36 @@ import { getIdFromUsername, getPlayerInfo, PlayerInfo } from "noblox.js";
 import { UserIdResolveCacheWipeInterval } from "./Constants";
 import { logger } from "./Utility";
 
-let usernameIdCache: {[username: string]: number} = {};
-let playerInfoCache: {[userid: string]: PlayerInfo} = {};
+let usernameIdCache: { [username: string]: number } = {};
+let playerInfoCache: { [userid: string]: PlayerInfo } = {};
 
 // https://users.roblox.com/v1/users/1083030325
 type RobloxAPIResponse = {
-	description: string,
-	created: string,
-	isBanned: boolean,
-	externalAppDisplayName: null,
-	hasVerifiedBadge: boolean,
-	id: string,
-	name: string,
-	displayName: string
-}
+	description: string;
+	created: string;
+	isBanned: boolean;
+	externalAppDisplayName: null;
+	hasVerifiedBadge: boolean;
+	id: string;
+	name: string;
+	displayName: string;
+};
 
 // saving me
 
-async function getRawAccountDetails(userid: string): Promise<RobloxAPIResponse> {
+async function getRawAccountDetails(
+	userid: string
+): Promise<RobloxAPIResponse> {
 	const d = await fetch(`https://users.roblox.com/v1/users/${userid}`);
-	const j = await d.json() as RobloxAPIResponse;
+	const j = (await d.json()) as RobloxAPIResponse;
 	return j;
 }
 
 // shitty code
 
-export async function GetUserIdFromName(username:string): Promise<number|null> {
+export async function GetUserIdFromName(
+	username: string
+): Promise<number | null> {
 	if (usernameIdCache[username.toLocaleLowerCase().trim()]) {
 		return usernameIdCache[username.toLowerCase().trim()];
 	}
@@ -39,7 +43,9 @@ export async function GetUserIdFromName(username:string): Promise<number|null> {
 	return null;
 }
 
-export async function GetUserDetails(userid: number|string): Promise<PlayerInfo> {
+export async function GetUserDetails(
+	userid: number | string
+): Promise<PlayerInfo> {
 	if (playerInfoCache[userid.toString()]) {
 		return playerInfoCache[userid.toString()];
 	}
@@ -50,18 +56,18 @@ export async function GetUserDetails(userid: number|string): Promise<PlayerInfo>
 			username: d.name,
 			displayName: d.displayName,
 			isBanned: d.isBanned,
-			joinDate: new Date() // don't fucking care
-		}
+			joinDate: new Date(), // don't fucking care
+		};
 		playerInfoCache[userid.toString()] = ad;
 		return ad;
-	} catch(e_) {
-		logger.child({error:e_}).info("Shitty code, Error!");
-	};
-	return playerInfoCache[userid.toString()] || {} as PlayerInfo;
+	} catch (e_) {
+		logger.child({ error: e_ }).info("Shitty code, Error!");
+	}
+	return playerInfoCache[userid.toString()] || ({} as PlayerInfo);
 }
 
 // someone can switch their roblox username with someone elses, fucking up this caching thing or whatever the fuck this monstrosity is
 // breaks my fucking code
-setTimeout(()=>{
+setTimeout(() => {
 	usernameIdCache = {};
-},UserIdResolveCacheWipeInterval);
+}, UserIdResolveCacheWipeInterval);

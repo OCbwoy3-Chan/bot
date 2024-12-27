@@ -5,8 +5,6 @@ import type {
 	Message,
 } from "discord.js";
 import { general } from "../../../locale/commands";
-import { AllPermissions, AllRoles } from "../../../lib/Constants";
-import { IsAllowed } from "../../Database/db";
 
 export class OwnerOnlyPrecondition extends Precondition {
 	public override async messageRun(message: Message) {
@@ -18,10 +16,10 @@ export class OwnerOnlyPrecondition extends Precondition {
 			return this.ok();
 		} else {
 			interaction.reply({
-				content: general.errors.notOwner(),
+				content: general.errors.missingPermission("OWNER"),
 				ephemeral: true,
 			});
-			return this.error({ message: "Disallowed" });
+			return this.error({ message: "MissingPermission: OWNER" });
 		}
 	}
 

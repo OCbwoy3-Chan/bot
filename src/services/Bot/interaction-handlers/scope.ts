@@ -3,8 +3,7 @@ import {
 	InteractionHandlerTypes,
 } from "@sapphire/framework";
 import type { AutocompleteInteraction } from "discord.js";
-import { AllBanReasons } from "../../../lib/AllBanReasons";
-import { AllBanlandScopes, AllRoles } from "../../../lib/Constants";
+import { AllBanlandScopes } from "../../../lib/Constants";
 
 export class AutocompleteHandler extends InteractionHandler {
 	public constructor(
@@ -55,33 +54,6 @@ export class AutocompleteHandler extends InteractionHandler {
 
 				const srm = sr.map((match) => ({ name: match, value: match }));
 				return this.some(srm);
-			}
-			case "role_id": {
-				const searchResult = AllRoles;
-
-				let sr: { name: string; value: number }[] = [];
-				Object.entries(AllRoles).forEach((element) => {
-					if (
-						element[1].name
-							.toUpperCase()
-							.trim()
-							.replace("_", " ")
-							.includes(
-								focusedOption.value
-									.toUpperCase()
-									.trim()
-									.replace("_", " ")
-							)
-					) {
-						sr.push({
-							name: element[1].name,
-							value: parseInt(element[0]),
-						});
-					}
-				});
-
-				sr.splice(20, 420); // 20 maximum enforced by discord
-				return this.some(sr);
 			}
 			default: {
 				return this.none();

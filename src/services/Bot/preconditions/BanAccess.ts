@@ -5,20 +5,20 @@ import type {
 	Message,
 } from "discord.js";
 import { general } from "../../../locale/commands";
-import { AllPermissions, AllRoles } from "../../../lib/Constants";
+import { IsWhitelisted } from "../../Database/db";
 
-export class OwnerOnlyPrecondition extends Precondition {
+export class BanAccessPrecondition extends Precondition {
 	public override async messageRun(message: Message) {
 		return this.error({ message: "Unsupported" });
 	}
 
 	public override async chatInputRun(interaction: CommandInteraction) {
-		if (true) {
+		if (await IsWhitelisted(interaction.user.id)) {
 			return this.ok();
 		} else {
 			interaction.reply({
 				content:
-					general.errors.missingPermission(AllPermissions.GBANS) +
+					general.errors.missingPermission("WHITELIST") +
 					"\n> If you are looking up an user and are not a 112 moderator, please use [ocbwoy3.dev](<https://ocbwoy3.dev/lookup>) instead.",
 				ephemeral: true,
 			});
