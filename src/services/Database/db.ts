@@ -1,8 +1,9 @@
 import { PrismaClient, RobloxUserBan } from "@prisma/client";
-import { BanParams } from "../../lib/Types";
+import { BanParams, UpdateBanParams } from "../../lib/Types";
 import { RefreshAllBanlands } from "../../lib/BanlandCacheHelper";
 import { logger } from "../../lib/Utility";
 import { AllBanlandScopes } from "../../lib/Constants";
+import { banUserAcrossFederations, unbanUserAcrossFederations } from "./federation";
 
 export const prisma = new PrismaClient();
 
@@ -61,7 +62,42 @@ export async function BanUser(params: BanParams): Promise<void> {
 			parseInt(params.BannedUntil) * 1000
 		).toISOString()} (${params.Reason})`
 	);
+	banUserAcrossFederations(params.UserID,params.Reason || "Unspecified reason").catch(()=>{})
 	await prisma.robloxUserBan.create({
+		data: {
+			userId: params.UserID,
+			reason: params.Reason,
+			bannedUntil: params.BannedUntil,
+			privateReason: params.PrivateReason,
+			moderatorId: params.ModeratorId,
+			moderatorName: params.ModeratorName,
+			bannedFrom: params.BannedFrom,
+		},
+	});
+	await RefreshAllBanlands();
+}
+
+/**
+ * Update's a users ban.
+ * @param params The ban parameters
+ */
+export async function UpdateUserBan(params: UpdateBanParams): Promise<void> {
+	if (!(await GetBanData(params.UserID))) {
+		throw "User not banned";
+		return;
+	}
+	if (!IsValidBanningScope(params.BannedFrom))
+		throw `Invalid banning scope \`${params.BannedFrom}\``;
+	logger.info(
+		`[UPDATE BAN] ${params.UserID} by ${params.ModeratorName}, ${new Date(
+			parseInt(params.BannedUntil) * 1000
+		).toISOString()} (${params.Reason})`
+	);
+	banUserAcrossFederations(params.UserID,params.Reason || "Unspecified reason").catch(()=>{})
+	await prisma.robloxUserBan.update({
+		where: {
+			userId: params.UserID
+		},
 		data: {
 			userId: params.UserID,
 			reason: params.Reason,
@@ -85,6 +121,7 @@ export async function UnbanUser(userid: string): Promise<void> {
 		return;
 	}
 	logger.info(`[UNBAN] ${userid}`);
+	unbanUserAcrossFederations(userid).catch(()=>{})
 	await prisma.robloxUserBan.delete({
 		where: {
 			userId: userid,

@@ -11,6 +11,17 @@ export type BanParams = {
 	BannedFrom: BanlandScope;
 };
 
+// See RobloxUserBan in schema.prisma
+export type UpdateBanParams = {
+	UserID: string;
+	Reason?: string;
+	BannedUntil: string | "-1"; // UNIX Millis
+	PrivateReason?: string;
+	ModeratorId?: string;
+	ModeratorName?: string;
+	BannedFrom: BanlandScope;
+};
+
 export type BanlandEntry = {
 	Reason: string;
 	Moderator: string;

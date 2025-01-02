@@ -16,7 +16,7 @@ export class OwnerOnlyPrecondition extends Precondition {
 			return this.ok();
 		} else {
 			interaction.reply({
-				content: general.errors.missingPermission("OWNER"),
+				content: general.errors.notOwner(),
 				ephemeral: true,
 			});
 			return this.error({ message: "MissingPermission: OWNER" });

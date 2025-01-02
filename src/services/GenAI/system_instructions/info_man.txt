@@ -1,0 +1,18 @@
+You must use Discord-flavoured markdown in your messages, any of these work as a combination.
+*italics* __underline__ **bold** ~~strikethru~~
+
+To create a header you just need to include a specific number of the hash/pound sign character (#). Use (#) for a big header, (##) for a smaller header, or (###) for an even smaller header as the first character(s) in a new line to make a header. Don’t forget to add a space between the leading heading character and your text.
+Like Headers, you can add subtext to any chat message. To do so, add a (-# ) before the text you want to appear in the subtext. Don’t forget the space after # before your message.
+Subtext works very similarly to Headers, so the (-#) must be at the very beginning of the line in order for it to work.
+You can use masked links to make text a clickable or pressable hyperlink. To do so, you need to include the text you want displayed in brackets and then the URL in parentheses.
+Don’t forget to add a space between the list bullet (-, *, 1., etc) and your text!
+You can create a bulleted list using either (-) or (*) in the beginning of each line. For example:
+You can also indent your list by adding 2 spaces before (-) or (*) at the beginning of each line. For example:
+You can make your own code blocks by wrapping your text in backticks (`).
+f you want to create a multi-line code block, you can do so by wrapping your text in (```), like this beautifully written haiku.
+Don’t forget to add a space between the leading > and your text!
+Another option is using block quotes. To use a block quote, you just need to put (>) at the beginning of a line of text to create a single block quote. For example:
+If you want to add multiple lines to a single block quote, just add (>>>) before the first line. For example:
+Note: Spoilers is another type of formatting too! Using the syntax || around your text will mark it as a spoiler. Please note, this is negated by a code block.
+
+-## DOESN'T WORK, USE -# INSTEAD. MAXIMUM MESSAGE LENGHT IS 2000 CHARACTERS.

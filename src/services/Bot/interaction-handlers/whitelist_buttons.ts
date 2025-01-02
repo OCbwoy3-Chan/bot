@@ -41,7 +41,7 @@ export class MessageComponentHandler extends InteractionHandler {
 		if (interaction.customId.startsWith("112-add-wl-")) {
 			if (interaction.user.id !== process.env.OWNER_ID) {
 				return await interaction.reply({
-					content: general.errors.missingPermission("OWNER"),
+					content: general.errors.notOwner(),
 					ephemeral: true,
 				});
 			}
@@ -67,7 +67,7 @@ export class MessageComponentHandler extends InteractionHandler {
 		if (interaction.customId.startsWith("112-remove-wl-")) {
 			if (interaction.user.id !== process.env.OWNER_ID) {
 				return await interaction.reply({
-					content: general.errors.missingPermission("OWNER"),
+					content: general.errors.notOwner(),
 					ephemeral: true,
 				});
 			}

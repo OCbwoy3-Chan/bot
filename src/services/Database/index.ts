@@ -1,6 +1,7 @@
 import { Logger } from "pino";
 import { prisma } from "./db";
 import { RefreshAllBanlands } from "../../lib/BanlandCacheHelper";
+import { loadAllInstances } from "./federation";
 
 class DatabaseService {
 	constructor(private readonly logger: Logger) {}
@@ -9,6 +10,7 @@ class DatabaseService {
 	public async _StartService(): Promise<void> {
 		this.logger.info("Starting DB");
 		await RefreshAllBanlands();
+		await loadAllInstances();
 		process.on("beforeExit", async () => {
 			await prisma.$disconnect();
 		});

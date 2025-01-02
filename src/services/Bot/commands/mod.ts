@@ -1,6 +1,6 @@
 import { Command, PreconditionEntryResolvable } from "@sapphire/framework";
 import { banningCommands, infoCommand } from "../../../locale/commands";
-import { BanUser, GetBanData } from "../../Database/db";
+import { BanUser, GetBanData, UpdateUserBan } from "../../Database/db";
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import { GetUserDetails, GetUserIdFromName } from "../../../lib/roblox";
 import {
@@ -31,6 +31,10 @@ class SlashCommand extends Subcommand {
 				{
 					name: "ban",
 					chatInputRun: "chatInputBan",
+				},
+				{
+					name: "change",
+					chatInputRun: "chatInputUpdate",
 				},
 			],
 		});
@@ -84,6 +88,36 @@ class SlashCommand extends Subcommand {
 									.setDescription("The duration for the ban")
 									.setRequired(false)
 									.setAutocomplete(true)
+							)
+					)
+					.addSubcommand((command) =>
+						command
+							.setName("change")
+							.setDescription("Update a user's ban")
+							.addStringOption((option) =>
+								option
+									.setName("user")
+									.setDescription("The person whose ban to update")
+									.setRequired(true)
+							)
+							.addStringOption((option) =>
+								option
+									.setName("reason")
+									.setDescription("The new reason for the ban")
+									.setRequired(false)
+							)
+							.addNumberOption((option) =>
+								option
+									.setName("duration")
+									.setDescription("The new duration for the ban")
+									.setRequired(false)
+									.setAutocomplete(true)
+							)
+							.addStringOption((option) =>
+								option
+									.setName("scope")
+									.setDescription("The new scope for the ban")
+									.setRequired(false)
 							)
 					)
 			// .addStringOption(x=>x.setName("user").setDescription("The Username of the user to ban").setRequired(true))
@@ -190,10 +224,86 @@ class SlashCommand extends Subcommand {
 		const row = new ActionRowBuilder().addComponents(stupidFuckingButton);
 
 		return await interaction.reply({
-			content: `> Sucessfully banned [${ud.displayName}](https://fxroblox.com/users/${userid}) from \`${scope}\`!`,
+			content: `> Sucessfully banned [${ud.displayName}](https://fxroblox.com/users/${userid})`,
+			components: [(<unknown>row) as any],
+		});
+
+	}
+
+	public async chatInputUpdate(
+		interaction: Command.ChatInputCommandInteraction
+	) {
+		if (!interaction.options.get("user")?.value) {
+			await interaction.reply({ content: ":skull:", ephemeral: true });
+			return;
+		}
+
+		const userid = await GetUserIdFromName(
+			(interaction.options.get("user")?.value as string).trim()
+		);
+		if (!userid) {
+			return await interaction.reply({
+				content: `> ${banningCommands.errors.usernameResolveFail()}`,
+				ephemeral: true,
+			});
+		}
+
+		const existingBan = await GetBanData(userid.toString());
+		if (!existingBan) {
+			return await interaction.reply({
+				content: `> User is not currently banned.`,
+				ephemeral: true,
+			});
+		}
+
+		const reason =
+			(interaction.options.get("reason")?.value as string) ||
+			existingBan.reason ||
+			"Unspecified reason";
+		const duration =
+			(interaction.options.get("duration")?.value as number) ||
+			parseInt(existingBan.bannedUntil) - Math.ceil(Date.now() / 1000) ||
+			-1;
+		const scope =
+			(interaction.options.get("scope")?.value as string) ||
+			existingBan.bannedFrom ||
+			"All";
+
+		let date: number = Math.ceil(Date.now() / 1000) + Math.abs(duration);
+
+		if (duration === -1) {
+			date = -1;
+		}
+
+		const ud = await GetUserDetails(userid);
+
+		try {
+			await UpdateUserBan({
+				UserID: userid.toString(),
+				ModeratorId: interaction.user.id,
+				ModeratorName: interaction.user.displayName,
+				BannedFrom: scope as BanlandScope,
+				BannedUntil: date.toString(),
+				Reason: reason,
+			});
+		} catch (e_) {
+			return interaction.reply({ content: `> ${e_}`, ephemeral: true });
+		}
+
+		const stupidFuckingButton = new ButtonBuilder()
+			.setLabel("ocbwoy3.dev/lookup")
+			.setURL(banningCommands.lookups.lookupWebsiteLink(ud.username))
+			.setStyle(ButtonStyle.Link);
+
+		const row = new ActionRowBuilder().addComponents(stupidFuckingButton);
+
+		return await interaction.reply({
+			content: `> Successfully updated [${ud.displayName}](https://fxroblox.com/users/${userid})'s ban`,
 			components: [(<unknown>row) as any],
 		});
 	}
+
+
 }
 
 export default SlashCommand;
