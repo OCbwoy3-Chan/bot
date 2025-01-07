@@ -1,29 +1,12 @@
 import { PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import {
-	ApplicationIntegrationType,
-	Attachment,
-	InteractionContextType,
-} from "discord.js";
+import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
 import { general } from "../../../locale/commands";
-import {
-	areGenAIFeaturesEnabled,
-	getFileManagerInstance,
-	getGeminiInstance,
-	getSystemInstructionText,
-} from "../../GenAI/gemini";
-import {
-	ChatSession,
-	DynamicRetrievalMode,
-	HarmBlockThreshold,
-	HarmCategory,
-	SchemaType,
-	Tool,
-} from "@google/generative-ai";
-import { logger } from "../../../lib/Utility";
-import { RegularResults, search } from "@navetacandra/ddg";
+import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
+import { Chat } from "../../GenAI/chat";
+import { response } from "express";
 
-let chat: ChatSession | null = null;
+let chat: Chat | null = null;
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -80,14 +63,6 @@ class SlashCommand extends Subcommand {
 								.setDescription("The question you want to ask.")
 								.setRequired(true)
 						)
-						.addBooleanOption((option) =>
-							option
-								.setName("google")
-								.setDescription(
-									"Use Google to retrieve information instead of DuckDuckGo (Might get ratelimited)."
-								)
-								.setRequired(false)
-						)
 				)
 		);
 	}
@@ -116,147 +91,71 @@ class SlashCommand extends Subcommand {
 		if (
 			(interaction.options.get("question")!.value as string).length > 256
 		) {
-			return await interaction.reply("Question is too long.");
+			return await interaction.reply("> Question is too long.");
 		}
-
-		const useGoogle: boolean = (
-			(interaction.options.get("google") as any) || { value: false }
-		).value;
 
 		await interaction.deferReply({ ephemeral: false, fetchReply: true });
 
-		const googleTool: Tool = {
-			googleSearchRetrieval: {
-				dynamicRetrievalConfig: {
-					mode: DynamicRetrievalMode.MODE_DYNAMIC,
-					dynamicThreshold: 0.3,
-				},
-			},
-		};
+		const chatSession = chat ? chat : new Chat();
+		chat = chatSession;
 
-		const duckduckgoTool: Tool = {
-			functionDeclarations: [
-				{
-					name: "duckduckgoSearch",
-					parameters: {
-						type: SchemaType.OBJECT,
-						description:
-							"Searches DuckDuckGo for information on the given query.",
-						properties: {
-							query: {
-								type: SchemaType.STRING,
-								description:
-									"The query to search DuckDuckGo for information on.",
-							},
-						},
-						required: ["query"],
-					},
-				},
-			],
-		};
+		const chatV = chat;
+
+		let response = "";
+		let toolsUsed: string[] = [];
+		let err: any = false;
+		try {
+			[response, toolsUsed] = await chatSession.generateResponse(
+				interaction.options.get("question")!.value as string
+			);
+		} catch (e_) {
+			err = e_;
+		}
 
 		try {
-			const gemini = getGeminiInstance();
+			if (err !== false) throw err;
 
-			const model = gemini.getGenerativeModel({
-				model: "gemini-1.5-flash-8b",
-				tools: useGoogle ? [googleTool] : [duckduckgoTool],
+			await interaction.followUp({
+				content: response.trim(),
+				embeds: [
+					{
+						title: chatV.chatModel,
+						description: (toolsUsed.length === 0 ? "No tools used" : toolsUsed.map(a=>`\`${a}\``).join(", ") )
+					}
+				]
 			});
-
-			const generationConfig = {
-				temperature: 1.5,
-				topP: 0.95,
-				topK: 40,
-				maxOutputTokens: 8192,
-				responseMimeType: "text/plain",
-			};
-
-			const chatSession = chat
-				? chat
-				: model.startChat({
-						generationConfig,
-						history: [],
-				  });
-
-			chat = chatSession;
-
-			logger.info(
-				`${interaction.user.displayName}: ${
-					interaction.options.get("question")!.value as string
-				}`
-			);
-
-			let result = await chatSession.sendMessage(
-				`${interaction.options.get("question")!.value as string}`
-			);
-
-			const call = result.response.functionCalls()?.[0];
-			if (call) {
-				logger
-					.child({ args: call.args })
-					.info(`[TOOL CALL] ${model.model}: ${call.name}`);
-				if (call.name === "duckduckgoSearch") {
-					const searchResults = await search({
-						query: (call.args as any).query as string,
-					});
-					let results = (searchResults.results as RegularResults).map(
-						(result) => {
-							return {
-								title: result.title,
-								description: result.description,
-								url: result.url,
-							};
-						}
-					);
-					result = await chatSession.sendMessage([
-						{
-							functionResponse: {
-								name: "duckduckgoSearch",
-								response: {
-									currentUnixMillis: Date.now(),
-									currentTimeISO_UTC0:
-										new Date().toISOString(),
-									results,
-								},
-							},
-						},
-					]);
-				}
-			}
-
-			let response = result.response;
-			let text = response.text();
-
-			logger.info(`${model.model}: ${text}`);
-
-			if (text.length > 2000) {
-				return await interaction.followUp({
-					content: "Result is too long, message sent in attachment.",
-					files: [
-						{
-							name: "Message.txt",
-							attachment: text,
-						},
-					],
-				});
-			} else {
-				return await interaction.followUp({
-					content: text,
-				});
-			}
 		} catch (e_) {
 			chat = null;
-			logger.child({ error: e_ }).error("Error in genai command");
 			console.error(e_);
-			if (`${e_}`.includes("check quota")) {
-				return await interaction.followUp({
-					content:
-						general.errors.genai.ratelimit() +
-						"\n> Maybe use this command without the `google` argument?",
-				});
+			if (`${e_}`.includes("Message was blocked by AutoMod")) {
+				try {
+					const r = await interaction.user.send({
+						content:
+							"I apologize, but my message was blocked by AutoMod. Here's the answer to your question:",
+					});
+					await r.reply({
+						content: response.trim(),
+						embeds: [
+							{
+								title: chatV.chatModel,
+								description: (toolsUsed.length === 0 ? "No tools used" : toolsUsed.map(a=>`\`${a}\``).join(", ") )
+							}
+						]
+					});
+				} catch {}
+				try {
+					return await interaction.followUp({
+						content: `I apologize, but my message was blocked by AutoMod, therefore I am unable to answer to your question.`,
+						embeds: [
+							{
+								description: "**Message blocked by AutoMod**`"
+							}
+						]
+					});
+				} catch {}
 			}
 			return await interaction.followUp({
-				content: `${e_}`,
+				content: `> ${e_}`,
 			});
 		}
 	}
