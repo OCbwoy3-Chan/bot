@@ -116,7 +116,7 @@ class SlashCommand extends Subcommand {
 			if (err !== false) throw err;
 
 			await interaction.followUp({
-				content: response.trim(),
+				content: response.trim().replace(/ +/g," "),
 				embeds: [
 					{
 						title: chatV.chatModel,
@@ -134,7 +134,7 @@ class SlashCommand extends Subcommand {
 							"I apologize, but my message was blocked by AutoMod. Here's the answer to your question:",
 					});
 					await r.reply({
-						content: response.trim(),
+						content: response.trim().replace(/ +/g," "),
 						embeds: [
 							{
 								title: chatV.chatModel,

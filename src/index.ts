@@ -1,7 +1,7 @@
+import figlet from "figlet";
 import { Logger } from "pino";
 const logger: Logger = require("pino")();
 
-console.log("112 - SB Toolkit by OCbwoy3");
 require("dotenv").configDotenv(); // chad workaround typescript
 
 const SERVICE_LOAD_ORDER = ["Database", "Server", "GenAI", "Bot"];
@@ -24,4 +24,12 @@ async function loadServices() {
 	logger.info(`112 loaded successfully!`);
 }
 
-loadServices();
+async function printFiglet(a: string, b: figlet.Fonts): Promise<string> {
+	const t = (await figlet(a, b)) as any as string;
+	return t.replace(/[\n ]*$/, "") + "\n";
+}
+
+(async () => {
+	console.log(await printFiglet("ocbwoy3 . dev", "Big"));
+	loadServices();
+})();

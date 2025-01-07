@@ -113,12 +113,6 @@ class SlashCommand extends Subcommand {
 									.setRequired(false)
 									.setAutocomplete(true)
 							)
-							.addStringOption((option) =>
-								option
-									.setName("scope")
-									.setDescription("The new scope for the ban")
-									.setRequired(false)
-							)
 					)
 			// .addStringOption(x=>x.setName("user").setDescription("The Username of the user to ban").setRequired(true))
 		);
@@ -181,8 +175,7 @@ class SlashCommand extends Subcommand {
 			"Unspecified reason";
 		const duration =
 			(interaction.options.get("duration")?.value as number) || -1;
-		const scope =
-			(interaction.options.get("scope")?.value as string) || "All";
+		const scope = "All"; //! DEPRECATED
 
 		// console.log(Math.ceil(Date.now()/1000),duration);
 
@@ -208,7 +201,7 @@ class SlashCommand extends Subcommand {
 				UserID: userid.toString(),
 				ModeratorId: interaction.user.id,
 				ModeratorName: interaction.user.displayName,
-				BannedFrom: scope as BanlandScope,
+				BannedFrom: scope as BanlandScope, //! DEPRECATED
 				BannedUntil: date.toString(),
 				Reason: reason,
 			});
@@ -264,10 +257,7 @@ class SlashCommand extends Subcommand {
 			(interaction.options.get("duration")?.value as number) ||
 			parseInt(existingBan.bannedUntil) - Math.ceil(Date.now() / 1000) ||
 			-1;
-		const scope =
-			(interaction.options.get("scope")?.value as string) ||
-			existingBan.bannedFrom ||
-			"All";
+		const scope = "All"; //! DEPRECATED
 
 		let date: number = Math.ceil(Date.now() / 1000) + Math.abs(duration);
 
@@ -282,7 +272,7 @@ class SlashCommand extends Subcommand {
 				UserID: userid.toString(),
 				ModeratorId: interaction.user.id,
 				ModeratorName: interaction.user.displayName,
-				BannedFrom: scope as BanlandScope,
+				BannedFrom: scope as BanlandScope, //! DEPRECATED
 				BannedUntil: date.toString(),
 				Reason: reason,
 			});
