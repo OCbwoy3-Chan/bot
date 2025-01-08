@@ -142,6 +142,7 @@ class SlashCommand extends Subcommand {
 		let err: any = false;
 		try {
 			[response, toolsUsed] = await chatSession.generateResponse(parts);
+			if (response.length === 0) throw "Got empty message";
 		} catch (e_) {
 			err = e_;
 		}

@@ -2,6 +2,7 @@ import {
 	ChatSession,
 	FunctionCall,
 	GenerateContentResult,
+	GenerativeModel,
 	HarmBlockThreshold,
 	HarmCategory,
 	Part,
@@ -177,7 +178,10 @@ export class Chat {
 			0
 		) {
 			// return await this.generateResponse(question)
-			return ["> AI sent an empty message.", toolsUsed];
+
+			this.chatSession = null;
+
+			return ["", toolsUsed];
 		}
 
 		return [
