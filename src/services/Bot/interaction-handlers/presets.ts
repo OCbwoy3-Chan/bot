@@ -5,6 +5,12 @@ import {
 import type { AutocompleteInteraction } from "discord.js";
 import { AllBanDurations } from "../../../lib/Constants";
 
+const allPrompts: [string, string][] = [
+	["Default", "default.txt"],
+	["Info-man", "discord.txt"],
+	["Down Bad", "downbad.txt"],
+];
+
 export class AutocompleteHandler extends InteractionHandler {
 	public constructor(
 		ctx: InteractionHandler.LoaderContext,
@@ -29,6 +35,27 @@ export class AutocompleteHandler extends InteractionHandler {
 		const focusedOption = interaction.options.getFocused(true);
 
 		switch (focusedOption.name) {
+			case "prompt": {
+				let sr: [string, string][] = [];
+				allPrompts.forEach((v: [string, string]) => {
+					if (
+						v[0]
+							.toUpperCase()
+							.trim()
+							.includes(focusedOption.value.toUpperCase().trim())
+					) {
+						sr.push(v);
+					}
+				});
+
+				sr.splice(20, 420); // 20 maximum enforced by discord
+
+				const srm = sr.map((match) => ({
+					name: match[0],
+					value: match[1],
+				}));
+				return this.some(srm);
+			}
 			case "duration": {
 				let sr: [string, number][] = [];
 				AllBanDurations.forEach((v: [string, number]) => {

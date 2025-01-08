@@ -31,7 +31,7 @@ export class Chat {
 	chatSession: ChatSession | null = null;
 	callHistory: { [hash: string]: any } = {}; // Store previous calls
 
-	constructor(public chatModel: string = "gemini-1.5-flash-8b") {
+	constructor(public chatModel: string = "gemini-1.5-flash-8b", public prompt: string = "default.txt") {
 		const gemini = getGeminiInstance();
 
 		const model = gemini.getGenerativeModel({
@@ -59,7 +59,7 @@ export class Chat {
 					threshold: HarmBlockThreshold.BLOCK_NONE,
 				},
 			],
-			systemInstruction: getSystemInstructionText("default.txt"),
+			systemInstruction: getSystemInstructionText(prompt),
 		});
 
 		const generationConfig = {

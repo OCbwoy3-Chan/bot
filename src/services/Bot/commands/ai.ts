@@ -1,6 +1,13 @@
 import { PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { ApplicationIntegrationType, InteractionContextType, AttachmentBuilder, RawFile, APIAttachment, Attachment } from "discord.js";
+import {
+	ApplicationIntegrationType,
+	InteractionContextType,
+	AttachmentBuilder,
+	RawFile,
+	APIAttachment,
+	Attachment,
+} from "discord.js";
 import { general } from "../../../locale/commands";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { Chat } from "../../GenAI/chat";
@@ -67,10 +74,15 @@ class SlashCommand extends Subcommand {
 						.addAttachmentOption((option) =>
 							option
 								.setName("vision")
-								.setDescription(
-									"Image to add as context. Must be image/png or image/jpeg"
-								)
+								.setDescription("Image to add as context.")
 								.setRequired(false)
+						)
+						.addStringOption((option) =>
+							option
+								.setName("prompt")
+								.setDescription("Optional system instructions.")
+								.setRequired(false)
+								.setAutocomplete(true)
 						)
 				)
 		);
@@ -105,7 +117,11 @@ class SlashCommand extends Subcommand {
 
 		await interaction.deferReply({ ephemeral: false, fetchReply: true });
 
-		const chatSession = chat ? chat : new Chat("gemini-1.5-flash-8b");
+		const prompt = interaction.options.getString("prompt") || "default.txt";
+
+		const chatSession = chat
+			? chat
+			: new Chat("gemini-1.5-flash-8b", prompt);
 		chat = chatSession;
 
 		const chatV = chat;
@@ -129,9 +145,9 @@ class SlashCommand extends Subcommand {
 					mimeType: mimeType,
 				},
 			});
-			const a = new AttachmentBuilder(Buffer.from(raw),{
+			const a = new AttachmentBuilder(Buffer.from(raw), {
 				name: `vision.${ext}`,
-			})
+			});
 			filesToSend.push(a);
 		}
 
@@ -143,6 +159,13 @@ class SlashCommand extends Subcommand {
 		try {
 			[response, toolsUsed] = await chatSession.generateResponse(parts);
 			if (response.length === 0) throw "Got empty message";
+			if (response.trim().replace(/ +/g," ").length > 2000) {
+				const a = new AttachmentBuilder(Buffer.from(response), {
+					name: `message.txt`,
+				});
+				response = "> Message too long, sending as file.";
+				filesToSend.push(a);
+			}
 		} catch (e_) {
 			err = e_;
 		}
@@ -156,12 +179,14 @@ class SlashCommand extends Subcommand {
 					{
 						title: chatV.chatModel,
 						description:
-							toolsUsed.length === 0
+							`System Prompt: \`${chatV.prompt}\`` +
+							"\n-# " +
+							(toolsUsed.length === 0
 								? "No tools used"
-								: toolsUsed.map((a) => `\`${a}\``).join(", "),
+								: toolsUsed.map((a) => `\`${a}\``).join(", ")),
 					},
 				],
-				files: filesToSend
+				files: filesToSend,
 			});
 		} catch (e_) {
 			chat = null;
@@ -178,14 +203,16 @@ class SlashCommand extends Subcommand {
 							{
 								title: chatV.chatModel,
 								description:
-									toolsUsed.length === 0
+									`System Prompt: \`${chatV.prompt}\`` +
+									"\n-# " +
+									(toolsUsed.length === 0
 										? "No tools used"
 										: toolsUsed
 												.map((a) => `\`${a}\``)
-												.join(", "),
+												.join(", ")),
 							},
 						],
-						files: filesToSend
+						files: filesToSend,
 					});
 				} catch {}
 				try {
