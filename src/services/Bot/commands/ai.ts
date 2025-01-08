@@ -1,10 +1,11 @@
 import { PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
+import { ApplicationIntegrationType, InteractionContextType, AttachmentBuilder, RawFile, APIAttachment, Attachment } from "discord.js";
 import { general } from "../../../locale/commands";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { Chat } from "../../GenAI/chat";
 import { response } from "express";
+import { Part } from "@google/generative-ai";
 
 let chat: Chat | null = null;
 
@@ -63,6 +64,14 @@ class SlashCommand extends Subcommand {
 								.setDescription("The question you want to ask.")
 								.setRequired(true)
 						)
+						.addAttachmentOption((option) =>
+							option
+								.setName("vision")
+								.setDescription(
+									"Image to add as context. Must be image/png or image/jpeg"
+								)
+								.setRequired(false)
+						)
 				)
 		);
 	}
@@ -96,18 +105,43 @@ class SlashCommand extends Subcommand {
 
 		await interaction.deferReply({ ephemeral: false, fetchReply: true });
 
-		const chatSession = chat ? chat : new Chat();
+		const chatSession = chat ? chat : new Chat("gemini-1.5-flash-8b");
 		chat = chatSession;
 
 		const chatV = chat;
+
+		const parts: Array<string | Part> = [];
+		const filesToSend: AttachmentBuilder[] = [];
+
+		const attachment = interaction.options.getAttachment("vision");
+		if (attachment) {
+			const response = await fetch(attachment.url);
+			const raw = await response.arrayBuffer();
+			const mimeType =
+				response.headers.get("content-type") ||
+				"application/octet-stream";
+			let ext = "bin";
+			if (mimeType === "image/png") ext = "png";
+			if (mimeType === "image/jpeg") ext = "jpeg";
+			parts.push({
+				inlineData: {
+					data: Buffer.from(raw).toString("base64"),
+					mimeType: mimeType,
+				},
+			});
+			const a = new AttachmentBuilder(Buffer.from(raw),{
+				name: `vision.${ext}`,
+			})
+			filesToSend.push(a);
+		}
+
+		parts.push(interaction.options.get("question")!.value as string);
 
 		let response = "";
 		let toolsUsed: string[] = [];
 		let err: any = false;
 		try {
-			[response, toolsUsed] = await chatSession.generateResponse(
-				interaction.options.get("question")!.value as string
-			);
+			[response, toolsUsed] = await chatSession.generateResponse(parts);
 		} catch (e_) {
 			err = e_;
 		}
@@ -116,13 +150,17 @@ class SlashCommand extends Subcommand {
 			if (err !== false) throw err;
 
 			await interaction.followUp({
-				content: response.trim().replace(/ +/g," "),
+				content: response.trim().replace(/ +/g, " "),
 				embeds: [
 					{
 						title: chatV.chatModel,
-						description: (toolsUsed.length === 0 ? "No tools used" : toolsUsed.map(a=>`\`${a}\``).join(", ") )
-					}
-				]
+						description:
+							toolsUsed.length === 0
+								? "No tools used"
+								: toolsUsed.map((a) => `\`${a}\``).join(", "),
+					},
+				],
+				files: filesToSend
 			});
 		} catch (e_) {
 			chat = null;
@@ -134,13 +172,19 @@ class SlashCommand extends Subcommand {
 							"I apologize, but my message was blocked by AutoMod. Here's the answer to your question:",
 					});
 					await r.reply({
-						content: response.trim().replace(/ +/g," "),
+						content: response.trim().replace(/ +/g, " "),
 						embeds: [
 							{
 								title: chatV.chatModel,
-								description: (toolsUsed.length === 0 ? "No tools used" : toolsUsed.map(a=>`\`${a}\``).join(", ") )
-							}
-						]
+								description:
+									toolsUsed.length === 0
+										? "No tools used"
+										: toolsUsed
+												.map((a) => `\`${a}\``)
+												.join(", "),
+							},
+						],
+						files: filesToSend
 					});
 				} catch {}
 				try {
@@ -148,9 +192,9 @@ class SlashCommand extends Subcommand {
 						content: `I apologize, but my message was blocked by AutoMod, therefore I am unable to answer to your question.`,
 						embeds: [
 							{
-								description: "**Message blocked by AutoMod**`"
-							}
-						]
+								description: "**Message blocked by AutoMod**`",
+							},
+						],
 					});
 				} catch {}
 			}

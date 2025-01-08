@@ -3,6 +3,7 @@ import { GoogleAIFileManager } from "@google/generative-ai/server";
 import { readFileSync } from "fs";
 import { logger } from "../../lib/Utility";
 import { join } from "path";
+import { readFile } from "fs/promises";
 
 let genai: GoogleGenerativeAI | null = null;
 let file_manager: GoogleAIFileManager | null = null;
@@ -38,7 +39,7 @@ export function getSystemInstructionText(filename: string): string {
 	if (systemInstructionCache[filename]) {
 		return systemInstructionCache[filename];
 	}
-	const file = readFileSync(join(__dirname,"systeem_instructions",filename), "utf-8");
+	const file = readFileSync(join(__dirname,"system_instructions",filename), "utf-8");
 	systemInstructionCache[filename] = file;
 	return file;
 }
