@@ -121,7 +121,7 @@ class SlashCommand extends Subcommand {
 
 		const chatSession = chat
 			? chat
-			: new Chat("gemini-1.5-flash-8b", prompt);
+			: new Chat("gemini-1.5-flash", prompt);
 		chat = chatSession;
 
 		const chatV = chat;
@@ -136,9 +136,8 @@ class SlashCommand extends Subcommand {
 			const mimeType =
 				response.headers.get("content-type") ||
 				"application/octet-stream";
-			let ext = "bin";
-			if (mimeType === "image/png") ext = "png";
-			if (mimeType === "image/jpeg") ext = "jpeg";
+			let ext = attachment.name.split('.').pop()?.toLowerCase() || 'bin';
+
 			parts.push({
 				inlineData: {
 					data: Buffer.from(raw).toString("base64"),
