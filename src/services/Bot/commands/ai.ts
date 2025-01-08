@@ -110,7 +110,7 @@ class SlashCommand extends Subcommand {
 
 		// check for question lenght, reject if over 256
 		if (
-			(interaction.options.get("question")!.value as string).length > 256
+			(interaction.options.get("question")!.value as string).length > 1024
 		) {
 			return await interaction.reply("> Question is too long.");
 		}
@@ -121,7 +121,7 @@ class SlashCommand extends Subcommand {
 
 		const chatSession = chat
 			? chat
-			: new Chat("gemini-1.5-flash", prompt);
+			: new Chat("gemini-1.5-flash-8b", prompt);
 		chat = chatSession;
 
 		const chatV = chat;
@@ -216,7 +216,7 @@ class SlashCommand extends Subcommand {
 				} catch {}
 				try {
 					return await interaction.followUp({
-						content: `I apologize, but my message was blocked by AutoMod, therefore I am unable to answer to your question.`,
+						content: `I apologize, but my message was blocked by AutoMod, therefore I am unable to answer your question.`,
 						embeds: [
 							{
 								description: "**Message blocked by AutoMod**`",

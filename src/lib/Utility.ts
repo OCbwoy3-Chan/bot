@@ -3,7 +3,7 @@ import { platform } from "os";
 import { performance } from "perf_hooks";
 import { Logger } from "pino";
 
-export const logger: Logger = require("pino")();
+export const logger: Logger = require("pino")({});
 
 export function measureCPULatency(): string {
 	const start = performance.now();

@@ -16,6 +16,11 @@ export class BanlandCacheHelper {
 	constructor(public readonly scope: BanlandScope) {}
 
 	protected cachedBanlandJSON = "{}";
+	protected bans: { [userid: string]: BanlandEntry } = {};
+
+	public getBans(): { [userid: string]: BanlandEntry } {
+		return this.bans
+	}
 
 	/**
 	 *  Invalidates the current cache and generates a new one.
@@ -33,6 +38,7 @@ export class BanlandCacheHelper {
 				Expiry: u.bannedUntil,
 			};
 		});
+		this.bans = b
 		this.cachedBanlandJSON = JSON.stringify(b);
 	}
 
