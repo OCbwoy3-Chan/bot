@@ -9,6 +9,10 @@ export function setPresence(p: any | null) {
 	presence = p;
 }
 
+export function getPresence(): Presence | null {
+	return presence;
+}
+
 let numBans: number = 0;
 
 export function setNumBans(p: number) {
