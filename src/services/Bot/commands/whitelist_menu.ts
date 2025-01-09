@@ -75,9 +75,15 @@ class SlashCommand extends Command {
 			.setCustomId(`112-remove-wl-${user.id}`)
 			.setStyle(ButtonStyle.Danger);
 
+		const aiWhitelistButton = new ButtonBuilder()
+			.setLabel("AI")
+			.setCustomId(`112-show-ai-wl-${user.id}`)
+			.setStyle(ButtonStyle.Secondary);
+
 		const row = new ActionRowBuilder().addComponents(
 			addWhitelistButton,
-			removeWhitelistButton
+			removeWhitelistButton,
+			aiWhitelistButton
 		);
 
 		await interaction.reply({

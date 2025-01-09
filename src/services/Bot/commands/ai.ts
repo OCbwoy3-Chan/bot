@@ -13,6 +13,7 @@ import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { Chat } from "../../GenAI/chat";
 import { response } from "express";
 import { Part } from "@google/generative-ai";
+import { IsAIWhitelisted } from "../../Database/db";
 
 let chat: Chat | null = null;
 
@@ -98,8 +99,7 @@ class SlashCommand extends Subcommand {
 	public async chatInputGenerateInfoman(
 		interaction: Subcommand.ChatInputCommandInteraction
 	) {
-		// check if user is bot owner
-		if (interaction.user.id !== process.env.OWNER_ID) {
+		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply(
 				general.errors.missingPermission("GENERATIVE_AI")
 			);

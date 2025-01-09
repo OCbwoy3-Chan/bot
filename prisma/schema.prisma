@@ -35,3 +35,7 @@ model RobloxUserAppeal {
 model Whitelist {
     id String @id @unique
 }
+
+model Whitelist_OCbwoy3ChanAI {
+    id String @id @unique
+}

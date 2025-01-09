@@ -7,6 +7,7 @@ import { Chat } from "../../GenAI/chat";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { Part } from "@google/generative-ai";
 import { RawFile } from "discord.js";
+import { IsAIWhitelisted } from "../../Database/db";
 
 export class OCbwoy3ChanAI extends Listener {
 	public constructor(
@@ -36,7 +37,7 @@ export class OCbwoy3ChanAI extends Listener {
 		client.on(Events.MessageCreate, async (m: Message) => {
 			if (m.author.id === client.user!.id) return;
 			if (!m.mentions.has(client.user!.id)) return;
-			if (m.author.id !== process.env.OWNER_ID) return;
+			if (!(await IsAIWhitelisted(m.author.id))) return;
 			// return await m.reply("> wip");
 
 			const chat = this.savedChatSession
