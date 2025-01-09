@@ -3,7 +3,7 @@ import {
 	AddToBanlandCacheManager,
 	BanlandCacheHelper,
 } from "../../lib/BanlandCacheHelper";
-import { router } from "./router/stats";
+import { router, setNumBans } from "./router/stats";
 
 export const app = express();
 
@@ -29,6 +29,7 @@ app.get("/", async (req: Request, res: Response) => {
 app.use(router);
 
 const AllBanlandCacheHelper = new BanlandCacheHelper("All");
+AllBanlandCacheHelper._updateBanCountFunc = setNumBans;
 
 AddToBanlandCacheManager(AllBanlandCacheHelper);
 
@@ -38,10 +39,4 @@ app.get("/banland.json", async (req: Request, res: Response) => {
 
 app.get("/.prikolshub/banland.json", async (req: Request, res: Response) => {
 	res.send(await AllBanlandCacheHelper.GetCachedBanland());
-});
-
-app.get("/stats.json", async (req: Request, res: Response) => {
-	res.json({
-		numBans: Object.keys(AllBanlandCacheHelper.getBans()).length
-	})
 });

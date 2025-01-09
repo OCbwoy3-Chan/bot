@@ -18,8 +18,10 @@ export class BanlandCacheHelper {
 	protected cachedBanlandJSON = "{}";
 	protected bans: { [userid: string]: BanlandEntry } = {};
 
+	public _updateBanCountFunc: (a: number) => void = (a: number) => {}
+
 	public getBans(): { [userid: string]: BanlandEntry } {
-		return this.bans
+		return this.bans;
 	}
 
 	/**
@@ -27,6 +29,7 @@ export class BanlandCacheHelper {
 	 */
 	public async RefreshBanlandCache(): Promise<void> {
 		const a = await GetAllBans();
+		this._updateBanCountFunc(a.length);
 		let b: { [userid: string]: BanlandEntry } = {};
 		a.forEach((u: RobloxUserBan) => {
 			if (this.scope !== "All") {
@@ -38,7 +41,6 @@ export class BanlandCacheHelper {
 				Expiry: u.bannedUntil,
 			};
 		});
-		this.bans = b
 		this.cachedBanlandJSON = JSON.stringify(b);
 	}
 

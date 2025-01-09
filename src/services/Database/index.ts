@@ -17,7 +17,7 @@ class DatabaseService {
 		setInterval(async () => {
 			// this.logger.info("Refreshing banland automatically");
 			await RefreshAllBanlands();
-		}, 10000);
+		}, 5000);
 	}
 }
 

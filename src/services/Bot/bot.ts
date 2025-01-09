@@ -1,5 +1,6 @@
 import {
 	ApplicationCommandRegistries,
+	container,
 	RegisterBehavior,
 	SapphireClient,
 } from "@sapphire/framework";
@@ -12,6 +13,7 @@ import {
 import { getDistroNameSync } from "../../lib/Utility";
 import { PinoLogger } from "@stegripe/pino-logger";
 import { setPresence } from "../Server/router/stats";
+import { OCbwoy3ChanAI } from "./listeners/OCbwoy3ChanAI";
 
 const logger = require("pino")();
 
@@ -48,6 +50,10 @@ export const client = new SapphireClient({
 		],
 	},
 });
+
+client.once("ready",()=>{
+	logger.info("Logged in")
+})
 
 setInterval(async () => {
 	if (!process.env.GUILD_ID) return;
