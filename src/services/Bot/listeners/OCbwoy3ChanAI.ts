@@ -6,6 +6,7 @@ import { general } from "../../../locale/commands";
 import { Chat } from "../../GenAI/chat";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { Part } from "@google/generative-ai";
+import { RawFile } from "discord.js";
 
 export class OCbwoy3ChanAI extends Listener {
 	public constructor(
@@ -43,10 +44,12 @@ export class OCbwoy3ChanAI extends Listener {
 				: new Chat("gemini-1.5-flash-8b", "chat.txt");
 			this.savedChatSession = chat;
 
+			if (!m.guild) return;
+
 			void m.react("💭").catch((a) => {});
 
 			const parts: Array<string | Part> = [];
-			const filesToSend: AttachmentBuilder[] = [];
+			const filesToSend: RawFile[] = [];
 
 			for (let idx in m.attachments) {
 				void m.react("💾").catch((a) => {});
@@ -70,7 +73,7 @@ export class OCbwoy3ChanAI extends Listener {
 			if (m.content.length !== 0) {
 				parts.push(m.content as string);
 			} else {
-				parts.push("[no comment]")
+				parts.push("[no comment]");
 			}
 
 			let response = "";
@@ -80,11 +83,12 @@ export class OCbwoy3ChanAI extends Listener {
 				[response, toolsUsed] = await chat.generateResponse(parts);
 				if (response.length === 0) throw "Got empty message";
 				if (response.trim().replace(/ +/g, " ").length > 2000) {
-					const a = new AttachmentBuilder(Buffer.from(response), {
-						name: `message.txt`,
-					});
 					response = "> Message too long, sending as file.";
-					filesToSend.push(a);
+					filesToSend.push({
+						contentType: "text/plain",
+						name: "message.txt",
+						data: response,
+					});
 				}
 			} catch (e_) {
 				err = e_;
@@ -93,11 +97,11 @@ export class OCbwoy3ChanAI extends Listener {
 
 			try {
 				if (err !== false) {
-					return await m.reply("> "+`${err}`)
-				};
+					return await m.reply("> " + `${err}`);
+				}
 
-				await m.reply({
-					content: response.trim().replace(/ +/g, " "),
+				return await m.reply({
+					content: response,
 					embeds: [
 						{
 							title: chat.chatModel,
@@ -106,10 +110,16 @@ export class OCbwoy3ChanAI extends Listener {
 								"\n-# " +
 								(toolsUsed.length === 0
 									? "No tools used"
-									: toolsUsed.map((a) => `\`${a}\``).join(", ")),
+									: toolsUsed
+											.map((a) => `\`${a}\``)
+											.join(", ")),
 						},
 					],
-					files: filesToSend,
+					files: filesToSend.map((a) => {
+						return new AttachmentBuilder(
+							Buffer.from(a.data as string)
+						);
+					}),
 				});
 			} catch {}
 		});
