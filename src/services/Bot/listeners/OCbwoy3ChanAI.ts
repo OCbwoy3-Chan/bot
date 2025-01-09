@@ -45,7 +45,7 @@ export class OCbwoy3ChanAI extends Listener {
 				: new Chat("learnlm-1.5-pro-experimental", "chat.txt");
 			savedChatSession = chat;
 
-			if (!m.guild) return;
+			// if (!m.guild) return;
 
 			void m.react("💭").catch((a) => {});
 
