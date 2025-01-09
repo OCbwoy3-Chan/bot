@@ -12,6 +12,7 @@ import { logger } from "../../../lib/Utility";
 import { readdirSync } from "fs";
 import crypto from "crypto";
 import { getGeminiInstance, getSystemInstructionText } from "../gemini";
+import { User } from "discord.js";
 
 const files = readdirSync(`${__dirname}/AllTools`);
 
@@ -27,15 +28,23 @@ export const tools = getTools();
 
 export const toolMetas = getToolMetas();
 
+export type AIContext = {
+	askingUser: User;
+	currentAiModel: string;
+};
+
 export class Chat {
 	chatSession: ChatSession | null = null;
 	callHistory: { [hash: string]: any } = {}; // Store previous calls
 
-	constructor(public chatModel: string = "gemini-1.5-flash-8b", public prompt: string = "default.txt") {
+	constructor(
+		public chatModel: string = "learnlm-1.5-pro-experimental",
+		public prompt: string = "default.txt"
+	) {
 		const gemini = getGeminiInstance();
 
 		const model = gemini.getGenerativeModel({
-			model: "gemini-1.5-flash-8b",
+			model: chatModel,
 			tools: [
 				{
 					functionDeclarations: toolMetas,
@@ -89,7 +98,8 @@ export class Chat {
 	}
 
 	public async generateResponse(
-		question: string | Array<string | Part>
+		question: string | Array<string | Part>,
+		ctx?: AIContext
 	): Promise<[string, string[]]> {
 		if (!this.chatSession) throw "No chat session present";
 
@@ -100,9 +110,23 @@ export class Chat {
 
 		let toolsUsed: string[] = [];
 
-		while (loopCount < 2) {
+		result = await this.chatSession.sendMessage([
+			{
+				text: "CurrentContext: "+JSON.stringify({
+					aiModel: this.chatSession.model,
+					askingUser: ctx?.askingUser ? {
+						name: ctx.askingUser.displayName,
+						username: ctx.askingUser.username,
+						id: ctx.askingUser.id,
+					} : null
+				})
+			},
+			...question
+		]);
+		while (loopCount < 4) {
+			logger.info(`AI (${loopCount} iter):`, result.response.text());
 			loopCount++;
-			result = await this.chatSession.sendMessage(question);
+
 			if (!result.response.functionCalls()) break;
 			if (result.response.functionCalls()?.length === 0) break;
 
@@ -141,7 +165,8 @@ export class Chat {
 						.info(`AI: Calling ${funcCall.name}`);
 					try {
 						res = await ((tools as any)[funcCall.name] as Function)(
-							funcCall.args as any
+							funcCall.args as any,
+							ctx
 						);
 						this.callHistory[callHash] = res; // Store the result
 					} catch (e_) {
@@ -167,6 +192,7 @@ export class Chat {
 
 			result = await this.chatSession.sendMessage(functionResults);
 		}
+		logger.info(`AI (${loopCount} last iter):`, result.response.text());
 
 		this.callHistory = {};
 		logger.info(

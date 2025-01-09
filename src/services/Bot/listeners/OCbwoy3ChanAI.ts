@@ -1,13 +1,13 @@
 import { container, Listener } from "@sapphire/framework";
-import { AttachmentBuilder, Events } from "discord.js";
+import { AttachmentBuilder, ChannelType, Events } from "discord.js";
 import { Message } from "discord.js";
-import { message } from "noblox.js";
-import { general } from "../../../locale/commands";
-import { Chat } from "../../GenAI/chat";
+import { AIContext, Chat } from "../../GenAI/chat";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { Part } from "@google/generative-ai";
 import { RawFile } from "discord.js";
 import { IsAIWhitelisted } from "../../Database/db";
+
+let savedChatSession: Chat | null = null;
 
 export class OCbwoy3ChanAI extends Listener {
 	public constructor(
@@ -20,8 +20,6 @@ export class OCbwoy3ChanAI extends Listener {
 			event: "ready",
 		});
 	}
-
-	protected savedChatSession: Chat | null = null;
 
 	public run() {
 		const { client, logger } = container;
@@ -40,10 +38,12 @@ export class OCbwoy3ChanAI extends Listener {
 			if (!(await IsAIWhitelisted(m.author.id))) return;
 			// return await m.reply("> wip");
 
-			const chat = this.savedChatSession
-				? this.savedChatSession
-				: new Chat("gemini-1.5-flash-8b", "chat.txt");
-			this.savedChatSession = chat;
+			// learnlm-1.5-pro-experimental
+
+			const chat = savedChatSession
+				? savedChatSession
+				: new Chat("learnlm-1.5-pro-experimental", "chat.txt");
+			savedChatSession = chat;
 
 			if (!m.guild) return;
 
@@ -52,11 +52,9 @@ export class OCbwoy3ChanAI extends Listener {
 			const parts: Array<string | Part> = [];
 			const filesToSend: RawFile[] = [];
 
-			for (let idx in m.attachments) {
+			for (const attachment of m.attachments.values()) {
 				void m.react("💾").catch((a) => {});
 				try {
-					const attachment = m.attachments.get(idx);
-					if (!attachment) return;
 					const response = await fetch(attachment.proxyURL);
 					const raw = await response.arrayBuffer();
 					const mimeType =
@@ -77,11 +75,23 @@ export class OCbwoy3ChanAI extends Listener {
 				parts.push("[no comment]");
 			}
 
+			if (m.channel.type === ChannelType.GuildText) {
+				void m.channel.sendTyping();
+			}
+
+			const params: AIContext = {
+				askingUser: m.author,
+				currentAiModel: chat.chatModel,
+			};
+
 			let response = "";
 			let toolsUsed: string[] = [];
 			let err: any = false;
 			try {
-				[response, toolsUsed] = await chat.generateResponse(parts);
+				[response, toolsUsed] = await chat.generateResponse(
+					parts,
+					params
+				);
 				if (response.length === 0) throw "Got empty message";
 				if (response.trim().replace(/ +/g, " ").length > 2000) {
 					response = "> Message too long, sending as file.";
@@ -93,7 +103,7 @@ export class OCbwoy3ChanAI extends Listener {
 				}
 			} catch (e_) {
 				err = e_;
-				this.savedChatSession = null;
+				savedChatSession = null;
 			}
 
 			try {
@@ -126,3 +136,10 @@ export class OCbwoy3ChanAI extends Listener {
 		});
 	}
 }
+/**
+* Clears OCbwoy3-Chan's chat
+*/
+export function clearOCbwoy3ChansHistory() {
+	savedChatSession = null;
+}
+
