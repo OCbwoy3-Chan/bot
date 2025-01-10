@@ -67,7 +67,7 @@ export class Chat {
 				{
 					category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
 					threshold: HarmBlockThreshold.BLOCK_NONE,
-				},
+				}
 			],
 			systemInstruction: getSystemInstructionText(prompt),
 		});
@@ -118,7 +118,11 @@ export class Chat {
 			...question
 		]);
 		while (loopCount < 4) {
-			logger.info(`AI (${loopCount} iter):`, result.response.text());
+			try {
+				logger.info(`AI (${loopCount} iter):`, result.response.text());
+			} catch {
+				throw `Response blocked by Google: ${JSON.stringify(result.response.promptFeedback)}`
+			}
 			loopCount++;
 
 			if (!result.response.functionCalls()) break;
@@ -186,7 +190,11 @@ export class Chat {
 
 			result = await this.chatSession.sendMessage(functionResults);
 		}
-		logger.info(`AI (${loopCount} last iter):`, result.response.text());
+		try {
+			logger.info(`AI (${loopCount} last iter):`, result.response.text());
+		} catch {
+			throw `Response blocked by Google: ${JSON.stringify(result.response.promptFeedback)}`
+		}
 
 		this.callHistory = {};
 		logger.info(
