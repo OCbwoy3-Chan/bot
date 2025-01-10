@@ -12,7 +12,7 @@ import { logger } from "../../../lib/Utility";
 import { readdirSync } from "fs";
 import crypto from "crypto";
 import { getGeminiInstance, getSystemInstructionText } from "../gemini";
-import { User } from "discord.js";
+import { Channel, User } from "discord.js";
 
 const files = readdirSync(`${__dirname}/AllTools`);
 
@@ -32,6 +32,7 @@ export type AIContext = {
 	askingUserId: string;
 	chatbotUserId: string
 	currentAiModel: string;
+	currentChannel: string;
 };
 
 export class Chat {

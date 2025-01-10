@@ -35,14 +35,15 @@ export class OCbwoy3ChanAI extends Listener {
 		client.on(Events.MessageCreate, async (m2: Message) => {
 			if (m2.author.id === client.user!.id) return;
 			if (!m2.mentions.has(client.user!.id)) return;
-			if (!(await IsAIWhitelisted(m2.author.id))) return;
+			if ((await IsAIWhitelisted(m2.author.id)) !== true) return;
 			// return await m.reply("> wip");
 
 			// learnlm-1.5-pro-experimental
+			// gemini-1.5-flash-8b
 
 			const chat = savedChatSession
 				? savedChatSession
-				: new Chat("learnlm-1.5-pro-experimental", "chat.txt");
+				: new Chat("gemini-1.5-flash-8b", "chat.txt");
 			savedChatSession = chat;
 
 			if (/https?:\/\//.test(m2.content)) {
@@ -50,7 +51,7 @@ export class OCbwoy3ChanAI extends Listener {
 				void m2.react("⏱️").catch((a) => {});
 
 				// give time for discord's stupid image proxy to do it's job
-				await new Promise((a) => setTimeout((b) => a(1), 2000));
+				await new Promise((a) => setTimeout((b) => a(1), 3000));
 			}
 
 			const m = await m2.fetch(true);
@@ -74,7 +75,26 @@ export class OCbwoy3ChanAI extends Listener {
 							mimeType: mimeType,
 						},
 					});
-				} catch {}
+				} catch (e_) {
+					logger.warn(
+						`AIImageHelper: Failed to dl attachment: ${e_}`
+					);
+				}
+			}
+
+			async function refetchPlz(
+				check: (mt: Message) => boolean
+			): Promise<Message> {
+				if (check(m) === false) return m;
+				let i = 0;
+				while (i < 10) {
+					i++;
+					console.log(`fetch iteration ${i} of 10`);
+					await new Promise((a) => setTimeout((b) => a(1), 250));
+					const z = await m2.fetch(true);
+					if (check(z) === true) return z;
+				}
+				throw "Check failed after 10 iterations 250ms";
 			}
 
 			for (const embed of m.embeds) {
@@ -83,7 +103,7 @@ export class OCbwoy3ChanAI extends Listener {
 						if (embed.data.thumbnail) {
 							void m.react("🖼️").catch(() => {});
 							const response = await fetch(
-								embed.data.thumbnail.url
+								embed.data.thumbnail.proxy_url!
 							);
 							const raw = await response.arrayBuffer();
 							const mimeType =
@@ -97,7 +117,7 @@ export class OCbwoy3ChanAI extends Listener {
 							});
 						} else if (embed.image?.url) {
 							void m.react("🖼️").catch(() => {});
-							const response = await fetch(embed.image.url);
+							const response = await fetch(embed.image.proxyURL!);
 							const raw = await response.arrayBuffer();
 							const mimeType =
 								response.headers.get("content-type") ||
@@ -109,7 +129,11 @@ export class OCbwoy3ChanAI extends Listener {
 								},
 							});
 						}
-					} catch {}
+					} catch (e_) {
+						logger.warn(
+							`AIImageHelper: Failed to dl proxied embed: ${e_}`
+						);
+					}
 				}
 			}
 
@@ -127,6 +151,7 @@ export class OCbwoy3ChanAI extends Listener {
 				askingUserId: m.author.id,
 				chatbotUserId: m.client.user!.id,
 				currentAiModel: chat.chatModel,
+				currentChannel: m.channel.id
 			};
 
 			let response = "";
@@ -158,6 +183,7 @@ export class OCbwoy3ChanAI extends Listener {
 
 				return await m.reply({
 					content: response,
+					/*
 					embeds: [
 						{
 							title: chat.chatModel,
@@ -171,6 +197,7 @@ export class OCbwoy3ChanAI extends Listener {
 											.join(", ")),
 						},
 					],
+					*/
 					files: filesToSend.map((a) => {
 						return new AttachmentBuilder(
 							Buffer.from(a.data as string)
