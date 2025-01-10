@@ -1,6 +1,7 @@
 import {
 	ApplicationCommandRegistries,
 	container,
+	Events,
 	RegisterBehavior,
 	SapphireClient,
 } from "@sapphire/framework";
@@ -9,6 +10,8 @@ import {
 	GatewayIntentBits,
 	ClientEvents,
 	User,
+	IntentsBitField,
+	Partials,
 } from "discord.js";
 import { getDistroNameSync } from "../../lib/Utility";
 import { PinoLogger } from "@stegripe/pino-logger";
@@ -25,9 +28,20 @@ ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(
 export const client = new SapphireClient({
 	intents: [
 		GatewayIntentBits.MessageContent,
-		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.GuildPresences
+		GatewayIntentBits.DirectMessages,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildPresences,
+		GatewayIntentBits.Guilds
+	],
+	partials: [
+		Partials.Channel,
+		Partials.GuildMember,
+		Partials.GuildScheduledEvent,
+		Partials.Message,
+		Partials.Reaction,
+		Partials.ThreadMember,
+		Partials.User
 	],
 	defaultPrefix: "!",
 	loadMessageCommandListeners: true,
@@ -42,6 +56,7 @@ export const client = new SapphireClient({
 		}),
 	},
 	presence: {
+		status: "idle",
 		activities: [
 			{
 				name: `${getDistroNameSync()} ${process.arch}`,
@@ -51,9 +66,13 @@ export const client = new SapphireClient({
 	},
 });
 
-client.once("ready",()=>{
-	logger.info("Logged in")
-})
+client.once("ready", () => {
+	logger.info("Logged in");
+});
+
+client.on(Events.MessageCreate, (a) => {
+	logger.info(`${a.author.displayName}: ${a.content}`);
+});
 
 setInterval(async () => {
 	if (!process.env.GUILD_ID) return;
@@ -62,12 +81,12 @@ setInterval(async () => {
 		if (!g) {
 			await client.guilds.fetch(process.env.GUILD_ID!);
 			return;
-		};
+		}
 		const m = g.members.resolve(process.env.OWNER_ID!);
 		if (!m) {
 			await g.members.fetch(process.env.OWNER_ID!);
 			return;
-		};
+		}
 		setPresence(m.presence?.toJSON() || null);
 	} catch {}
 }, 100);
