@@ -45,11 +45,13 @@ export class OCbwoy3ChanAI extends Listener {
 				: new Chat("learnlm-1.5-pro-experimental", "chat.txt");
 			savedChatSession = chat;
 
-			// if (!m.guild) return;
-			void m2.react("⏱️").catch((a) => {});
+			if (m2.content.includes("http")) {
+				// if (!m.guild) return;
+				void m2.react("⏱️").catch((a) => {});
 
-			// give time for discord's stupid proxy to do it's job
-			await new Promise((a) => setTimeout((b) => a(1), 1000));
+				// give time for discord's stupid image proxy to do it's job
+				await new Promise((a) => setTimeout((b) => a(1), 2000));
+			}
 
 			const m = await m2.fetch(true);
 
