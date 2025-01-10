@@ -29,7 +29,8 @@ export const tools = getTools();
 export const toolMetas = getToolMetas();
 
 export type AIContext = {
-	askingUser: User;
+	askingUserId: string;
+	chatbotUserId: string
 	currentAiModel: string;
 };
 
@@ -112,14 +113,7 @@ export class Chat {
 
 		result = await this.chatSession.sendMessage([
 			{
-				text: "CurrentContext: "+JSON.stringify({
-					aiModel: this.chatSession.model,
-					askingUser: ctx?.askingUser ? {
-						name: ctx.askingUser.displayName,
-						username: ctx.askingUser.username,
-						id: ctx.askingUser.id,
-					} : null
-				})
+				text: "CurrentContext: "+JSON.stringify(ctx)
 			},
 			...question
 		]);

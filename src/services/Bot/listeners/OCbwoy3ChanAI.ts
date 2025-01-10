@@ -80,7 +80,8 @@ export class OCbwoy3ChanAI extends Listener {
 			}
 
 			const params: AIContext = {
-				askingUser: m.author,
+				askingUserId: m.author.id,
+				chatbotUserId: m.client.user!.id,
 				currentAiModel: chat.chatModel,
 			};
 
