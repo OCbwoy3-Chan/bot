@@ -43,7 +43,7 @@ export class OCbwoy3ChanAI extends Listener {
 
 			const chat = savedChatSession
 				? savedChatSession
-				: new Chat("learnlm-1.5-pro-experimental", "chat.txt", {
+				: new Chat("gemini-1.5-flash", "chat.txt", {
 					temperature: 1.7
 				});
 			savedChatSession = chat;
