@@ -32,10 +32,10 @@ export class OCbwoy3ChanAI extends Listener {
 		}
 		logger.info("Started OCbwoy3-Chan AI");
 
-		client.on(Events.MessageCreate, async (m: Message) => {
-			if (m.author.id === client.user!.id) return;
-			if (!m.mentions.has(client.user!.id)) return;
-			if (!(await IsAIWhitelisted(m.author.id))) return;
+		client.on(Events.MessageCreate, async (m2: Message) => {
+			if (m2.author.id === client.user!.id) return;
+			if (!m2.mentions.has(client.user!.id)) return;
+			if (!(await IsAIWhitelisted(m2.author.id))) return;
 			// return await m.reply("> wip");
 
 			// learnlm-1.5-pro-experimental
@@ -46,6 +46,12 @@ export class OCbwoy3ChanAI extends Listener {
 			savedChatSession = chat;
 
 			// if (!m.guild) return;
+			void m2.react("⏱️").catch((a) => {});
+
+			// give time for discord's stupid proxy to do it's job
+			await new Promise((a) => setTimeout((b) => a(1), 1000));
+
+			const m = await m2.fetch(true);
 
 			void m.react("💭").catch((a) => {});
 
@@ -67,6 +73,42 @@ export class OCbwoy3ChanAI extends Listener {
 						},
 					});
 				} catch {}
+			}
+
+			for (const embed of m.embeds) {
+				if (embed.data) {
+					try {
+						if (embed.data.thumbnail) {
+							void m.react("🖼️").catch(() => {});
+							const response = await fetch(
+								embed.data.thumbnail.url
+							);
+							const raw = await response.arrayBuffer();
+							const mimeType =
+								response.headers.get("content-type") ||
+								"application/octet-stream";
+							parts.push({
+								inlineData: {
+									data: Buffer.from(raw).toString("base64"),
+									mimeType: mimeType,
+								},
+							});
+						} else if (embed.image?.url) {
+							void m.react("🖼️").catch(() => {});
+							const response = await fetch(embed.image.url);
+							const raw = await response.arrayBuffer();
+							const mimeType =
+								response.headers.get("content-type") ||
+								"application/octet-stream";
+							parts.push({
+								inlineData: {
+									data: Buffer.from(raw).toString("base64"),
+									mimeType: mimeType,
+								},
+							});
+						}
+					} catch {}
+				}
 			}
 
 			if (m.content.length !== 0) {
@@ -138,9 +180,8 @@ export class OCbwoy3ChanAI extends Listener {
 	}
 }
 /**
-* Clears OCbwoy3-Chan's chat
-*/
+ * Clears OCbwoy3-Chan's chat
+ */
 export function clearOCbwoy3ChansHistory() {
 	savedChatSession = null;
 }
-
