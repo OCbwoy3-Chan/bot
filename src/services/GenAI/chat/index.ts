@@ -35,13 +35,22 @@ export type AIContext = {
 	currentChannel: string;
 };
 
+export type GenerationConfig = {
+	/* 0-2 creativity in response */
+	temperature?: number,
+	/* idk */
+	topP?: 0.95,
+	topK?: 40,
+}
+
 export class Chat {
 	chatSession: ChatSession | null = null;
 	callHistory: { [hash: string]: any } = {}; // Store previous calls
 
 	constructor(
 		public chatModel: string = "learnlm-1.5-pro-experimental",
-		public prompt: string = "default.txt"
+		public prompt: string = "default.txt",
+		public cfg: GenerationConfig = {temperature: 1, topP: 0.95, topK: 40}
 	) {
 		const gemini = getGeminiInstance();
 
@@ -74,9 +83,9 @@ export class Chat {
 		});
 
 		const generationConfig = {
-			temperature: 1.5,
-			topP: 0.95,
-			topK: 40,
+			temperature: cfg.temperature || 1,
+			topP: cfg.topP || 0.95,
+			topK: cfg.topK || 40,
 			maxOutputTokens: 8192,
 			responseMimeType: "text/plain",
 		};
