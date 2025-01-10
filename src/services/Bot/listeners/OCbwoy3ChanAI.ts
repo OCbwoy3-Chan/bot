@@ -45,7 +45,7 @@ export class OCbwoy3ChanAI extends Listener {
 				: new Chat("learnlm-1.5-pro-experimental", "chat.txt");
 			savedChatSession = chat;
 
-			if (m2.content.includes("http")) {
+			if (/https?:\/\//.test(m2.content)) {
 				// if (!m.guild) return;
 				void m2.react("⏱️").catch((a) => {});
 
