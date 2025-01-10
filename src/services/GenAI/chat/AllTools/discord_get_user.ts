@@ -22,9 +22,13 @@ const meta: FunctionDeclaration = {
 
 async function func(args: any): Promise<any> {
 	const id = args.id as string;
-	const u = (await client.users.fetch(id)).toJSON();
+	const u = await client.users.fetch(id);
 	// console.log(u);
-	return u;
+	return {
+		name: u.displayName,
+		id: u.id,
+		userJson: u.toJSON()
+	};
 }
 
 registerTool(func, meta);
