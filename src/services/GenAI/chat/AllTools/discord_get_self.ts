@@ -6,7 +6,7 @@ import { client } from "../../../Bot/bot";
 
 const meta: FunctionDeclaration = {
 	name: "getDiscordSelf",
-	description: "Gets the AI chatbot's Discord User information.",
+	description: "Gets the AI chatbot's (NOT THE ASKING USER'S) Discord User information.",
 };
 
 async function func(args: any): Promise<any> {
