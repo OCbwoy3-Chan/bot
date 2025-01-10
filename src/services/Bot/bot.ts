@@ -70,10 +70,6 @@ client.once("ready", () => {
 	logger.info("Logged in");
 });
 
-client.on(Events.MessageCreate, (a) => {
-	logger.info(`${a.author.displayName}: ${a.content}`);
-});
-
 setInterval(async () => {
 	if (!process.env.GUILD_ID) return;
 	try {
