@@ -5,14 +5,20 @@ import { prisma } from "../../../Database/db";
 
 const meta: FunctionDeclaration = {
 	name: "getBanInfo",
-	description: "Checks is a Roblox user is banned from any GBan Provider. For 112, bannedUntil being -1 means that the user is is banned forever, otherwise it's the UNIX timestamp (in seconds), when the user is going to be unbanned. Make sure to tell the user, what GBan handler they're banned from.",
+	description:
+		"Checks is a Roblox user is banned from any GBan Provider. For 112, bannedUntil being -1 means that the user is is banned forever, otherwise it's the UNIX timestamp (in seconds), when the user is going to be unbanned. Make sure to tell the user, what GBan handler they're banned from.",
 	parameters: {
-		required: ["username"],
+		required: [],
 		type: SchemaType.OBJECT,
 		description: "getBanInfo parameters",
 		properties: {
 			username: {
-				description: "The Roblox user's Username",
+				description:
+					"The Roblox user's Username (NOT USERID, use resolveRobloxId to obtain the name)",
+				type: SchemaType.STRING,
+			},
+			userid: {
+				description: "The Roblox user's User ID",
 				type: SchemaType.STRING,
 			},
 		},
@@ -22,10 +28,19 @@ const meta: FunctionDeclaration = {
 async function getNovaReason(
 	endpoint: string,
 	userid: string
-): Promise<{ reason: string, attributionRequired: true } | { error: string } | null> {
+): Promise<
+	{ reason: string; attributionRequired: true } | { error: string } | null
+> {
 	try {
-		const bans = await (await fetch(endpoint)).json();
-		return bans[userid] ? { reason: bans[userid].reason, attributionRequired: true } : null;
+		const bans = await (await fetch(endpoint,{
+			headers: {
+				"SEC-CH-UA-PLATFORM": "Linux",
+				"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)"
+			}
+		})).json();
+		return bans[userid]
+			? { reason: bans[userid].reason, attributionRequired: true }
+			: null;
 	} catch (e_) {
 		return { error: `${e_} ` };
 	}
@@ -33,7 +48,12 @@ async function getNovaReason(
 
 async function func(args: any): Promise<any> {
 	const username = args.username as string;
-	const userid = await GetUserIdFromName(username);
+	const userid2 = args.userid as string;
+	let userid = userid2;
+
+	if (!userid2 && username) {
+		userid = (await GetUserIdFromName(username))?.toString() || "";
+	}
 	if (!userid) throw "Cannot resolve Name to UserId";
 
 	const details = await GetUserDetails(userid);
@@ -41,30 +61,34 @@ async function func(args: any): Promise<any> {
 	const b = await prisma.robloxUserBan.findFirst({
 		where: {
 			userId: {
-				equals: userid.toString()
-			}
-		}
-	})
+				equals: userid.toString(),
+			},
+		},
+	});
 
-	const banReasonS = b ? {
-		reason: b.reason,
-		bannedUntil: b.bannedUntil,
-		moderator: b.moderatorName,
-		moderatorDiscordId: b.moderatorId,
-		attributionRequired: true
-	} : null
+	const banReasonS = b
+		? {
+				reason: b.reason,
+				bannedUntil: b.bannedUntil,
+				moderator: b.moderatorName,
+				moderatorDiscordId: b.moderatorId,
+				attributionRequired: true,
+		  }
+		: null;
 
 	return {
 		["*comment"]: {
 			_000: "You just fetched information from Global Ban (GBan) handlers. You would state bans like `{USER} is banned from 112 for ...`",
-			_001: `Do not use the user's name given in the input, preferably use the correctly capitalized versions in userInfo, e.g. "${details.displayName}" instead of "${details.username.toLowerCase()}"!`,
-			_002: "You must use the user's Display Name indicating them being banned, optionally their username, PROPERLY CAPITALIZED, which can be found in userInfo! Always make sure to state their reason by default, unless explicitly told not to!"
+			_001: `Do not use the user's name given in the input, preferably use the correctly capitalized versions in userInfo, e.g. "${
+				details.displayName
+			}" instead of "${details.username.toLowerCase()}"!`,
+			_002: "You must use the user's Display Name indicating them being banned, optionally their username, PROPERLY CAPITALIZED, which can be found in userInfo! Always make sure to state their reason by default, unless explicitly told not to!",
 		},
 		userInfo: {
 			displayName: details.displayName,
 			userName: details.username,
 			userId: userid,
-			bannedFromRoblox: details.isBanned
+			bannedFromRoblox: details.isBanned,
 		},
 		gbans: {
 			["112"]: banReasonS,
@@ -75,8 +99,17 @@ async function func(args: any): Promise<any> {
 			Karma: await getNovaReason(
 				"https://karma.ocbwoy3.dev/bans",
 				userid.toString()
-			)
-		}
+			),
+
+			// TODO - Add TGP bans
+
+			/*
+			SleepCore: await getNovaReason(
+				"https://skidgod.vercel.app/SleepCore/bans.json",
+				userid.toString()
+			),
+			*/
+		},
 	};
 }
 
