@@ -43,7 +43,7 @@ export class OCbwoy3ChanAI extends Listener {
 
 			const chat = savedChatSession
 				? savedChatSession
-				: new Chat("gemini-1.5-flash-8b", "chat.txt");
+				: new Chat("learnlm-1.5-pro-experimental", "chat.txt");
 			savedChatSession = chat;
 
 			if (/https?:\/\//.test(m2.content)) {
