@@ -3,7 +3,7 @@ import {
 	InteractionHandlerTypes,
 } from "@sapphire/framework";
 import type { AutocompleteInteraction } from "discord.js";
-import { AllBanDurations } from "../../../lib/Constants";
+import { getCachedPromptsJ } from "../../GenAI/prompt/GeneratePrompt";
 
 export class AutocompleteHandler extends InteractionHandler {
 	public constructor(
@@ -29,16 +29,16 @@ export class AutocompleteHandler extends InteractionHandler {
 		const focusedOption = interaction.options.getFocused(true);
 
 		switch (focusedOption.name) {
-			case "duration": {
-				let sr: [string, number][] = [];
-				AllBanDurations.forEach((v: [string, number]) => {
+			case "prompt": {
+				let sr: [string, string][] = [];
+				getCachedPromptsJ().forEach((v) => {
 					if (
-						v[0]
+						`${v.name}\0${v.filename}`
 							.toUpperCase()
 							.trim()
 							.includes(focusedOption.value.toUpperCase().trim())
 					) {
-						sr.push(v);
+						sr.push([v.name,v.filename]);
 					}
 				});
 

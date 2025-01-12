@@ -6,7 +6,7 @@ import { prisma } from "../../../Database/db";
 const meta: FunctionDeclaration = {
 	name: "getBanInfo",
 	description:
-		"Checks is a Roblox user is banned from any GBan Provider. For 112, bannedUntil being -1 means that the user is is banned forever, otherwise it's the UNIX timestamp (in seconds), when the user is going to be unbanned. Make sure to tell the user, what GBan handler they're banned from.",
+		"CHCECKS IF A USER IS BANNED. For 112, bannedUntil being -1 means that the user is is banned forever, otherwise it'su the UNIX timestamp (in seconds), when the user is going to be unbanned. Make sure to tell the user, what GBan handler they're banned from.",
 	parameters: {
 		required: [],
 		type: SchemaType.OBJECT,
@@ -81,7 +81,7 @@ async function func(args: any): Promise<any> {
 			_000: "You just fetched information from Global Ban (GBan) handlers. You would state bans like `{USER} is banned from 112 for ...`",
 			_001: `Do not use the user's name given in the input, preferably use the correctly capitalized versions in userInfo, e.g. "${
 				details.displayName
-			}" instead of "${details.username.toLowerCase()}"!`,
+			}" instead of "${(details.username || "unknown").toLowerCase()}"!`,
 			_002: "You must use the user's Display Name indicating them being banned, optionally their username, PROPERLY CAPITALIZED, which can be found in userInfo! Always make sure to state their reason by default, unless explicitly told not to!",
 		},
 		userInfo: {

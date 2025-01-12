@@ -6,8 +6,17 @@ import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { Part } from "@google/generative-ai";
 import { RawFile } from "discord.js";
 import { IsAIWhitelisted } from "../../Database/db";
+import { getPrompt } from "../../GenAI/prompt/GeneratePrompt";
 
 let savedChatSession: Chat | null = null;
+
+let ChatPrompt = "ocbwoy3-chan";
+
+export function SetChatPrompt(p: string) {
+	if (!getPrompt(p)) throw "Prompt doesn't exist";
+	ChatPrompt = p;
+	savedChatSession = null;
+}
 
 export class OCbwoy3ChanAI extends Listener {
 	public constructor(
@@ -41,10 +50,12 @@ export class OCbwoy3ChanAI extends Listener {
 			// learnlm-1.5-pro-experimental
 			// gemini-1.5-flash-8b
 
+			logger.info(`OCbwoy3ChanAIDebug chatpromptname ${ChatPrompt}`)
+
 			const chat = savedChatSession
 				? savedChatSession
-				: new Chat("gemini-1.5-flash", "chat.txt", {
-					temperature: 1.7
+				: new Chat("gemini-1.5-flash-8b", ChatPrompt, {
+					temperature: 1.3
 				});
 			savedChatSession = chat;
 
@@ -153,7 +164,8 @@ export class OCbwoy3ChanAI extends Listener {
 				askingUserId: m.author.id,
 				chatbotUserId: m.client.user!.id,
 				currentAiModel: chat.chatModel,
-				currentChannel: m.channel.id
+				currentChannel: m.channel.id,
+				currentUserStatus: (m.member ? m.member.presence?.toJSON() : null)
 			};
 
 			let response = "";
@@ -166,12 +178,12 @@ export class OCbwoy3ChanAI extends Listener {
 				);
 				if (response.length === 0) throw "Got empty message";
 				if (response.trim().replace(/ +/g, " ").length > 2000) {
-					response = "> Message too long, sending as file.";
 					filesToSend.push({
 						contentType: "text/plain",
 						name: "message.txt",
 						data: response,
 					});
+					response = "> Message too long, sending as file.";
 				}
 			} catch (e_) {
 				err = e_;
@@ -202,7 +214,10 @@ export class OCbwoy3ChanAI extends Listener {
 					*/
 					files: filesToSend.map((a) => {
 						return new AttachmentBuilder(
-							Buffer.from(a.data as string)
+							Buffer.from(a.data as string),
+							{
+								name: a.name
+							}
 						);
 					}),
 				});

@@ -36,11 +36,6 @@ async function funcGetMusic(args: any): Promise<any> {
 	};
 }
 
-if (hostname() === "ocbwoy3-pc") {
-	registerTool(func, meta);
-}
-
-
 async function func(args: any, ctx: AIContext): Promise<any> {
 	const id = args.id as string;
 	const u = await client.users.fetch(id);

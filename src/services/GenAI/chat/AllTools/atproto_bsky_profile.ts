@@ -6,7 +6,7 @@ import { BskyAgent } from "@atproto/api";
 const meta: FunctionDeclaration = {
 	name: "getBskyProfile",
 	description:
-		"Gets a user's Bluesky Profile information, which includes name, description, along other stuff.",
+		"Turns a DID or a handle into a Bluesky profile with the DID, Handle, Name, Description and PDS",
 	parameters: {
 		required: ["didOrHandle"],
 		type: SchemaType.OBJECT,

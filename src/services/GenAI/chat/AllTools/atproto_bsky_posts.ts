@@ -6,7 +6,7 @@ import { BskyAgent } from "@atproto/api";
 const meta: FunctionDeclaration = {
 	name: "getBskyPosts",
 	description:
-		"Gets a list of the given user's recent posts on Bluesky. Can also be used to retrieve Bluesky profile information.",
+		"Turns a DID or a handle into Bluesky posts. Can also be used to retrieve Bluesky profile information.",
 	parameters: {
 		required: ["didOrHandle"],
 		type: SchemaType.OBJECT,

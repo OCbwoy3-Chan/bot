@@ -32,14 +32,3 @@ export function getFileManagerInstance(): GoogleGenerativeAI {
 export function areGenAIFeaturesEnabled(): boolean {
 	return genai ? true : false;
 }
-
-const systemInstructionCache: Record<string, string> = {};
-
-export function getSystemInstructionText(filename: string): string {
-	if (systemInstructionCache[filename]) {
-		return systemInstructionCache[filename];
-	}
-	const file = readFileSync(join(__dirname,"system_instructions",filename), "utf-8");
-	systemInstructionCache[filename] = file;
-	return file;
-}

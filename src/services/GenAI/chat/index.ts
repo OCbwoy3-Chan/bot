@@ -11,8 +11,9 @@ import { getToolMetas, getTools } from "./tools";
 import { logger } from "../../../lib/Utility";
 import { readdirSync } from "fs";
 import crypto from "crypto";
-import { getGeminiInstance, getSystemInstructionText } from "../gemini";
+import { getGeminiInstance } from "../gemini";
 import { Channel, User } from "discord.js";
+import { getPrompt } from "../prompt/GeneratePrompt";
 
 const files = readdirSync(`${__dirname}/AllTools`);
 
@@ -33,6 +34,7 @@ export type AIContext = {
 	chatbotUserId: string
 	currentAiModel: string;
 	currentChannel: string;
+	currentUserStatus: any;
 };
 
 export type GenerationConfig = {
@@ -49,7 +51,7 @@ export class Chat {
 
 	constructor(
 		public chatModel: string = "learnlm-1.5-pro-experimental",
-		public prompt: string = "default.txt",
+		public prompt: string = "ocbwoy3-chan",
 		public cfg: GenerationConfig = {temperature: 1, topP: 0.95, topK: 40}
 	) {
 		const gemini = getGeminiInstance();
@@ -79,7 +81,7 @@ export class Chat {
 					threshold: HarmBlockThreshold.BLOCK_NONE,
 				}
 			],
-			systemInstruction: getSystemInstructionText(prompt),
+			systemInstruction: getPrompt(prompt),
 		});
 
 		const generationConfig = {

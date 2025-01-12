@@ -1,10 +1,11 @@
 import { PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
+import { ActionRowBuilder, ApplicationIntegrationType, InteractionContextType, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from "discord.js";
 import { general } from "../../../locale/commands";
 import { IsAIWhitelisted } from "../../Database/db";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
-import { clearOCbwoy3ChansHistory } from "../listeners/OCbwoy3ChanAI";
+import { clearOCbwoy3ChansHistory, SetChatPrompt } from "../listeners/OCbwoy3ChanAI";
+import { getCachedPromptsJ } from "../../GenAI/prompt/GeneratePrompt";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -19,6 +20,10 @@ class SlashCommand extends Subcommand {
 				{
 					name: "reset",
 					chatInputRun: "chatInputClear",
+				},
+				{
+					name: "set_character",
+					chatInputRun: "chatInputSetPrompt",
 				},
 			],
 		});
@@ -43,6 +48,18 @@ class SlashCommand extends Subcommand {
 						.setName("reset")
 						.setDescription("Resets OCbwoy3-Chan's chat history")
 				)
+				.addSubcommand((builder) =>
+					builder
+						.setName("set_character")
+						.setDescription("Sets OCbwoy3-Chan's system prompt")
+						.addStringOption((option) =>
+							option
+								.setName("prompt")
+								.setDescription("The prompt")
+								.setRequired(false)
+								.setAutocomplete(true)
+						)
+				)
 		);
 	}
 
@@ -62,9 +79,54 @@ class SlashCommand extends Subcommand {
 		clearOCbwoy3ChansHistory();
 
 		return await interaction.reply({
-			content: "Success",
+			content: "Chat history cleared",
 			ephemeral: true,
 		});
+	}
+
+	public async chatInputSetPrompt(
+		interaction: Subcommand.ChatInputCommandInteraction
+	) {
+		if (!(await IsAIWhitelisted(interaction.user.id))) {
+			return await interaction.reply({
+				content: general.errors.missingPermission("GENERATIVE_AI"),
+				ephemeral: true,
+			});
+		}
+		if (!areGenAIFeaturesEnabled()) {
+			return await interaction.reply(general.errors.genai.aiDisabled());
+		}
+
+		if (interaction.options.getString("prompt")) {
+			clearOCbwoy3ChansHistory();
+			SetChatPrompt(interaction.options.getString("prompt",true))
+
+			return await interaction.reply({
+				content: "Updated prompt, chat history reset",
+				ephemeral: false,
+			});
+		}
+
+		const select = new StringSelectMenuBuilder()
+			.setCustomId('ocbwoy3chanai_select_char')
+			.setPlaceholder('Make a selection!')
+			.addOptions(
+				getCachedPromptsJ().map(a=>{
+					return new StringSelectMenuOptionBuilder()
+						.setLabel(a.name)
+						.setDescription(a.description)
+						.setValue(a.filename)
+				})
+			)
+
+		const row = new ActionRowBuilder()
+			.addComponents(select);
+
+		await interaction.reply({
+			content: 'Choose a character!',
+			components: [row as any],
+		});
+
 	}
 }
 
