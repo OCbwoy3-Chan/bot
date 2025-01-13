@@ -81,7 +81,7 @@ export class OCbwoy3ChanAI extends Listener {
 					const raw = await response.arrayBuffer();
 					const mimeType =
 						response.headers.get("content-type") ||
-						"application/octet-stream";
+						"text/plain";
 					parts.push({
 						inlineData: {
 							data: Buffer.from(raw).toString("base64"),
@@ -121,7 +121,7 @@ export class OCbwoy3ChanAI extends Listener {
 							const raw = await response.arrayBuffer();
 							const mimeType =
 								response.headers.get("content-type") ||
-								"application/octet-stream";
+								"text/plain";
 							parts.push({
 								inlineData: {
 									data: Buffer.from(raw).toString("base64"),
