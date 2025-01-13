@@ -2,56 +2,57 @@ import {
 	InteractionHandler,
 	InteractionHandlerTypes,
 } from "@sapphire/framework";
-import type { AutocompleteInteraction } from "discord.js";
-import { getCachedPromptsJ } from "../../GenAI/prompt/GeneratePrompt";
+import type { StringSelectMenuInteraction } from "discord.js";
+import { SetChatPrompt } from "../listeners/OCbwoy3ChanAI";
+import {
+	CharacterInfo,
+	getCachedPromptsJ,
+} from "../../GenAI/prompt/GeneratePrompt";
+import { IsAIWhitelisted } from "../../Database/db";
+import { general } from "../../../locale/commands";
+import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 
-export class AutocompleteHandler extends InteractionHandler {
+export class MenuHandler extends InteractionHandler {
 	public constructor(
 		ctx: InteractionHandler.LoaderContext,
 		options: InteractionHandler.Options
 	) {
 		super(ctx, {
 			...options,
-			interactionHandlerType: InteractionHandlerTypes.Autocomplete,
+			interactionHandlerType: InteractionHandlerTypes.SelectMenu,
 		});
 	}
 
-	public override async run(
-		interaction: AutocompleteInteraction,
-		result: InteractionHandler.ParseResult<this>
-	) {
-		return interaction.respond(result);
+	public override parse(interaction: StringSelectMenuInteraction) {
+		if (interaction.customId !== "ocbwoy3chanai_select_char")
+			return this.none();
+
+		return this.some();
 	}
 
-	public override async parse(interaction: AutocompleteInteraction) {
-		// if (interaction.commandId !== '1000802763292020737') return this.none();
-
-		const focusedOption = interaction.options.getFocused(true);
-
-		switch (focusedOption.name) {
-			case "prompt": {
-				let sr: [string, string][] = [];
-				getCachedPromptsJ().forEach((v) => {
-					if (
-						`${v.name}\0${v.filename}`
-							.toUpperCase()
-							.trim()
-							.includes(focusedOption.value.toUpperCase().trim())
-					) {
-						sr.push([v.name,v.filename]);
-					}
-				});
-
-				sr.splice(20, 420); // 20 maximum enforced by discord
-
-				const srm = sr.map((match) => ({
-					name: match[0],
-					value: match[1],
-				}));
-				return this.some(srm);
-			}
-			default:
-				return this.none();
+	public async run(interaction: StringSelectMenuInteraction) {
+		if (!(await IsAIWhitelisted(interaction.user.id))) {
+			return await interaction.reply({
+				content: general.errors.missingPermission("GENERATIVE_AI"),
+				ephemeral: true,
+			});
 		}
+		if (!areGenAIFeaturesEnabled()) {
+			return await interaction.reply(general.errors.genai.aiDisabled());
+		}
+
+		const prompt = getCachedPromptsJ().filter((a) => {
+			return a.filename === interaction.values[0];
+		}) as [CharacterInfo];
+
+		if (!prompt[0]) {
+			return await interaction.reply({
+				content: "Character not found",
+				ephemeral: true,
+			});
+		}
+
+		SetChatPrompt(interaction.values[0]);
+		await interaction.reply(`<@${interaction.user.id}> set character to **${prompt[0].name}**`);
 	}
 }

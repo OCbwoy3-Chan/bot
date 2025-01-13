@@ -32,3 +32,19 @@ export function getFileManagerInstance(): GoogleGenerativeAI {
 export function areGenAIFeaturesEnabled(): boolean {
 	return genai ? true : false;
 }
+
+export const AllModels: {[a: string]: {m: string, t: string}} = {
+
+	// GEMINI 1.5
+
+	"Gemini 1.5 Pro": {m: "gemini-1.5-pro", t: "2mil"},
+	"Gemini 1.5 Flash": {m: "gemini-1.5-flash", t: "1mil"},
+	"Gemini 1.5 Flash 8B": {m: "gemini-1.5-flash-8b", t: "1mil"},
+
+	// EXPERIMENTAL
+
+	"Gemini 2.0 Flash Experimental": {m: "gemini-2.0-flash-exp", t: "1.04mil"},
+	"Gemini Experimental 1206": {m: "gemini-exp-1206", t: "2.09mil"},
+	"LearnLM 1.5 Pro Experimental": {m: "learnlm-1.5-pro-experimental", t: "32k"},
+
+}

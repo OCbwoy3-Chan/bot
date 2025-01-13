@@ -11,10 +11,16 @@ import { getPrompt } from "../../GenAI/prompt/GeneratePrompt";
 let savedChatSession: Chat | null = null;
 
 let ChatPrompt = "ocbwoy3-chan";
+let AIModel = "gemini-1.5-flash-8b";
 
 export function SetChatPrompt(p: string) {
 	if (!getPrompt(p)) throw "Prompt doesn't exist";
 	ChatPrompt = p;
+	savedChatSession = null;
+}
+
+export function SetAIModel(p: string) {
+	AIModel = p;
 	savedChatSession = null;
 }
 
@@ -39,7 +45,7 @@ export class OCbwoy3ChanAI extends Listener {
 			);
 			return;
 		}
-		logger.info("Started OCbwoy3-Chan AI");
+		logger.info("Started OCbwoy3-Chan AI, OwO!");
 
 		client.on(Events.MessageCreate, async (m2: Message) => {
 			if (m2.author.id === client.user!.id) return;
@@ -50,13 +56,19 @@ export class OCbwoy3ChanAI extends Listener {
 			// learnlm-1.5-pro-experimental
 			// gemini-1.5-flash-8b
 
-			logger.info(`OCbwoy3ChanAIDebug chatpromptname ${ChatPrompt}`)
+			logger.info(
+				`OCbwoy3ChanAIDebug ${m2.author.id} ${AIModel} ${ChatPrompt}`
+			);
+
+			if (!savedChatSession) {
+				logger.info("OCbwoy3ChanAIDebug newchatsession :3 owo");
+			}
 
 			const chat = savedChatSession
 				? savedChatSession
-				: new Chat("gemini-1.5-flash-8b", ChatPrompt, {
-					temperature: 1.3
-				});
+				: new Chat(AIModel, ChatPrompt, {
+						temperature: 1.3,
+				  });
 			savedChatSession = chat;
 
 			if (/https?:\/\//.test(m2.content)) {
@@ -77,15 +89,23 @@ export class OCbwoy3ChanAI extends Listener {
 			for (const attachment of m.attachments.values()) {
 				void m.react("💾").catch((a) => {});
 				try {
-					const response = await fetch(attachment.proxyURL);
+					const response = await fetch(attachment.url); // discord api sux today
 					const raw = await response.arrayBuffer();
+					if (raw.byteLength === 0) {
+						logger.warn(
+							`AIImageHelper: Empty attachment data for ${attachment.proxyURL}`
+						);
+						continue; // Skip to the next attachment
+					}
 					const mimeType =
-						response.headers.get("content-type")?.replace("application/octet-stream","text/plain") ||
-						"text/plain";
+						response.headers.get("content-type") || "text/plain";
 					parts.push({
 						inlineData: {
 							data: Buffer.from(raw).toString("base64"),
-							mimeType: mimeType,
+							mimeType: mimeType.replace(
+								"application/octet-stream",
+								"text/plain"
+							),
 						},
 					});
 				} catch (e_) {
@@ -120,12 +140,15 @@ export class OCbwoy3ChanAI extends Listener {
 							);
 							const raw = await response.arrayBuffer();
 							const mimeType =
-								response.headers.get("content-type")?.replace("application/octet-stream","text/plain") ||
+								response.headers.get("content-type") ||
 								"text/plain";
 							parts.push({
 								inlineData: {
 									data: Buffer.from(raw).toString("base64"),
-									mimeType: mimeType,
+									mimeType: mimeType.replace(
+										"application/octet-stream",
+										"text/plain"
+									),
 								},
 							});
 						} else if (embed.image?.url) {
@@ -165,7 +188,9 @@ export class OCbwoy3ChanAI extends Listener {
 				chatbotUserId: m.client.user!.id,
 				currentAiModel: chat.chatModel,
 				currentChannel: m.channel.id,
-				currentUserStatus: (m.member ? m.member.presence?.toJSON() : null)
+				currentUserStatus: m.member
+					? m.member.presence?.toJSON()
+					: null,
 			};
 
 			let response = "";
@@ -216,7 +241,7 @@ export class OCbwoy3ChanAI extends Listener {
 						return new AttachmentBuilder(
 							Buffer.from(a.data as string),
 							{
-								name: a.name
+								name: a.name,
 							}
 						);
 					}),

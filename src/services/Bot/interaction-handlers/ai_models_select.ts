@@ -3,14 +3,14 @@ import {
 	InteractionHandlerTypes,
 } from "@sapphire/framework";
 import type { StringSelectMenuInteraction } from "discord.js";
-import { SetChatPrompt } from "../listeners/OCbwoy3ChanAI";
+import { SetAIModel, SetChatPrompt } from "../listeners/OCbwoy3ChanAI";
 import {
 	CharacterInfo,
 	getCachedPromptsJ,
 } from "../../GenAI/prompt/GeneratePrompt";
 import { IsAIWhitelisted } from "../../Database/db";
 import { general } from "../../../locale/commands";
-import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
+import { AllModels, areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 
 export class MenuHandler extends InteractionHandler {
 	public constructor(
@@ -24,16 +24,16 @@ export class MenuHandler extends InteractionHandler {
 	}
 
 	public override parse(interaction: StringSelectMenuInteraction) {
-		if (interaction.customId !== "ocbwoy3chanai_select_char")
+		if (interaction.customId !== "ocbwoy3chanai_select_model")
 			return this.none();
 
 		return this.some();
 	}
 
 	public async run(interaction: StringSelectMenuInteraction) {
-		if (!(await IsAIWhitelisted(interaction.user.id))) {
+		if (interaction.user.id !== process.env.OWNER_ID!) {
 			return await interaction.reply({
-				content: general.errors.missingPermission("GENERATIVE_AI"),
+				content: general.errors.missingPermission("GENERATIVE_AI_MANAGE_MODEL"),
 				ephemeral: true,
 			});
 		}
@@ -41,18 +41,16 @@ export class MenuHandler extends InteractionHandler {
 			return await interaction.reply(general.errors.genai.aiDisabled());
 		}
 
-		const prompt = getCachedPromptsJ().filter((a) => {
-			return a.filename === interaction.values[0];
-		}) as [CharacterInfo];
+		const model = Object.entries(AllModels).filter(a=>a[1].m === interaction.values[0]) as [[string, {m: string, t: string}]?]
 
-		if (!prompt[0]) {
+		if (!model[0]) {
 			return await interaction.reply({
-				content: "Character not found",
-				ephemeral: true,
-			});
+				content: "model not found",
+				ephemeral: true
+			})
 		}
 
-		SetChatPrompt(interaction.values[0]);
-		await interaction.reply(`<@${interaction.user.id}> set character to **${prompt[0].name}**`);
+		SetAIModel(interaction.values[0]);
+		await interaction.reply(`<@${interaction.user.id}> set model to **${model[0][0]}**`);
 	}
 }
