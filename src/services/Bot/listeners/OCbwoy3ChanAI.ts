@@ -80,7 +80,7 @@ export class OCbwoy3ChanAI extends Listener {
 					const response = await fetch(attachment.proxyURL);
 					const raw = await response.arrayBuffer();
 					const mimeType =
-						response.headers.get("content-type") ||
+						response.headers.get("content-type")?.replace("application/octet-stream","text/plain") ||
 						"text/plain";
 					parts.push({
 						inlineData: {
@@ -120,7 +120,7 @@ export class OCbwoy3ChanAI extends Listener {
 							);
 							const raw = await response.arrayBuffer();
 							const mimeType =
-								response.headers.get("content-type") ||
+								response.headers.get("content-type")?.replace("application/octet-stream","text/plain") ||
 								"text/plain";
 							parts.push({
 								inlineData: {
