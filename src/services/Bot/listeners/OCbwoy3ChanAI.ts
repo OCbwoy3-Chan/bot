@@ -1,11 +1,16 @@
+import { Part } from "@google/generative-ai";
 import { container, Listener } from "@sapphire/framework";
-import { AttachmentBuilder, ChannelType, Events } from "discord.js";
-import { Message } from "discord.js";
+import {
+	AttachmentBuilder,
+	ChannelType,
+	Events,
+	Message,
+	RawFile,
+} from "discord.js";
+import { getDistroNameSync } from "../../../lib/Utility";
+import { IsAIWhitelisted } from "../../Database/db";
 import { AIContext, Chat } from "../../GenAI/chat";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
-import { Part } from "@google/generative-ai";
-import { RawFile } from "discord.js";
-import { IsAIWhitelisted } from "../../Database/db";
 import { getPrompt } from "../../GenAI/prompt/GeneratePrompt";
 
 let savedChatSession: Chat | null = null;
@@ -23,6 +28,11 @@ export function SetAIModel(p: string) {
 	AIModel = p;
 	savedChatSession = null;
 }
+
+const staticAIContext = {
+	currentDistro: getDistroNameSync(),
+	currentWorkingDir: process.cwd(),
+};
 
 export class OCbwoy3ChanAI extends Listener {
 	public constructor(
@@ -188,9 +198,19 @@ export class OCbwoy3ChanAI extends Listener {
 				chatbotUserId: m.client.user!.id,
 				currentAiModel: chat.chatModel,
 				currentChannel: m.channel.id,
-				currentUserStatus: m.member
+				currentUserStatusOrWhatTheUserIsDoingListeningToEtc: m.member
 					? m.member.presence?.toJSON()
+					: "avaiable only in servers",
+				currentServer: m.guild
+					? {
+							name: m.guild.name,
+							id: m.guild.id,
+					  }
 					: null,
+				currentChannelM: {
+					name: m.channel.isDMBased() ? null : m.channel.name,
+				},
+				...staticAIContext,
 			};
 
 			let response = "";

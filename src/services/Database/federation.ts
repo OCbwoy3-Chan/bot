@@ -1,7 +1,7 @@
-import { FederatedInstance } from "./FederatedInstance";
-import { logger } from "../../lib/Utility";
 import fs from "fs";
 import path from "path";
+import { logger } from "../../lib/Utility";
+import { FederatedInstance } from "./FederatedInstance";
 
 const registeredInstances: FederatedInstance[] = [];
 
@@ -99,7 +99,7 @@ export async function loadAllInstances() {
 			);
 			try {
 				require(path.join(instancesPath, file));
-			} catch {};
+			} catch {}
 		}
 	});
 }

@@ -1,8 +1,8 @@
+import { HarmCategory } from "@google/generative-ai";
+import { RobloxUserBan } from "@prisma/client";
 import { PlayerInfo } from "noblox.js";
 import { getDistroName, measureCPULatency } from "../lib/Utility";
 import { GetBanData } from "../services/Database/db";
-import { RobloxUserBan } from "@prisma/client";
-import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 
 export const infoCommand = {
 	genContent: async (roundTrip: string, gatewayPing: string) => {
@@ -24,12 +24,17 @@ export const infoCommand = {
 
 export const gbanFederation = {
 	federationError: (instance: string) => `> Cannot federate to ${instance}`,
-	fetchBansError: (instance: string) => `> Failed to fetch bans from ${instance}`,
-	userWhitelisted: (plr: string, instance: string) => `> ${plr} is whitelisted on ${instance}`,
-	alreadyBanned: (plr: string, instance: string) => `> ${plr} is already banned on ${instance}`,
-	bannedByHost: (plr: string, instance: string) => `> ${plr} is banned by the host instance on ${instance}`,
-	bannedByRemote: (plr: string, instance: string) => `> ${plr} is banned by a remote instance ${instance}`
-}
+	fetchBansError: (instance: string) =>
+		`> Failed to fetch bans from ${instance}`,
+	userWhitelisted: (plr: string, instance: string) =>
+		`> ${plr} is whitelisted on ${instance}`,
+	alreadyBanned: (plr: string, instance: string) =>
+		`> ${plr} is already banned on ${instance}`,
+	bannedByHost: (plr: string, instance: string) =>
+		`> ${plr} is banned by the host instance on ${instance}`,
+	bannedByRemote: (plr: string, instance: string) =>
+		`> ${plr} is banned by a remote instance ${instance}`,
+};
 
 export const general = {
 	errors: {
@@ -41,11 +46,16 @@ export const general = {
 		genai: {
 			unsafeRequest: (category: HarmCategory): string => {
 				let a = category.toString();
-				if (category === HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT) a = "Dangerous Content";
-				if (category === HarmCategory.HARM_CATEGORY_HARASSMENT) a = "Harassment";
-				if (category === HarmCategory.HARM_CATEGORY_HATE_SPEECH) a = "Hate Speech";
-				if (category === HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT) a = "Explicit Conent";
-				if (category === HarmCategory.HARM_CATEGORY_UNSPECIFIED) a = "an unspecified reason";
+				if (category === HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT)
+					a = "Dangerous Content";
+				if (category === HarmCategory.HARM_CATEGORY_HARASSMENT)
+					a = "Harassment";
+				if (category === HarmCategory.HARM_CATEGORY_HATE_SPEECH)
+					a = "Hate Speech";
+				if (category === HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT)
+					a = "Explicit Conent";
+				if (category === HarmCategory.HARM_CATEGORY_UNSPECIFIED)
+					a = "an unspecified reason";
 				return `> [Google GenerativeAI] Message flagged for ${a}.`;
 			},
 			aiDisabled: (): string => "> Generative AI Features are disabled.",

@@ -1,7 +1,7 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { registerTool } from "../tools";
 import { GetUserDetails, GetUserIdFromName } from "../../../../lib/roblox";
 import { prisma } from "../../../Database/db";
+import { registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "getBanInfo",
@@ -32,12 +32,15 @@ async function getNovaReason(
 	{ reason: string; attributionRequired: true } | { error: string } | null
 > {
 	try {
-		const bans = await (await fetch(endpoint,{
-			headers: {
-				"SEC-CH-UA-PLATFORM": "Linux",
-				"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)"
-			}
-		})).json();
+		const bans = await (
+			await fetch(endpoint, {
+				headers: {
+					"SEC-CH-UA-PLATFORM": "Linux",
+					"User-Agent":
+						"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)",
+				},
+			})
+		).json();
 		return bans[userid]
 			? { reason: bans[userid].reason, attributionRequired: true }
 			: null;

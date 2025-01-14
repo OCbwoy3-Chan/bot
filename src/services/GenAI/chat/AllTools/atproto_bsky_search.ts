@@ -1,7 +1,6 @@
+import { BskyAgent } from "@atproto/api";
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { registerTool } from "../tools";
-import { HandleResolver } from "@atproto/identity";
-import { BskyAgent } from "@atproto/api";
 
 const meta: FunctionDeclaration = {
 	name: "searchBskyPosts",
@@ -28,13 +27,13 @@ async function func(args: any): Promise<any> {
 	let query = args.query as string;
 
 	const { data } = await agent.app.bsky.feed.searchPosts({
-		q: query
-	})
+		q: query,
+	});
 
 	return {
 		hits: data.hitsTotal,
-		posts: data.posts
-	}
+		posts: data.posts,
+	};
 }
 
 registerTool(func, meta);

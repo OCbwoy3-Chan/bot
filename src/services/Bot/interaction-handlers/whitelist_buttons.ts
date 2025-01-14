@@ -3,14 +3,11 @@ import {
 	InteractionHandlerTypes,
 } from "@sapphire/framework";
 import {
-	type StringSelectMenuInteraction,
 	type ButtonInteraction,
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
+	type StringSelectMenuInteraction,
 } from "discord.js";
-import { AddWhitelist, RemoveWhitelist } from "../../Database/db";
 import { general } from "../../../locale/commands";
+import { AddWhitelist, RemoveWhitelist } from "../../Database/db";
 
 export class MessageComponentHandler extends InteractionHandler {
 	public constructor(

@@ -8,7 +8,9 @@ class BotService {
 	public async _StartService(): Promise<void> {
 		this.logger.info("Starting Discord Bot");
 		if (!process.env.DISCORD_TOKEN || !process.env.OWNER_ID) {
-			this.logger.fatal("You did not provide a Token or a Bot Owner ID in your .env!");
+			this.logger.fatal(
+				"You did not provide a Token or a Bot Owner ID in your .env!"
+			);
 			process.exit(1);
 		}
 		client.login(process.env.DISCORD_TOKEN).catch((e_) => {

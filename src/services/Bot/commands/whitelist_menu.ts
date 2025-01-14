@@ -1,5 +1,4 @@
 import { Command, ContextMenuCommand } from "@sapphire/framework";
-import { infoCommand } from "../../../locale/commands";
 import {
 	ActionRowBuilder,
 	APIEmbed,

@@ -1,7 +1,6 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { registerTool } from "../tools";
 import { GetUserDetails, GetUserIdFromName } from "../../../../lib/roblox";
-import { prisma } from "../../../Database/db";
+import { registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "resolveRobloxName",

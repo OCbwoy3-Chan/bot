@@ -1,7 +1,6 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
+import { GetUserDetails } from "../../../../lib/roblox";
 import { registerTool } from "../tools";
-import { GetUserDetails, GetUserIdFromName } from "../../../../lib/roblox";
-import { prisma } from "../../../Database/db";
 
 const meta: FunctionDeclaration = {
 	name: "resolveRobloxId",
@@ -25,11 +24,10 @@ async function func(args: any): Promise<any> {
 	const userinfo = await GetUserDetails(userid);
 	if (!userinfo) throw "Cannot resolve UserId";
 
-
 	return {
 		userid: userid,
-		...userinfo
-	}
+		...userinfo,
+	};
 }
 
 registerTool(func, meta);

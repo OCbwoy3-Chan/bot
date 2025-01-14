@@ -1,6 +1,6 @@
 import { Logger } from "pino";
-import { app } from "./routes";
 import { ServerPort } from "../../lib/Constants";
+import { app } from "./routes";
 
 class ServerService {
 	constructor(private readonly logger: Logger) {}

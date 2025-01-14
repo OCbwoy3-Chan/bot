@@ -1,11 +1,20 @@
 import { PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { ActionRowBuilder, ApplicationIntegrationType, InteractionContextType, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from "discord.js";
+import {
+	ActionRowBuilder,
+	ApplicationIntegrationType,
+	InteractionContextType,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
+} from "discord.js";
 import { general } from "../../../locale/commands";
 import { IsAIWhitelisted } from "../../Database/db";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
-import { clearOCbwoy3ChansHistory, SetChatPrompt } from "../listeners/OCbwoy3ChanAI";
 import { getCachedPromptsJ } from "../../GenAI/prompt/GeneratePrompt";
+import {
+	clearOCbwoy3ChansHistory,
+	SetChatPrompt,
+} from "../listeners/OCbwoy3ChanAI";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -99,7 +108,7 @@ class SlashCommand extends Subcommand {
 
 		if (interaction.options.getString("prompt")) {
 			clearOCbwoy3ChansHistory();
-			SetChatPrompt(interaction.options.getString("prompt",true))
+			SetChatPrompt(interaction.options.getString("prompt", true));
 
 			return await interaction.reply({
 				content: "Updated prompt, chat history reset",
@@ -108,25 +117,23 @@ class SlashCommand extends Subcommand {
 		}
 
 		const select = new StringSelectMenuBuilder()
-			.setCustomId('ocbwoy3chanai_select_char')
-			.setPlaceholder('Make a selection!')
+			.setCustomId("ocbwoy3chanai_select_char")
+			.setPlaceholder("Make a selection!")
 			.addOptions(
-				getCachedPromptsJ().map(a=>{
+				getCachedPromptsJ().map((a) => {
 					return new StringSelectMenuOptionBuilder()
 						.setLabel(a.name)
 						.setDescription(a.description)
-						.setValue(a.filename)
+						.setValue(a.filename);
 				})
-			)
+			);
 
-		const row = new ActionRowBuilder()
-			.addComponents(select);
+		const row = new ActionRowBuilder().addComponents(select);
 
 		await interaction.reply({
-			content: 'Choose a character!',
+			content: "Choose a character!",
 			components: [row as any],
 		});
-
 	}
 }
 

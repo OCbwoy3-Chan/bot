@@ -1,8 +1,6 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { registerTool } from "../tools";
-import { hostname } from "os";
-import { getPresence } from "../../../Server/router/stats";
 import { client } from "../../../Bot/bot";
+import { registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "getDiscordUser",
@@ -27,9 +25,8 @@ async function func(args: any): Promise<any> {
 	return {
 		name: u.displayName,
 		id: u.id,
-		userJson: u.toJSON()
+		userJson: u.toJSON(),
 	};
 }
 
 registerTool(func, meta);
-

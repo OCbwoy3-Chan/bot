@@ -44,7 +44,7 @@ async function func(args: any): Promise<any> {
 				};
 			}
 		);
-		results.push(...results2)
+		results.push(...results2);
 	}
 	return {
 		currentUnixMillis: Date.now(),

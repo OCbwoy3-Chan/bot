@@ -2,18 +2,16 @@ import {
 	ChatSession,
 	FunctionCall,
 	GenerateContentResult,
-	GenerativeModel,
 	HarmBlockThreshold,
 	HarmCategory,
-	Part,
+	Part
 } from "@google/generative-ai";
-import { getToolMetas, getTools } from "./tools";
-import { logger } from "../../../lib/Utility";
-import { readdirSync } from "fs";
 import crypto from "crypto";
+import { readdirSync } from "fs";
+import { logger } from "../../../lib/Utility";
 import { getGeminiInstance } from "../gemini";
-import { Channel, User } from "discord.js";
 import { getPrompt } from "../prompt/GeneratePrompt";
+import { getToolMetas, getTools } from "./tools";
 
 const files = readdirSync(`${__dirname}/AllTools`);
 
@@ -31,19 +29,22 @@ export const toolMetas = getToolMetas();
 
 export type AIContext = {
 	askingUserId: string;
-	chatbotUserId: string
+	chatbotUserId: string;
 	currentAiModel: string;
 	currentChannel: string;
-	currentUserStatus: any;
+	currentUserStatusOrWhatTheUserIsDoingListeningToEtc: any;
+	currentServer: any;
+	currentChannelM: any;
+	[a: string]: any;
 };
 
 export type GenerationConfig = {
 	/* 0-2 creativity in response */
-	temperature?: number,
+	temperature?: number;
 	/* idk */
-	topP?: 0.95,
-	topK?: 40,
-}
+	topP?: 0.95;
+	topK?: 40;
+};
 
 export class Chat {
 	chatSession: ChatSession | null = null;
@@ -52,7 +53,7 @@ export class Chat {
 	constructor(
 		public chatModel: string = "learnlm-1.5-pro-experimental",
 		public prompt: string = "ocbwoy3-chan",
-		public cfg: GenerationConfig = {temperature: 1, topP: 0.95, topK: 40}
+		public cfg: GenerationConfig = { temperature: 1, topP: 0.95, topK: 40 }
 	) {
 		const gemini = getGeminiInstance();
 
@@ -79,7 +80,7 @@ export class Chat {
 				{
 					category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
 					threshold: HarmBlockThreshold.BLOCK_NONE,
-				}
+				},
 			],
 			systemInstruction: getPrompt(prompt),
 		});
@@ -123,17 +124,21 @@ export class Chat {
 
 		let toolsUsed: string[] = [];
 
+		// console.log(JSON.stringify(ctx));
+
 		result = await this.chatSession.sendMessage([
 			{
-				text: "CurrentContext: "+JSON.stringify(ctx)
+				text: "CurrentContext: " + JSON.stringify(ctx),
 			},
-			...question
+			...question,
 		]);
 		while (loopCount < 4) {
 			try {
 				logger.info(`AI (${loopCount} iter):`, result.response.text());
 			} catch {
-				throw `Response blocked by Google: ${JSON.stringify(result.response.promptFeedback)}`
+				throw `Response blocked, plz blame google: ${JSON.stringify(
+					result.response.promptFeedback
+				)}`;
 			}
 			loopCount++;
 
@@ -205,7 +210,9 @@ export class Chat {
 		try {
 			logger.info(`AI (${loopCount} last iter):`, result.response.text());
 		} catch {
-			throw `Response blocked by Google: ${JSON.stringify(result.response.promptFeedback)}`
+			throw `Response blocked by Google: ${JSON.stringify(
+				result.response.promptFeedback
+			)}`;
 		}
 
 		this.callHistory = {};

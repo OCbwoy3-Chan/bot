@@ -3,14 +3,14 @@ import {
 	InteractionHandlerTypes,
 } from "@sapphire/framework";
 import type { StringSelectMenuInteraction } from "discord.js";
-import { SetChatPrompt } from "../listeners/OCbwoy3ChanAI";
+import { general } from "../../../locale/commands";
+import { IsAIWhitelisted } from "../../Database/db";
+import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import {
 	CharacterInfo,
 	getCachedPromptsJ,
 } from "../../GenAI/prompt/GeneratePrompt";
-import { IsAIWhitelisted } from "../../Database/db";
-import { general } from "../../../locale/commands";
-import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
+import { SetChatPrompt } from "../listeners/OCbwoy3ChanAI";
 
 export class MenuHandler extends InteractionHandler {
 	public constructor(
@@ -53,6 +53,8 @@ export class MenuHandler extends InteractionHandler {
 		}
 
 		SetChatPrompt(interaction.values[0]);
-		await interaction.reply(`<@${interaction.user.id}> set character to **${prompt[0].name}**`);
+		await interaction.reply(
+			`<@${interaction.user.id}> set character to **${prompt[0].name}**`
+		);
 	}
 }

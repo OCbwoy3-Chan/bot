@@ -26,4 +26,3 @@ export const ServerPort: number = 8080;
 export const UserIdResolveCacheWipeInterval: number = 300_000;
 export const BanlandCheckInterval: number = 60_000;
 export const IPLogsChannel: string = process.env.IPLogsChannel as string;
-

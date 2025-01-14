@@ -1,22 +1,12 @@
 import {
 	ApplicationCommandRegistries,
-	container,
-	Events,
 	RegisterBehavior,
 	SapphireClient,
 } from "@sapphire/framework";
-import {
-	ActivityType,
-	GatewayIntentBits,
-	ClientEvents,
-	User,
-	IntentsBitField,
-	Partials,
-} from "discord.js";
-import { getDistroNameSync } from "../../lib/Utility";
 import { PinoLogger } from "@stegripe/pino-logger";
+import { ActivityType, GatewayIntentBits, Partials } from "discord.js";
+import { getDistroNameSync } from "../../lib/Utility";
 import { setPresence } from "../Server/router/stats";
-import { OCbwoy3ChanAI } from "./listeners/OCbwoy3ChanAI";
 
 const logger = require("pino")();
 
@@ -32,7 +22,7 @@ export const client = new SapphireClient({
 		GatewayIntentBits.DirectMessages,
 		GatewayIntentBits.GuildMembers,
 		GatewayIntentBits.GuildPresences,
-		GatewayIntentBits.Guilds
+		GatewayIntentBits.Guilds,
 	],
 	partials: [
 		Partials.Channel,
@@ -41,7 +31,7 @@ export const client = new SapphireClient({
 		Partials.Message,
 		Partials.Reaction,
 		Partials.ThreadMember,
-		Partials.User
+		Partials.User,
 	],
 	defaultPrefix: "!",
 	loadMessageCommandListeners: true,

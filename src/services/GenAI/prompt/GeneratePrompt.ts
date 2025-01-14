@@ -15,7 +15,13 @@ export function generateSystemPrompt(characterInfo: CharacterInfo): string {
 	Description: ${characterInfo.description}
     ${characterInfo.definition ? `\n${characterInfo.definition}` : ""}
 
-	${characterInfo.personalityTraits ? `Personality Traits:\n${characterInfo.personalityTraits.map(trait => `   - ${trait}`).join("\n")}` : ""}
+	${
+		characterInfo.personalityTraits
+			? `Personality Traits:\n${characterInfo.personalityTraits
+					.map((trait) => `   - ${trait}`)
+					.join("\n")}`
+			: ""
+	}
 
 	Core Behaviors:
 
@@ -63,15 +69,18 @@ export function generateSystemPrompt(characterInfo: CharacterInfo): string {
 	   - No emojis or suggestive content.
 	   - Rephrase information instead of directly copying from sources.
 
+	7. Remember:
+	   - If you don't know something, search it up with the given tools!
+
 	REMEMBER TO USE TOOLS IN GENERATING YOUR RESPONSES
 	`.replace(/^\t/, "");
 }
 
 const promptCache: Record<string, string> = {};
-const promptChList: CharacterInfo[] = []
+const promptChList: CharacterInfo[] = [];
 
 export function getCachedPromptsJ(): CharacterInfo[] {
-	return promptChList
+	return promptChList;
 }
 
 export function loadPromptsFromDirectory(directory: string): void {
@@ -81,10 +90,10 @@ export function loadPromptsFromDirectory(directory: string): void {
 			const filePath = join(directory, file);
 			const content = readFileSync(filePath, "utf-8");
 			let characterInfo: CharacterInfo = JSON.parse(content);
-			characterInfo.filename = file.replace(/\.json$/,"");
+			characterInfo.filename = file.replace(/\.json$/, "");
 			const prompt = generateSystemPrompt(characterInfo);
-			promptCache[file.replace(/\.json$/,"")] = prompt;
-			promptChList.push(characterInfo)
+			promptCache[file.replace(/\.json$/, "")] = prompt;
+			promptChList.push(characterInfo);
 		}
 	});
 }

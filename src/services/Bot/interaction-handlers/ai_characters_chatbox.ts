@@ -38,7 +38,7 @@ export class AutocompleteHandler extends InteractionHandler {
 							.trim()
 							.includes(focusedOption.value.toUpperCase().trim())
 					) {
-						sr.push([v.name,v.filename]);
+						sr.push([v.name, v.filename]);
 					}
 				});
 

@@ -1,5 +1,4 @@
-import { FunctionDeclaration, SchemaType, Tool } from "@google/generative-ai";
-import { RegularResults, search, translate } from "@navetacandra/ddg";
+import { FunctionDeclaration } from "@google/generative-ai";
 import { logger } from "../../../lib/Utility";
 
 const tools: { [a: string]: Function } = {};

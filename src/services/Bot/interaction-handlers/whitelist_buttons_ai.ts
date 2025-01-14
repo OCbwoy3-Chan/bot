@@ -3,14 +3,11 @@ import {
 	InteractionHandlerTypes,
 } from "@sapphire/framework";
 import {
-	type StringSelectMenuInteraction,
 	type ButtonInteraction,
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
+	type StringSelectMenuInteraction,
 } from "discord.js";
-import { AddAIWhitelist, AddWhitelist, RemoveAIWhitelist, RemoveWhitelist } from "../../Database/db";
 import { general } from "../../../locale/commands";
+import { AddAIWhitelist, RemoveAIWhitelist } from "../../Database/db";
 
 export class MessageComponentHandler extends InteractionHandler {
 	public constructor(
@@ -72,7 +69,10 @@ export class MessageComponentHandler extends InteractionHandler {
 				});
 			}
 
-			const userid = interaction.customId.replace("112-remove-ai-wl-", "");
+			const userid = interaction.customId.replace(
+				"112-remove-ai-wl-",
+				""
+			);
 
 			try {
 				await RemoveAIWhitelist(userid);

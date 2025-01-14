@@ -7,8 +7,12 @@ class GenAIService {
 	/* Starts the service */
 	public async _StartService(): Promise<void> {
 		if (!process.env.GEMINI_API_KEY) {
-			this.logger.error("GEMINI_API_KEY is not set in process.env, AI features will be disabled.");
-			this.logger.error("Get your API Key at https://aistudio.google.com/apikey");
+			this.logger.error(
+				"GEMINI_API_KEY is not set in process.env, AI features will be disabled."
+			);
+			this.logger.error(
+				"Get your API Key at https://aistudio.google.com/apikey"
+			);
 			return;
 		}
 		this.logger.info("Starting GenAI Service");

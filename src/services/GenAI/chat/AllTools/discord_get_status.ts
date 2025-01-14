@@ -1,10 +1,10 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { registerTool } from "../tools";
-import { client } from "../../../Bot/bot";
-import { AIContext } from "..";
-import { Channel } from "discord.js";
 import { $ } from "bun";
+import { Channel } from "discord.js";
 import { hostname } from "os";
+import { AIContext } from "..";
+import { client } from "../../../Bot/bot";
+import { registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "getStatus",
@@ -41,18 +41,23 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 	const u = await client.users.fetch(id);
 	// console.log(u);
 
-	let status: Object | null = "failed to fetch"
+	let status: Object | null = "failed to fetch";
 
 	try {
-		const ch: Channel | null = await client.channels.fetch(ctx.currentChannel)
+		const ch: Channel | null = await client.channels.fetch(
+			ctx.currentChannel
+		);
 		if (ch && !ch.isDMBased()) {
-			const g = await ch.guild.members.fetch(id)
+			const g = await ch.guild.members.fetch(id);
 			status = g.presence?.toJSON() || null;
 		}
 	} catch {}
 
-	let x = (hostname() === "ocbwoy3-pc" && id === `${process.env.OWNER_ID!}`) ? await funcGetMusic({}) : null
-	let y: any = {}
+	let x =
+		hostname() === "ocbwoy3-pc" && id === `${process.env.OWNER_ID!}`
+			? await funcGetMusic({})
+			: null;
+	let y: any = {};
 	if (x) {
 		y.music = x;
 	}

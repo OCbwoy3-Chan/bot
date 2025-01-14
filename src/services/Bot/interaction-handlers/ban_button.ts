@@ -3,15 +3,15 @@ import {
 	InteractionHandlerTypes,
 } from "@sapphire/framework";
 import {
-	type StringSelectMenuInteraction,
 	type ButtonInteraction,
+	type StringSelectMenuInteraction,
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
 } from "discord.js";
-import { IsWhitelisted, UnbanUser } from "../../Database/db";
 import { GetUserDetails } from "../../../lib/roblox";
 import { general } from "../../../locale/commands";
+import { IsWhitelisted, UnbanUser } from "../../Database/db";
 
 export class MessageComponentHandler extends InteractionHandler {
 	public constructor(

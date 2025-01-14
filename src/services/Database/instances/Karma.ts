@@ -16,8 +16,8 @@ class Karma extends FederatedInstance {
 				Key: process.env.KARMA_KEY!,
 			}),
 			headers: {
-				"Content-Type": "application/json"
-			}
+				"Content-Type": "application/json",
+			},
 		});
 		res.text().then(console.log);
 	}
@@ -30,8 +30,8 @@ class Karma extends FederatedInstance {
 				Key: process.env.KARMA_KEY!,
 			}),
 			headers: {
-				"Content-Type": "application/json"
-			}
+				"Content-Type": "application/json",
+			},
 		});
 		res.text().then(console.log);
 	}

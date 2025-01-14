@@ -1,6 +1,6 @@
+import { HandleResolver } from "@atproto/identity";
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { registerTool } from "../tools";
-import { HandleResolver } from "@atproto/identity";
 
 const meta: FunctionDeclaration = {
 	name: "resolveDidDoc",

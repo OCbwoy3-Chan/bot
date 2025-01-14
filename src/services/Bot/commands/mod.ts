@@ -1,8 +1,5 @@
 import { Command, PreconditionEntryResolvable } from "@sapphire/framework";
-import { banningCommands, infoCommand } from "../../../locale/commands";
-import { BanUser, GetBanData, UpdateUserBan } from "../../Database/db";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { GetUserDetails, GetUserIdFromName } from "../../../lib/roblox";
 import {
 	ActionRowBuilder,
 	ApplicationIntegrationType,
@@ -11,6 +8,9 @@ import {
 	InteractionContextType,
 } from "discord.js";
 import { BanlandScope } from "../../../lib/Constants";
+import { GetUserDetails, GetUserIdFromName } from "../../../lib/roblox";
+import { banningCommands } from "../../../locale/commands";
+import { BanUser, GetBanData, UpdateUserBan } from "../../Database/db";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -97,19 +97,25 @@ class SlashCommand extends Subcommand {
 							.addStringOption((option) =>
 								option
 									.setName("user")
-									.setDescription("The person whose ban to update")
+									.setDescription(
+										"The person whose ban to update"
+									)
 									.setRequired(true)
 							)
 							.addStringOption((option) =>
 								option
 									.setName("reason")
-									.setDescription("The new reason for the ban")
+									.setDescription(
+										"The new reason for the ban"
+									)
 									.setRequired(false)
 							)
 							.addNumberOption((option) =>
 								option
 									.setName("duration")
-									.setDescription("The new duration for the ban")
+									.setDescription(
+										"The new duration for the ban"
+									)
 									.setRequired(false)
 									.setAutocomplete(true)
 							)
@@ -220,7 +226,6 @@ class SlashCommand extends Subcommand {
 			content: `> Sucessfully banned [${ud.displayName}](https://fxroblox.com/users/${userid})`,
 			components: [(<unknown>row) as any],
 		});
-
 	}
 
 	public async chatInputUpdate(
@@ -292,8 +297,6 @@ class SlashCommand extends Subcommand {
 			components: [(<unknown>row) as any],
 		});
 	}
-
-
 }
 
 export default SlashCommand;

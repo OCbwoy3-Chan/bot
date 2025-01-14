@@ -7,8 +7,8 @@ import {
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder,
 } from "discord.js";
-import { prisma } from "../../Database/db";
 import { general } from "../../../locale/commands";
+import { prisma } from "../../Database/db";
 import { AllModels, areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 
 class SlashCommand extends Subcommand {

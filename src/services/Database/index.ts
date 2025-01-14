@@ -1,6 +1,6 @@
 import { Logger } from "pino";
-import { prisma } from "./db";
 import { RefreshAllBanlands } from "../../lib/BanlandCacheHelper";
+import { prisma } from "./db";
 import { loadAllInstances } from "./federation";
 
 class DatabaseService {

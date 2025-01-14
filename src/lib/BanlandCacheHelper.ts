@@ -1,8 +1,8 @@
 import { RobloxUserBan } from "@prisma/client";
 import { GetAllBans } from "../services/Database/db";
+import { BanlandScope } from "./Constants";
 import { BanlandEntry } from "./Types";
 import { logger } from "./Utility";
-import { BanlandScope } from "./Constants";
 
 /**
  *  The banland cache helper, helps prevent MASSIVE spikes in disk usage.
@@ -18,7 +18,7 @@ export class BanlandCacheHelper {
 	protected cachedBanlandJSON = "{}";
 	protected bans: { [userid: string]: BanlandEntry } = {};
 
-	public _updateBanCountFunc: (a: number) => void = (a: number) => {}
+	public _updateBanCountFunc: (a: number) => void = (a: number) => {};
 
 	public getBans(): { [userid: string]: BanlandEntry } {
 		return this.bans;

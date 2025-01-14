@@ -1,9 +1,12 @@
 import { PrismaClient, RobloxUserBan } from "@prisma/client";
-import { BanParams, UpdateBanParams } from "../../lib/Types";
 import { RefreshAllBanlands } from "../../lib/BanlandCacheHelper";
-import { logger } from "../../lib/Utility";
 import { AllBanlandScopes } from "../../lib/Constants";
-import { banUserAcrossFederations, unbanUserAcrossFederations } from "./federation";
+import { BanParams, UpdateBanParams } from "../../lib/Types";
+import { logger } from "../../lib/Utility";
+import {
+	banUserAcrossFederations,
+	unbanUserAcrossFederations,
+} from "./federation";
 
 export const prisma = new PrismaClient();
 
@@ -53,7 +56,6 @@ export async function GetBanData(
 export async function BanUser(params: BanParams): Promise<void> {
 	if (await GetBanData(params.UserID)) {
 		throw "User is already banned";
-		return;
 	}
 	if (!IsValidBanningScope(params.BannedFrom))
 		throw `Invalid banning scope \`${params.BannedFrom}\``;
@@ -62,7 +64,10 @@ export async function BanUser(params: BanParams): Promise<void> {
 			parseInt(params.BannedUntil) * 1000
 		).toISOString()} (${params.Reason})`
 	);
-	banUserAcrossFederations(params.UserID,params.Reason || "Unspecified reason").catch(()=>{})
+	banUserAcrossFederations(
+		params.UserID,
+		params.Reason || "Unspecified reason"
+	).catch(() => {});
 	await prisma.robloxUserBan.create({
 		data: {
 			userId: params.UserID,
@@ -84,7 +89,6 @@ export async function BanUser(params: BanParams): Promise<void> {
 export async function UpdateUserBan(params: UpdateBanParams): Promise<void> {
 	if (!(await GetBanData(params.UserID))) {
 		throw "User not banned";
-		return;
 	}
 	if (!IsValidBanningScope(params.BannedFrom))
 		throw `Invalid banning scope \`${params.BannedFrom}\``;
@@ -93,10 +97,13 @@ export async function UpdateUserBan(params: UpdateBanParams): Promise<void> {
 			parseInt(params.BannedUntil) * 1000
 		).toISOString()} (${params.Reason})`
 	);
-	banUserAcrossFederations(params.UserID,params.Reason || "Unspecified reason").catch(()=>{})
+	banUserAcrossFederations(
+		params.UserID,
+		params.Reason || "Unspecified reason"
+	).catch(() => {});
 	await prisma.robloxUserBan.update({
 		where: {
-			userId: params.UserID
+			userId: params.UserID,
 		},
 		data: {
 			userId: params.UserID,
@@ -118,10 +125,9 @@ export async function UpdateUserBan(params: UpdateBanParams): Promise<void> {
 export async function UnbanUser(userid: string): Promise<void> {
 	if (!(await GetBanData(userid))) {
 		throw "User is not banned";
-		return;
 	}
 	logger.info(`[UNBAN] ${userid}`);
-	unbanUserAcrossFederations(userid).catch(()=>{})
+	unbanUserAcrossFederations(userid).catch(() => {});
 	await prisma.robloxUserBan.delete({
 		where: {
 			userId: userid,
@@ -142,7 +148,6 @@ export async function AddWhitelist(userId: string): Promise<void> {
 	});
 	if (existingWhitelist) {
 		throw "User is already whitelisted";
-		return;
 	}
 	logger.info(`[WHITELIST ADD] ${userId}`);
 	await prisma.whitelist.create({
@@ -164,7 +169,6 @@ export async function RemoveWhitelist(userId: string): Promise<void> {
 	});
 	if (!existingWhitelist) {
 		throw "User is not whitelisted";
-		return;
 	}
 	logger.info(`[WHITELIST REMOVE] ${userId}`);
 	await prisma.whitelist.delete({
@@ -201,7 +205,6 @@ export async function AddAIWhitelist(userId: string): Promise<void> {
 	});
 	if (existingWhitelist) {
 		throw "User is already whitelisted";
-		return;
 	}
 	logger.info(`[AI WHITELIST ADD] ${userId}`);
 	await prisma.whitelist_OCbwoy3ChanAI.create({
@@ -223,7 +226,6 @@ export async function RemoveAIWhitelist(userId: string): Promise<void> {
 	});
 	if (!existingWhitelist) {
 		throw "User is not whitelisted";
-		return;
 	}
 	logger.info(`[AI WHITELIST REMOVE] ${userId}`);
 	await prisma.whitelist_OCbwoy3ChanAI.delete({
