@@ -16,3 +16,7 @@ If you are developing/using this on NixOS, if Prisma doesn't work, Install [dire
 ## NOTICE
 
 You need a Gemini API key and a Discord Bot Token
+
+## Additional notices
+
+Russian OCbwoy3-Chan prompt by dev0xz03 on Discord.
