@@ -1,15 +1,14 @@
 import { Command, ContextMenuCommand } from "@sapphire/framework";
 import {
-	ActionRowBuilder,
 	APIEmbed,
 	ApplicationCommandType,
 	ApplicationIntegrationType,
-	ButtonBuilder,
-	ButtonStyle,
+	AttachmentBuilder,
 	InteractionContextType,
-	UserContextMenuCommandInteraction,
+	RawFile,
+	UserContextMenuCommandInteraction
 } from "discord.js";
-import { IsWhitelisted } from "../../Database/helpers/DiscordWhitelist";
+import { prisma } from "../../Database/db";
 
 class SlashCommand extends Command {
 	public constructor(
@@ -24,7 +23,7 @@ class SlashCommand extends Command {
 	public override registerApplicationCommands(registry: Command.Registry) {
 		registry.registerContextMenuCommand((builder) =>
 			builder
-				.setName("User info")
+				.setName("Linked Accounts")
 				.setType(ApplicationCommandType.User)
 				.setContexts(
 					InteractionContextType.BotDM,
@@ -44,51 +43,47 @@ class SlashCommand extends Command {
 	): Promise<any> {
 		const user = interaction.targetUser;
 
+		const linkedAccounts = await prisma.whitelist_RobloxUser.findMany({
+			where: {
+				discordId: {
+					equals: user.id
+				}
+			}
+		})
+
 		const embed: APIEmbed = {
 			title: `${user.displayName}`,
 			fields: [
-				{ name: "Username", value: user.username, inline: false },
-				{
-					name: "Joined Discord",
-					value: `<t:${Math.round(
-						user.createdAt.getTime() / 1000
-					)}:R>`,
-					inline: false,
-				},
-				{
-					name: "Is Whitelisted?",
-					value: `${(await IsWhitelisted(user.id)) ? "Yes" : "No"}`,
-				},
+				{ name: "Linked Accounts", value: `${linkedAccounts.length === 0 ? "None" : linkedAccounts.length}`, inline: false }
 			],
 			thumbnail: { url: user.displayAvatarURL() },
 			color: 0x00ff00,
 		};
 
-		const addWhitelistButton = new ButtonBuilder()
-			.setLabel("Whitelist")
-			.setCustomId(`112-add-wl-${user.id}`)
-			.setStyle(ButtonStyle.Primary);
+		const filesToSend: RawFile[] = [];
 
-		const removeWhitelistButton = new ButtonBuilder()
-			.setLabel("Unwhitelist")
-			.setCustomId(`112-remove-wl-${user.id}`)
-			.setStyle(ButtonStyle.Danger);
-
-		const aiWhitelistButton = new ButtonBuilder()
-			.setLabel("AI")
-			.setCustomId(`112-show-ai-wl-${user.id}`)
-			.setStyle(ButtonStyle.Secondary);
-
-		const row = new ActionRowBuilder().addComponents(
-			addWhitelistButton,
-			removeWhitelistButton,
-			aiWhitelistButton
-		);
+		if (linkedAccounts.length !== 0) {
+			filesToSend.push({
+				contentType: "application/json",
+				name: "accounts.json",
+				data: JSON.stringify({
+					discord: user.id,
+					roblox: linkedAccounts.map(a=>a.robloxId)
+				},undefined,"\t"),
+			});
+		}
 
 		await interaction.reply({
 			embeds: [embed],
-			components: [row as any],
 			ephemeral: false,
+			files: filesToSend.map((a) => {
+				return new AttachmentBuilder(
+					Buffer.from(a.data as string),
+					{
+						name: a.name,
+					}
+				);
+			}),
 		});
 	}
 }

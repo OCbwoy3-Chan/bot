@@ -5,7 +5,7 @@ import type {
 	Message,
 } from "discord.js";
 import { general } from "../../../locale/commands";
-import { IsWhitelisted } from "../../Database/db";
+import { IsWhitelisted } from "../../Database/helpers/DiscordWhitelist";
 
 export class BanAccessPrecondition extends Precondition {
 	public override async messageRun(message: Message) {

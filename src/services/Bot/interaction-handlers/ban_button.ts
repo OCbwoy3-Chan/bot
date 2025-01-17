@@ -11,7 +11,8 @@ import {
 } from "discord.js";
 import { GetUserDetails } from "../../../lib/roblox";
 import { general } from "../../../locale/commands";
-import { IsWhitelisted, UnbanUser } from "../../Database/db";
+import { IsWhitelisted } from "../../Database/helpers/DiscordWhitelist";
+import { UnbanUser } from "../../Database/helpers/RobloxBan";
 
 export class MessageComponentHandler extends InteractionHandler {
 	public constructor(

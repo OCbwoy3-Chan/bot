@@ -3,7 +3,7 @@ import { RegularResults, search } from "@navetacandra/ddg";
 import { registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
-	name: "duckduckgoSearch",
+	name: "search",
 	description:
 		"Searches the provied query on DuckDuckGo. Can also be used to retrieve the current ISO UTC+0 time, along the current UNIX millis.",
 	parameters: {

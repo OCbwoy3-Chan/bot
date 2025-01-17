@@ -8,7 +8,7 @@ import {
 	StringSelectMenuOptionBuilder,
 } from "discord.js";
 import { general } from "../../../locale/commands";
-import { IsAIWhitelisted } from "../../Database/db";
+import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { getCachedPromptsJ } from "../../GenAI/prompt/GeneratePrompt";
 import {

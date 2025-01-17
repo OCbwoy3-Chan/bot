@@ -8,7 +8,7 @@ import {
 	RawFile,
 } from "discord.js";
 import { getDistroNameSync } from "../../../lib/Utility";
-import { IsAIWhitelisted } from "../../Database/db";
+import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
 import { AIContext, Chat } from "../../GenAI/chat";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { getPrompt } from "../../GenAI/prompt/GeneratePrompt";
@@ -16,7 +16,7 @@ import { getPrompt } from "../../GenAI/prompt/GeneratePrompt";
 let savedChatSession: Chat | null = null;
 
 let ChatPrompt = "ocbwoy3-chan";
-let AIModel = "gemini-1.5-flash-8b";
+let AIModel = "gemini-1.5-pro";
 
 export function SetChatPrompt(p: string) {
 	if (!getPrompt(p)) throw "Prompt doesn't exist";
@@ -46,7 +46,7 @@ export class OCbwoy3ChanAI extends Listener {
 		});
 	}
 
-	public run() {
+	public async run() {
 		const { client, logger } = container;
 
 		if (!areGenAIFeaturesEnabled()) {
@@ -55,6 +55,12 @@ export class OCbwoy3ChanAI extends Listener {
 			);
 			return;
 		}
+
+		/*`
+		logger.info("Loading NSFWJS model");
+		const model = await load();
+		*/
+
 		logger.info("Started OCbwoy3-Chan AI, OwO!");
 
 		client.on(Events.MessageCreate, async (m2: Message) => {

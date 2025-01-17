@@ -10,7 +10,7 @@ import {
 import { BanlandScope } from "../../../lib/Constants";
 import { GetUserDetails, GetUserIdFromName } from "../../../lib/roblox";
 import { banningCommands } from "../../../locale/commands";
-import { BanUser, GetBanData, UpdateUserBan } from "../../Database/db";
+import { BanUser, GetBanData, UpdateUserBan } from "../../Database/helpers/RobloxBan";
 
 class SlashCommand extends Subcommand {
 	public constructor(

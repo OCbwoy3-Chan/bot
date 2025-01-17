@@ -33,7 +33,7 @@ export class AutocompleteHandler extends InteractionHandler {
 				let sr: [string, string][] = [];
 				getCachedPromptsJ().forEach((v) => {
 					if (
-						`${v.name}\0${v.filename}`
+						`${v.name}\0${v.filename}\0${v.description}`
 							.toUpperCase()
 							.trim()
 							.includes(focusedOption.value.toUpperCase().trim())

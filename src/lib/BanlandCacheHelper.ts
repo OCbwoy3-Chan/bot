@@ -1,5 +1,5 @@
 import { RobloxUserBan } from "@prisma/client";
-import { GetAllBans } from "../services/Database/db";
+import { GetAllBans } from "../services/Database/helpers/RobloxBan";
 import { BanlandScope } from "./Constants";
 import { BanlandEntry } from "./Types";
 import { logger } from "./Utility";

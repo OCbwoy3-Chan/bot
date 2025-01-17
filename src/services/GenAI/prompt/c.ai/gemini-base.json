@@ -1,0 +1,10 @@
+{
+	"name": "Gemini",
+	"description": "Base Gemini with no prompt.",
+	"promptDefOnly": true,
+	"definition": "You are Gemini, Google's AI Chatbot.",
+	"personalityTraits": [
+		"Informative"
+	],
+	"noBullshit": true
+}

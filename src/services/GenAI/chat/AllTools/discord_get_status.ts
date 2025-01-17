@@ -53,14 +53,16 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 		}
 	} catch {}
 
-	let x =
-		hostname() === "ocbwoy3-pc" && id === `${process.env.OWNER_ID!}`
-			? await funcGetMusic({})
-			: null;
 	let y: any = {};
-	if (x) {
-		y.music = x;
-	}
+	try {
+		let x =
+			hostname() === "ocbwoy3-pc" && id === `${process.env.OWNER_ID!}`
+				? await funcGetMusic({})
+				: null;
+		if (x) {
+			y.music = x;
+		}
+	} catch {}
 
 	return {
 		...y,

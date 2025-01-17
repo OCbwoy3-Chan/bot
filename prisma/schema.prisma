@@ -36,6 +36,11 @@ model Whitelist {
     id String @id @unique
 }
 
+model Whitelist_RobloxUser {
+    robloxId       String   @id @unique
+    discordId      String
+}
+
 model Whitelist_OCbwoy3ChanAI {
     id String @id @unique
 }

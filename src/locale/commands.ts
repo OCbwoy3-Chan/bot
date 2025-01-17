@@ -2,7 +2,7 @@ import { HarmCategory } from "@google/generative-ai";
 import { RobloxUserBan } from "@prisma/client";
 import { PlayerInfo } from "noblox.js";
 import { getDistroName, measureCPULatency } from "../lib/Utility";
-import { GetBanData } from "../services/Database/db";
+import { GetBanData } from "../services/Database/helpers/RobloxBan";
 
 export const infoCommand = {
 	genContent: async (roundTrip: string, gatewayPing: string) => {

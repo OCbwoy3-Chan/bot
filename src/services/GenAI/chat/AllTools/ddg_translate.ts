@@ -3,7 +3,7 @@ import { translate } from "@navetacandra/ddg";
 import { registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
-	name: "duckduckgoTranslate",
+	name: "translate",
 	description: "Translates the provied query on DuckDuckGo.",
 	parameters: {
 		required: ["target", "query"],

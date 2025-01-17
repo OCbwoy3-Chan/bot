@@ -7,7 +7,7 @@ import {
 	type StringSelectMenuInteraction,
 } from "discord.js";
 import { general } from "../../../locale/commands";
-import { AddWhitelist, RemoveWhitelist } from "../../Database/db";
+import { AddWhitelist, RemoveWhitelist } from "../../Database/helpers/DiscordWhitelist";
 
 export class MessageComponentHandler extends InteractionHandler {
 	public constructor(

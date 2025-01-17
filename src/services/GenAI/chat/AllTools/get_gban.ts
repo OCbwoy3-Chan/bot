@@ -93,7 +93,13 @@ async function func(args: any): Promise<any> {
 			userId: userid,
 			bannedFromRoblox: details.isBanned,
 		},
-		gbans: {
+		banProviders: [
+			"112",
+			"Nova",
+			"Karma",
+			"SleepCore"
+		],
+		bans: {
 			["112"]: banReasonS,
 			Nova: await getNovaReason(
 				"https://api.scriptlang.com/bans",
@@ -106,12 +112,10 @@ async function func(args: any): Promise<any> {
 
 			// TODO - Add TGP bans
 
-			/*
 			SleepCore: await getNovaReason(
 				"https://skidgod.vercel.app/SleepCore/bans.json",
 				userid.toString()
 			),
-			*/
 		},
 	};
 }

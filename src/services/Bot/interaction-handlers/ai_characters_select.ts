@@ -4,7 +4,7 @@ import {
 } from "@sapphire/framework";
 import type { StringSelectMenuInteraction } from "discord.js";
 import { general } from "../../../locale/commands";
-import { IsAIWhitelisted } from "../../Database/db";
+import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import {
 	CharacterInfo,
@@ -54,7 +54,7 @@ export class MenuHandler extends InteractionHandler {
 
 		SetChatPrompt(interaction.values[0]);
 		await interaction.reply(
-			`<@${interaction.user.id}> set character to **${prompt[0].name}**`
+			`<@${interaction.user.id}> set character to **${prompt[0].name}** (${prompt[0].filename})`
 		);
 	}
 }
