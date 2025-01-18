@@ -15,6 +15,7 @@ import {
 	clearOCbwoy3ChansHistory,
 	SetChatPrompt,
 } from "../listeners/OCbwoy3ChanAI";
+import { SetChannelPrompt } from "@db/helpers/AISettings";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -55,12 +56,12 @@ class SlashCommand extends Subcommand {
 				.addSubcommand((builder) =>
 					builder
 						.setName("reset")
-						.setDescription("Resets OCbwoy3-Chan's chat history")
+						.setDescription("Resets OCbwoy3-Chan's chat history for the current channel")
 				)
 				.addSubcommand((builder) =>
 					builder
 						.setName("set_character")
-						.setDescription("Sets OCbwoy3-Chan's system prompt")
+						.setDescription("Sets OCbwoy3-Chan's system prompt in the current channel")
 						.addStringOption((option) =>
 							option
 								.setName("prompt")
@@ -107,8 +108,7 @@ class SlashCommand extends Subcommand {
 		}
 
 		if (interaction.options.getString("prompt")) {
-			clearOCbwoy3ChansHistory();
-			SetChatPrompt(interaction.options.getString("prompt", true));
+			await SetChannelPrompt(interaction.channelId,interaction.options.getString("prompt",true));
 
 			return await interaction.reply({
 				content: "Updated prompt, chat history reset",

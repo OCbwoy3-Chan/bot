@@ -37,10 +37,22 @@ model Whitelist {
 }
 
 model Whitelist_RobloxUser {
-    robloxId       String   @id @unique
-    discordId      String
+    robloxId  String @id @unique
+    discordId String
 }
 
 model Whitelist_OCbwoy3ChanAI {
     id String @id @unique
+}
+
+// AI
+
+model OCbwoy3ChanAI_ChannelSettings {
+    id             String  @id @unique
+    forcedPrompt   String?
+}
+
+model OCbwoy3ChanAI_GuildSettings {
+    id           String  @id @unique
+    forcedPrompt String?
 }

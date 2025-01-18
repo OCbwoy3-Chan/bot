@@ -7,12 +7,14 @@ import {
 	Message,
 	RawFile,
 } from "discord.js";
-import { getDistroNameSync } from "../../../lib/Utility";
-import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
-import { AIContext, Chat } from "../../GenAI/chat";
-import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
-import { getPrompt } from "../../GenAI/prompt/GeneratePrompt";
+import { getDistroNameSync } from "@112/Utility";
+import { IsAIWhitelisted } from "@db/helpers/AIWhitelist";
+import { AIContext, Chat } from "@ocbwoy3chanai/chat/index";
+import { areGenAIFeaturesEnabled } from "@ocbwoy3chanai/gemini";
+import { getPrompt } from "@ocbwoy3chanai/prompt/GeneratePrompt";
 import { testAllTools } from "@ocbwoy3chanai/ToolTest";
+import { chatManager } from "@ocbwoy3chanai/ChatManager";
+import { GetChannelPrompt, GetGuildPrompt } from "../../Database/helpers/AISettings";
 
 let savedChatSession: Chat | null = null;
 
@@ -57,40 +59,12 @@ export class OCbwoy3ChanAI extends Listener {
 			return;
 		}
 
-		/*`
-		logger.info("Loading NSFWJS model");
-		const model = await load();
-		*/
-
 		logger.info("Started OCbwoy3-Chan AI, OwO!");
 
 		client.on(Events.MessageCreate, async (m2: Message) => {
 			if (m2.author.id === client.user!.id) return;
 			if (!m2.mentions.has(client.user!.id)) return;
 			if ((await IsAIWhitelisted(m2.author.id)) !== true) return;
-			// return await m.reply("> wip");
-
-			// learnlm-1.5-pro-experimental
-			// gemini-1.5-flash-8b
-
-			if (m2.author.id === process.env.OWNER_ID!) {
-				if (m2.content.startsWith("$OCbwoy3ChanAI_Dev ToolTest")) {
-					await m2.reply("testing");
-					const testResults = await testAllTools(m2);
-					await m2.reply({
-						content: "ocbwoy3chanai tool test result",
-						files: [
-							new AttachmentBuilder(
-								Buffer.from(JSON.stringify(testResults)),
-								{
-									name: "results.json"
-								}
-							)
-						]
-					})
-					return;
-				}
-			}
 
 			logger.info(
 				`OCbwoy3ChanAIDebug ${m2.author.id} ${AIModel} ${ChatPrompt}`
@@ -100,38 +74,42 @@ export class OCbwoy3ChanAI extends Listener {
 				logger.info("OCbwoy3ChanAIDebug newchatsession :3 owo");
 			}
 
-			const chat = savedChatSession
-				? savedChatSession
-				: new Chat(AIModel, ChatPrompt, {
-						temperature: 1.3,
-				  });
-			savedChatSession = chat;
+			let prompt = ChatPrompt;
+			const channelPrompt = await GetChannelPrompt(m2.channel.id);
+			if (channelPrompt) {
+				prompt = channelPrompt;
+			} else if (m2.guild) {
+				const guildPrompt = await GetGuildPrompt(m2.guild.id);
+				if (guildPrompt) {
+					prompt = guildPrompt;
+				}
+			}
+
+			const chat = chatManager.getChat(m2.channel.id, AIModel, prompt);
 
 			if (/https?:\/\//.test(m2.content)) {
-				// if (!m.guild) return;
-				void m2.react("⏱️").catch((a) => {});
+				void m2.react("⏱️").catch((a) => { });
 
-				// give time for discord's stupid image proxy to do it's job
 				await new Promise((a) => setTimeout((b) => a(1), 3000));
 			}
 
 			const m = await m2.fetch(true);
 
-			void m.react("💭").catch((a) => {});
+			void m.react("💭").catch((a) => { });
 
 			const parts: Array<string | Part> = [];
 			const filesToSend: RawFile[] = [];
 
 			for (const attachment of m.attachments.values()) {
-				void m.react("💾").catch((a) => {});
+				void m.react("💾").catch((a) => { });
 				try {
-					const response = await fetch(attachment.url); // discord api sux today
+					const response = await fetch(attachment.url);
 					const raw = await response.arrayBuffer();
 					if (raw.byteLength === 0) {
 						logger.warn(
 							`AIImageHelper: Empty attachment data for ${attachment.proxyURL}`
 						);
-						continue; // Skip to the next attachment
+						continue;
 					}
 					const mimeType =
 						response.headers.get("content-type") || "text/plain";
@@ -170,7 +148,7 @@ export class OCbwoy3ChanAI extends Listener {
 				if (embed.data) {
 					try {
 						if (embed.data.thumbnail) {
-							void m.react("🖼️").catch(() => {});
+							void m.react("🖼️").catch(() => { });
 							const response = await fetch(
 								embed.data.thumbnail.proxy_url!
 							);
@@ -188,7 +166,7 @@ export class OCbwoy3ChanAI extends Listener {
 								},
 							});
 						} else if (embed.image?.url) {
-							void m.react("🖼️").catch(() => {});
+							void m.react("🖼️").catch(() => { });
 							const response = await fetch(embed.image.proxyURL!);
 							const raw = await response.arrayBuffer();
 							const mimeType =
@@ -229,9 +207,9 @@ export class OCbwoy3ChanAI extends Listener {
 					: "avaiable only in servers",
 				currentServer: m.guild
 					? {
-							name: m.guild.name,
-							id: m.guild.id,
-					  }
+						name: m.guild.name,
+						id: m.guild.id,
+					}
 					: null,
 				currentChannelM: {
 					name: m.channel.isDMBased() ? null : m.channel.name,
@@ -268,21 +246,6 @@ export class OCbwoy3ChanAI extends Listener {
 
 				return await m.reply({
 					content: response,
-					/*
-					embeds: [
-						{
-							title: chat.chatModel,
-							description:
-								`System Prompt: \`${chat.prompt}\`` +
-								"\n-# " +
-								(toolsUsed.length === 0
-									? "No tools used"
-									: toolsUsed
-											.map((a) => `\`${a}\``)
-											.join(", ")),
-						},
-					],
-					*/
 					files: filesToSend.map((a) => {
 						return new AttachmentBuilder(
 							Buffer.from(a.data as string),
@@ -292,10 +255,11 @@ export class OCbwoy3ChanAI extends Listener {
 						);
 					}),
 				});
-			} catch {}
+			} catch { }
 		});
 	}
 }
+
 /**
  * Clears OCbwoy3-Chan's chat
  */

@@ -11,6 +11,7 @@ import {
 	getCachedPromptsJ,
 } from "../../GenAI/prompt/GeneratePrompt";
 import { SetChatPrompt } from "../listeners/OCbwoy3ChanAI";
+import { SetChannelPrompt } from "@db/helpers/AISettings";
 
 export class MenuHandler extends InteractionHandler {
 	public constructor(
@@ -52,9 +53,9 @@ export class MenuHandler extends InteractionHandler {
 			});
 		}
 
-		SetChatPrompt(interaction.values[0]);
+		await SetChannelPrompt(interaction.channelId, interaction.values[0]);
 		await interaction.reply(
-			`<@${interaction.user.id}> set character to **${prompt[0].name}** (${prompt[0].filename})`
+			`<@${interaction.user.id}> set <#${interaction.channelId}> character to **${prompt[0].name}** (${prompt[0].filename})`
 		);
 	}
 }

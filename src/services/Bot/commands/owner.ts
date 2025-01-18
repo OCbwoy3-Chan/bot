@@ -39,6 +39,10 @@ class SlashCommand extends Subcommand {
 					name: "kill",
 					chatInputRun: "chatInputKill",
 				},
+				{
+					name: "reset_ai",
+					chatInputRun: "chatInputKillAI",
+				},
 			],
 		});
 	}
@@ -72,6 +76,11 @@ class SlashCommand extends Subcommand {
 						command
 							.setName("kill")
 							.setDescription("Kills the current process")
+					)
+					.addSubcommand((command) =>
+						command
+							.setName("reset_ai")
+							.setDescription("Resets AI preferences of ALL channels/guilds")
 					)
 					.addSubcommand((command) =>
 						command
@@ -144,6 +153,21 @@ class SlashCommand extends Subcommand {
 		});
 		process.kill(process.pid, "SIGTERM");
 		// love this, absolutely amazing
+	}
+
+	public async chatInputKillAI(
+		interaction: Command.ChatInputCommandInteraction
+	) {
+		await interaction.reply({
+			content: `> Wiping ALL AI preferences from every guild and channel.`,
+			ephemeral: true,
+		});
+		await prisma.oCbwoy3ChanAI_ChannelSettings.deleteMany({});
+		await prisma.oCbwoy3ChanAI_GuildSettings.deleteMany({});
+		await interaction.followUp({
+			content: "> Done",
+			ephemeral: true
+		})
 	}
 }
 
