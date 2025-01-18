@@ -1,7 +1,7 @@
 import { BskyAgent } from "@atproto/api";
 import { HandleResolver } from "@atproto/identity";
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { registerTool } from "../tools";
+import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "getBskyPosts",
@@ -19,6 +19,10 @@ const meta: FunctionDeclaration = {
 		},
 	},
 };
+
+addTest(meta.name,{
+	didOrHandle: "ocbwoy3.dev"
+});
 
 const agent = new BskyAgent({
 	service: "https://public.api.bsky.app",

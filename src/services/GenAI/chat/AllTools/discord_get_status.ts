@@ -4,7 +4,7 @@ import { Channel } from "discord.js";
 import { hostname } from "os";
 import { AIContext } from "..";
 import { client } from "../../../Bot/bot";
-import { registerTool } from "../tools";
+import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "getStatus",
@@ -22,6 +22,10 @@ const meta: FunctionDeclaration = {
 		},
 	},
 };
+
+addTest(meta.name,{
+	id: "486147449703104523"
+});
 
 async function funcGetMusic(args: any): Promise<any> {
 	return {

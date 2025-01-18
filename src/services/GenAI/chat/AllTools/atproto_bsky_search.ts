@@ -1,6 +1,6 @@
 import { BskyAgent } from "@atproto/api";
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { registerTool } from "../tools";
+import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "searchBskyPosts",
@@ -18,6 +18,10 @@ const meta: FunctionDeclaration = {
 		},
 	},
 };
+
+addTest(meta.name,{
+	query: "AT Protocol"
+});
 
 const agent = new BskyAgent({
 	service: "https://public.api.bsky.app",

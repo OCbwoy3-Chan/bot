@@ -1,6 +1,6 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { translate } from "@navetacandra/ddg";
-import { registerTool } from "../tools";
+import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "translate",
@@ -21,6 +21,11 @@ const meta: FunctionDeclaration = {
 		},
 	},
 };
+
+addTest(meta.name,{
+	query: "Sveiki, Pasaule!",
+	target: "de"
+});
 
 async function func(args: any): Promise<any> {
 	const query = (args as any).query as string;

@@ -11,6 +11,13 @@
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"baseUrl": "./src/",
+		"paths": {
+			"@l10n/*": [ "locale/commands/*" ],
+			"@ocbwoy3chanai/*": [ "services/GenAI/*", "services/Bot/apis/OCbwoy3ChanAI/*" ],
+			"@112/*": [ "lib/*" ],
+			"@ocbwoy3/*": []
+		}
 	}
 }

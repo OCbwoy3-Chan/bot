@@ -1,7 +1,7 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { GetUserDetails, GetUserIdFromName } from "../../../../lib/roblox";
 import { prisma } from "../../../Database/db";
-import { registerTool } from "../tools";
+import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "getBanInfo",
@@ -24,6 +24,10 @@ const meta: FunctionDeclaration = {
 		},
 	},
 };
+
+addTest(meta.name,{
+	userid: "1523324373"
+});
 
 async function getNovaReason(
 	endpoint: string,

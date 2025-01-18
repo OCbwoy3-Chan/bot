@@ -12,11 +12,12 @@ import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
 import { AIContext, Chat } from "../../GenAI/chat";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { getPrompt } from "../../GenAI/prompt/GeneratePrompt";
+import { testAllTools } from "@ocbwoy3chanai/ToolTest";
 
 let savedChatSession: Chat | null = null;
 
 let ChatPrompt = "ocbwoy3-chan";
-let AIModel = "gemini-1.5-pro";
+let AIModel = "gemini-1.5-flash";
 
 export function SetChatPrompt(p: string) {
 	if (!getPrompt(p)) throw "Prompt doesn't exist";
@@ -71,6 +72,25 @@ export class OCbwoy3ChanAI extends Listener {
 
 			// learnlm-1.5-pro-experimental
 			// gemini-1.5-flash-8b
+
+			if (m2.author.id === process.env.OWNER_ID!) {
+				if (m2.content.startsWith("$OCbwoy3ChanAI_Dev ToolTest")) {
+					await m2.reply("testing");
+					const testResults = await testAllTools(m2);
+					await m2.reply({
+						content: "ocbwoy3chanai tool test result",
+						files: [
+							new AttachmentBuilder(
+								Buffer.from(JSON.stringify(testResults)),
+								{
+									name: "results.json"
+								}
+							)
+						]
+					})
+					return;
+				}
+			}
 
 			logger.info(
 				`OCbwoy3ChanAIDebug ${m2.author.id} ${AIModel} ${ChatPrompt}`

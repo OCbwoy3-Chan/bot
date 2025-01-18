@@ -1,12 +1,14 @@
 import { FunctionDeclaration } from "@google/generative-ai";
 import { prisma } from "../../../Database/db";
-import { registerTool } from "../tools";
+import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "getAllBans",
 	description:
 		"Gets ALL Gbans/Bans. For 112, bannedUntil being -1 means that the user is is banned forever, otherwise it'su the UNIX timestamp (in seconds), when the user is going to be unbanned. Make sure to tell the user, what GBan handler they're banned from.",
 };
+
+addTest(meta.name,null);
 
 async function getNovaReason(
 	endpoint: string

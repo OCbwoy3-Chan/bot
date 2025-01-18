@@ -1,6 +1,6 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { RegularResults, search } from "@navetacandra/ddg";
-import { registerTool } from "../tools";
+import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "search",
@@ -18,6 +18,10 @@ const meta: FunctionDeclaration = {
 		},
 	},
 };
+
+addTest(meta.name,{
+	query: "DuckDuckGo"
+});
 
 async function func(args: any): Promise<any> {
 	const searchResults = await search({

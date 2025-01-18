@@ -1,6 +1,6 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { GetUserDetails, GetUserIdFromName } from "../../../../lib/roblox";
-import { registerTool } from "../tools";
+import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "resolveRobloxName",
@@ -18,6 +18,10 @@ const meta: FunctionDeclaration = {
 		},
 	},
 };
+
+addTest(meta.name,{
+	username: "OCboy3"
+});
 
 async function func(args: any): Promise<any> {
 	const username = args.username as string;

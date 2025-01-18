@@ -1,5 +1,5 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { registerTool } from "../tools";
+import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "urbanDefine",
@@ -17,6 +17,10 @@ const meta: FunctionDeclaration = {
 		},
 	},
 };
+
+addTest(meta.name,{
+	query: "skid"
+});
 
 async function func(args: any): Promise<any> {
 	const r = await fetch(

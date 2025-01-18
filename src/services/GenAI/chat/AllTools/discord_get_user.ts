@@ -1,6 +1,6 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { client } from "../../../Bot/bot";
-import { registerTool } from "../tools";
+import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "getDiscordUser",
@@ -17,6 +17,10 @@ const meta: FunctionDeclaration = {
 		},
 	},
 };
+
+addTest(meta.name,{
+	id: "486147449703104523"
+});
 
 async function func(args: any): Promise<any> {
 	const id = args.id as string;

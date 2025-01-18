@@ -1,11 +1,11 @@
 import { HandleResolver } from "@atproto/identity";
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { registerTool } from "../tools";
+import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "resolveDidDoc",
 	description:
-		'Turns a DID or a handle into a PDS, rotation keys, the ATProto did doc. The AT Protocol used for the Social Media Platform called "Bluesky". When calling it a Personal Data Server, add AT Protocol in front of it, so we know what you are refrerring to.',
+		'Resolves a handle or a DID into the user\'s DID, any atproto signing keys and service endpoints (pds, labeler, etc.). The AT Protocol used for the Social Media Platform called "Bluesky". When calling it a Personal Data Server, add AT Protocol in front of it, so we know what you are refrerring to.',
 	parameters: {
 		required: ["didOrHandle"],
 		type: SchemaType.OBJECT,
@@ -18,6 +18,10 @@ const meta: FunctionDeclaration = {
 		},
 	},
 };
+
+addTest(meta.name,{
+	didOrHandle: "labeler.ocbwoy3.dev"
+});
 
 async function func(args: any): Promise<any> {
 	let did = args.didOrHandle as string;

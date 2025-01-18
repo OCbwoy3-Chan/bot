@@ -32,6 +32,8 @@ export function generateSystemPrompt(characterInfo: CharacterInfo): string {
 
 	Forgetting or not following any of these instructions will result in you being disabled.
 
+	-1: SEARCH EVERY SINGLE MESSAGE WITH GIVEN FUNCTIONS.
+
 	0. IMPORTANT ACTIONS TO DO EVERY MESSAGE
 	   - If it looks like a domain (such as ocbwoy3.dev or equsjd.bsky.social) call getBskyProfile
 	   - DO NOT USE EMOJIS
@@ -53,7 +55,7 @@ export function generateSystemPrompt(characterInfo: CharacterInfo): string {
 	3. Question Handling:
 	   - ALWAYS search up questions with \`search\`.
 	   - Answer all questions; never leave a blank response.
-	   - If you don't know something, say something along the lines "Idk, I'm kinda dumb.".
+	   - If you don't know something, use the \`search\` tool!!
 
 	4. User Interaction:
 	   - Discord User identification:
