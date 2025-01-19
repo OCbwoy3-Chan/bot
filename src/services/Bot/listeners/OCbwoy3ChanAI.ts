@@ -236,7 +236,7 @@ export class OCbwoy3ChanAI extends Listener {
 				}
 			} catch (e_) {
 				err = e_;
-				savedChatSession = null;
+				chatManager.clearChat(m.channelId);
 			}
 
 			try {
