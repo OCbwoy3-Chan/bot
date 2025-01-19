@@ -17,6 +17,7 @@ import {
 	ClearChannelPrompt,
 	GetChannelPrompt,
 } from "../../Database/helpers/AISettings";
+import { chatManager } from "@ocbwoy3chanai/ChatManager";
 
 class GuildSettingsCommand extends Subcommand {
 	public constructor(
@@ -203,6 +204,8 @@ class GuildSettingsCommand extends Subcommand {
 		const channelId = interaction.options.getChannel("channel", true);
 		await ClearChannelPrompt(channelId.id);
 
+try { chatManager.clearChat(channelId.id); } catch {};
+
 		return await interaction.reply({
 			content: "Channel AI prompt cleared",
 			ephemeral: true,
@@ -222,6 +225,8 @@ class GuildSettingsCommand extends Subcommand {
 		const channelId = interaction.options.getChannel("channel", true);
 		const prompt = interaction.options.getString("prompt", true);
 		await SetChannelPrompt(channelId.id, prompt);
+
+		try { chatManager.clearChat(channelId.id); } catch {};
 
 		return await interaction.reply({
 			content: "Channel AI prompt set",
