@@ -15,6 +15,7 @@ import {
 	clearOCbwoy3ChansHistory,
 	SetChatPrompt,
 } from "../listeners/OCbwoy3ChanAI";
+import { chatManager } from "@ocbwoy3chanai/ChatManager";
 import { SetChannelPrompt } from "@db/helpers/AISettings";
 
 class SlashCommand extends Subcommand {
