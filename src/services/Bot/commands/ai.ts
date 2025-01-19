@@ -88,6 +88,7 @@ class SlashCommand extends Subcommand {
 		}
 
 		clearOCbwoy3ChansHistory();
+try { chatManager.clearChat(interaction.channelId); } catch {};
 
 		return await interaction.reply({
 			content: "Chat history cleared",
@@ -110,6 +111,8 @@ class SlashCommand extends Subcommand {
 
 		if (interaction.options.getString("prompt")) {
 			await SetChannelPrompt(interaction.channelId,interaction.options.getString("prompt",true));
+
+try { chatManager.clearChat(interaction.channelId); } catch {};
 
 			return await interaction.reply({
 				content: "Updated prompt, chat history reset",
