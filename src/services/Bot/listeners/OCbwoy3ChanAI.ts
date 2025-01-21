@@ -66,6 +66,25 @@ export class OCbwoy3ChanAI extends Listener {
 			if (!m2.mentions.has(client.user!.id)) return;
 			if ((await IsAIWhitelisted(m2.author.id)) !== true) return;
 
+			if (m2.author.id === process.env.OWNER_ID!) {
+				if (m2.content.startsWith("$OCbwoy3ChanAI_Dev ToolTest")) {
+					await m2.reply("testing");
+					const testResults = await testAllTools(m2);
+					await m2.reply({
+						content: "ocbwoy3chanai tool test result",
+						files: [
+							new AttachmentBuilder(
+								Buffer.from(JSON.stringify(testResults)),
+								{
+									name: "results.json"
+								}
+							)
+						]
+					})
+					return;
+				}
+			}
+
 			logger.info(
 				`OCbwoy3ChanAIDebug ${m2.author.id} ${AIModel} ${ChatPrompt}`
 			);
