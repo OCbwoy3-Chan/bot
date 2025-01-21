@@ -11,11 +11,11 @@ You can ban players here. Games who use your instance of this will ban sync your
 
 [![Global Ban Lookup on ocbwoy3.dev](media/GBanLookup.png)](https://ocbwoy3.dev/lookup?u=OCboy3)
 
-If you are developing/using this on NixOS, if Prisma doesn't work, Install [direnv](https://direnv.net/docs/hook.html) and then re-open the shell and run `direnv allow` (or just run the shell with `steam-run`).
+If you are developing/using this on NixOS, if Prisma doesn't work, Install [direnv](https://direnv.net/docs/hook.html) and then re-open the shell and run `direnv allow` (or just use `steam-run`).
 
 ## NOTICE
 
-You need a Gemini API key and a Discord Bot Token
+Required: Everything but Gemini API Key (it's optional, everything else is required)
 
 ## Additional notices
 

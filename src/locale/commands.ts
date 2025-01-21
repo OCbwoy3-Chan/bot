@@ -80,7 +80,6 @@ export const banningCommands = {
 			if (bd) {
 				ap = `
 
-> **Banned from:** \`${bd.bannedFrom}\`
 > **Moderator:** <@${bd.moderatorId}>
 > **Reason:** ${bd.reason}
 > **Unbanned:** ${
@@ -94,7 +93,7 @@ export const banningCommands = {
 			})](https://fxroblox.com/users/${i})
 > ${
 				d.isBanned
-					? "**Banned from Roblox (Account Deleted)**"
+					? "**Account Deleted**"
 					: "**Roblox Account**"
 			}${ap}`;
 		},
