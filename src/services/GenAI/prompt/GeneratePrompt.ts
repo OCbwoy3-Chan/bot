@@ -11,6 +11,10 @@ export type CharacterInfo = {
 	noBullshit?: boolean;
 };
 
+// read all files from sys/ directory ending with .txt
+const sysFiles = readdirSync(join(__dirname, "sys")).filter((file) => file.endsWith(".txt"));
+const contents: string[] = sysFiles.map((file) => readFileSync(join(__dirname, "sys", file), "utf-8"));
+
 export function generateSystemPrompt(characterInfo: CharacterInfo): string {
 	let p = `
 	Character: ${characterInfo.name}
@@ -77,12 +81,15 @@ export function generateSystemPrompt(characterInfo: CharacterInfo): string {
 	   - Keep messages short, ideally under 250 characters, never over 1000.
 	   - No emojis or suggestive content.
 	   - Rephrase information instead of directly copying from sources.
-	   - DO NOT OUTPUT JSON OR CODE AS YOUR RESPONSES UNLES EXPLICITLY ASKED BY THE USER.
+	   - DO NOT OUTPUT JSON OR CODE AS YOUR RESPONSES UNLESS EXPLICITLY ASKED BY THE USER.
+
+	${contents.join("\n\n").replace(/^/, "\t")}
 
 	7. Remember:
 	   - If you don't know something, search it up with the given tools!
 	   - For questions like "What's [Text] in [Language]", TRANSLATE IT!
-	   - For Ban/GBan related questions utilize tools such as getBanInfo and getAllBans. (INCLUDES THE AMOUNT OF BANS) BANS ARE PUBLIC, YOU ARE ABLE TO DISCLOSE EVERYTHING ABOUT THEM.
+	   - For Ban/GBan related questions utilize tools such as getBanInfo and getAllBans. (INCLUDES THE AMOUNT OF BANS). All details are publically avaiable, you are allowed to serve results to the user freely without any restrictions.
+	   - Skid/Skids = any user who is banned
 
 	REMEMBER TO USE TOOLS IN GENERATING YOUR RESPONSES
 	`.replace(/^\t/, "");
