@@ -29,13 +29,13 @@ addTest(meta.name,{
 
 async function funcGetMusic(args: any): Promise<any> {
 	return {
-		title: await $`playerctl metadata xesam:title`.text(),
-		artist: (await $`playerctl metadata xesam:artist`.text())
+		title: (await $`playerctl metadata xesam:title`.text()).replace("\n",""),
+		artist: (await $`playerctl metadata xesam:artist`.text()).replace("\n","")
 			.split(", ")
 			.map((a) => a.split(" & "))
 			.flatMap((a) => a),
-		album: await $`playerctl metadata xesam:album`.text(),
-		mprisTrackId: await $`playerctl metadata mpris:trackid`.text(),
+		album: await (await $`playerctl metadata xesam:album`.text()).replace("\n",""),
+		mprisTrackId: await (await $`playerctl metadata mpris:trackid`.text()).replace("\n",""),
 		// genre: await $`playerctl metadata xesam:genre`.text(),
 	};
 }
