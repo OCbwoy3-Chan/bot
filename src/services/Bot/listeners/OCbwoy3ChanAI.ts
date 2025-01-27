@@ -18,7 +18,7 @@ import { GetChannelPrompt, GetGuildPrompt } from "../../Database/helpers/AISetti
 
 let savedChatSession: Chat | null = null;
 
-let ChatPrompt = "ocbwoy3-chan";
+let ChatPrompt = "default";
 let AIModel = "gemini-1.5-flash";
 
 export function SetChatPrompt(p: string) {

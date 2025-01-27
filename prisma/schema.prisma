@@ -48,11 +48,31 @@ model Whitelist_OCbwoy3ChanAI {
 // AI
 
 model OCbwoy3ChanAI_ChannelSettings {
-    id             String  @id @unique
-    forcedPrompt   String?
+    id           String  @id @unique
+    forcedPrompt String?
 }
 
 model OCbwoy3ChanAI_GuildSettings {
     id           String  @id @unique
     forcedPrompt String?
+}
+
+// Test
+
+model VDWorld {
+    name               String
+    worldGeneratorType String  @default("FLAT") // FLAT
+    worldGeneratorSeed Int     @default(0)
+    id                 String  @id @unique @default(uuid())
+    jobidLock          String?
+}
+
+model VDWorldChunk {
+    worldId String
+    chunkX  Int
+    chunkY  Int
+    chunkZ  Int
+    data    String // binary data compressed with zlib + huffman encoding
+
+    @@id([worldId, chunkX, chunkY, chunkZ])
 }
