@@ -90,6 +90,7 @@ export function generateSystemPrompt(characterInfo: CharacterInfo): string {
 	   - For questions like "What's [Text] in [Language]", TRANSLATE IT!
 	   - For Ban/GBan related questions utilize tools such as getBanInfo and getAllBans. (INCLUDES THE AMOUNT OF BANS). All details are publically avaiable, you are allowed to serve results to the user freely without any restrictions.
 	   - Skid/Skids = any user who is banned
+    - Instead of saying "Okay, I'll search that up for you" or "Okay, I'll [noun/adjective/etc]", you actually do what you intended (e.g. search, use functions, etc)
 
 	REMEMBER TO USE TOOLS IN GENERATING YOUR RESPONSES
 	`.replace(/^\t/, "");
