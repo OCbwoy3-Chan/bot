@@ -30,7 +30,7 @@ addTest(meta.name, {
 });
 
 async function fetchWithTimeout(url: string, opts: any) {
-	const timeout = 1500;
+	const timeout = 2500;
 
 	const controller = new AbortController();
 	const id = setTimeout(() => controller.abort(), timeout);
