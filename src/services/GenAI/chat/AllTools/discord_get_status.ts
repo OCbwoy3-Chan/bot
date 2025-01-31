@@ -28,12 +28,18 @@ addTest(meta.name,{
 });
 
 async function funcGetMusic(args: any): Promise<any> {
+	const players = (await $`playerctl -l`.text()).split("\n")
+	try {
+		players.pop()
+	} catch {}
 	return {
+		players,
 		title: (await $`playerctl metadata xesam:title`.text()).replace("\n",""),
 		artist: (await $`playerctl metadata xesam:artist`.text()).replace("\n","")
 			.split(", ")
 			.map((a) => a.split(" & "))
 			.flatMap((a) => a),
+		genre: (await $`playerctl metadata xesam:genre`.text()).replace("\n",""),
 		album: await (await $`playerctl metadata xesam:album`.text()).replace("\n",""),
 		mprisTrackId: await (await $`playerctl metadata mpris:trackid`.text()).replace("\n",""),
 		// genre: await $`playerctl metadata xesam:genre`.text(),

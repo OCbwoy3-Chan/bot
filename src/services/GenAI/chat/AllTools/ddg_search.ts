@@ -5,7 +5,7 @@ import { addTest, registerTool } from "../tools";
 const meta: FunctionDeclaration = {
 	name: "search",
 	description:
-		"Searches the provied query on DuckDuckGo. Can also be used to retrieve the current ISO UTC+0 time, along the current UNIX millis.",
+		"Searches the provied query on DuckDuckGo.",
 	parameters: {
 		required: ["query"],
 		type: SchemaType.OBJECT,
@@ -51,8 +51,6 @@ async function func(args: any): Promise<any> {
 		results.push(...results2);
 	}
 	return {
-		currentUnixMillis: Date.now(),
-		currentTimeISO_UTC0: new Date().toISOString(),
 		results,
 	};
 }
