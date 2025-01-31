@@ -66,7 +66,8 @@ async function func(args: any): Promise<any> {
 			"112",
 			"Nova",
 			"Karma",
-			"SleepCore"
+			"SleepCore",
+			"AParam"
 		],
 		bans: {
 			["112"]: banReasonS,
@@ -81,6 +82,9 @@ async function func(args: any): Promise<any> {
 
 			SleepCore: await getNovaReason(
 				"https://skidgod.vercel.app/SleepCore/bans.json"
+			),
+			AParam: await getNovaReason(
+				"https://zv7i.dev/static/aparambans.json"
 			),
 		}
 	};

@@ -68,6 +68,30 @@ async function getNovaReason(
 	}
 }
 
+async function getAParamReason(
+	endpoint: string,
+	userid: string
+): Promise<
+	{ reason: string; attributionRequired: true } | { javascriptFetchError: string } | null
+> {
+	try {
+		const bans = await (
+			await fetchWithTimeout(endpoint, {
+				headers: {
+					"SEC-CH-UA-PLATFORM": "Linux",
+					"User-Agent":
+						"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)",
+				}
+			})
+		).json();
+		return bans[userid]
+			? { reason: bans[userid], attributionRequired: true }
+			: null;
+	} catch (e_) {
+		return { javascriptFetchError: `${e_} ` };
+	}
+}
+
 async function func(args: any): Promise<any> {
 	const username = args.username as string;
 	const userid2 = args.userid as string;
@@ -115,7 +139,8 @@ async function func(args: any): Promise<any> {
 			"112",
 			"Nova",
 			"Karma",
-			"SleepCore"
+			"SleepCore",
+			"AParam"
 		],
 		bans: {
 			["112"]: banReasonS,
@@ -132,6 +157,10 @@ async function func(args: any): Promise<any> {
 
 			SleepCore: await getNovaReason(
 				"https://skidgod.vercel.app/SleepCore/bans.json",
+				userid.toString()
+			),
+			AParam: await getAParamReason(
+				"https://zv7i.dev/static/aparambans.json",
 				userid.toString()
 			),
 		},
