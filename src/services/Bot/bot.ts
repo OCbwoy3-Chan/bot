@@ -1,5 +1,6 @@
 import {
 	ApplicationCommandRegistries,
+	Events,
 	RegisterBehavior,
 	SapphireClient,
 } from "@sapphire/framework";

@@ -133,6 +133,12 @@ class SlashCommand extends Subcommand {
 				ephemeral: true,
 			});
 		}
+
+		await interaction.deferReply({
+			ephemeral: false,
+			fetchReply: true
+		});
+
 		const userid = await GetUserIdFromName(
 			(interaction.options.get("user")?.value as string).trim()
 		);
@@ -163,7 +169,7 @@ class SlashCommand extends Subcommand {
 			ud,
 			userid
 		);
-		return await interaction.reply({
+		return await interaction.followUp({
 			content: wtf,
 			components: [(<unknown>row) as any],
 		});
@@ -176,6 +182,12 @@ class SlashCommand extends Subcommand {
 			await interaction.reply({ content: ":skull:", ephemeral: true });
 			return;
 		}
+
+		await interaction.deferReply({
+			ephemeral: false,
+			fetchReply: true
+		});
+
 		const reason =
 			(interaction.options.get("reason")?.value as string) ||
 			"Unspecified reason";
@@ -195,7 +207,7 @@ class SlashCommand extends Subcommand {
 			(interaction.options.get("user")?.value as string).trim()
 		);
 		if (!userid) {
-			return await interaction.reply({
+			return await interaction.followUp({
 				content: `> ${banningCommands.errors.usernameResolveFail()}`,
 				ephemeral: true,
 			});
@@ -212,7 +224,7 @@ class SlashCommand extends Subcommand {
 				Reason: reason,
 			});
 		} catch (e_) {
-			return interaction.reply({ content: `> ${e_}`, ephemeral: true });
+			return interaction.followUp({ content: `> ${e_}`, ephemeral: true });
 		}
 
 		const stupidFuckingButton = new ButtonBuilder()
@@ -222,7 +234,7 @@ class SlashCommand extends Subcommand {
 
 		const row = new ActionRowBuilder().addComponents(stupidFuckingButton);
 
-		return await interaction.reply({
+		return await interaction.followUp({
 			content: `> Sucessfully banned [${ud.displayName}](https://fxroblox.com/users/${userid})`,
 			components: [(<unknown>row) as any],
 		});
@@ -236,11 +248,17 @@ class SlashCommand extends Subcommand {
 			return;
 		}
 
+		await interaction.deferReply({
+			ephemeral: false,
+			fetchReply: true
+		});
+
 		const userid = await GetUserIdFromName(
 			(interaction.options.get("user")?.value as string).trim()
 		);
+
 		if (!userid) {
-			return await interaction.reply({
+			return await interaction.followUp({
 				content: `> ${banningCommands.errors.usernameResolveFail()}`,
 				ephemeral: true,
 			});
@@ -248,7 +266,7 @@ class SlashCommand extends Subcommand {
 
 		const existingBan = await GetBanData(userid.toString());
 		if (!existingBan) {
-			return await interaction.reply({
+			return await interaction.followUp({
 				content: `> User is not currently banned.`,
 				ephemeral: true,
 			});
@@ -282,7 +300,7 @@ class SlashCommand extends Subcommand {
 				Reason: reason,
 			});
 		} catch (e_) {
-			return interaction.reply({ content: `> ${e_}`, ephemeral: true });
+			return interaction.followUp({ content: `> ${e_}`, ephemeral: true });
 		}
 
 		const stupidFuckingButton = new ButtonBuilder()
@@ -292,7 +310,7 @@ class SlashCommand extends Subcommand {
 
 		const row = new ActionRowBuilder().addComponents(stupidFuckingButton);
 
-		return await interaction.reply({
+		return await interaction.followUp({
 			content: `> Successfully updated [${ud.displayName}](https://fxroblox.com/users/${userid})'s ban`,
 			components: [(<unknown>row) as any],
 		});

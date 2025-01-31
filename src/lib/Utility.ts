@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import { platform } from "os";
+import { arch, platform } from "os";
 import { performance } from "perf_hooks";
 import { Logger } from "pino";
 
@@ -15,6 +15,9 @@ export function measureCPULatency(): string {
 
 export async function getDistroName(): Promise<string> {
 	return await new Promise((resolve) => {
+		setTimeout(() => {
+			resolve(`getDistroName timeout - ${arch()}`)
+		}, 500);
 		try {
 			const d = readFileSync("/etc/os-release").toString().split("\n");
 			if (/nix\-snowflake/.test(d.join("\n"))) return "NixOS";

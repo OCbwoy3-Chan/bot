@@ -82,9 +82,14 @@ class SlashCommand extends Subcommand {
 		const username = interaction.options.getString("username", true);
 		const user = interaction.options.getUser("user", true);
 
+		await interaction.deferReply({
+			ephemeral: false,
+			fetchReply: true
+		});
+
 		const userId = await GetUserIdFromName(username);
 		if (!userId) {
-			return interaction.reply({
+			return interaction.followUp({
 				content: `Failed to resolve username: ${username}`,
 				ephemeral: true,
 			});
@@ -94,12 +99,12 @@ class SlashCommand extends Subcommand {
 
 		try {
 			await addRobloxWhitelist(userId.toString(), user.id);
-			return interaction.reply({
+			return interaction.followUp({
 				content: `Successfully whitelisted [${ud.displayName}](https://fxroblox.com/users/${userId}) to <@${user.id}>`,
 				ephemeral: false,
 			});
 		} catch (error) {
-			return interaction.reply({
+			return interaction.followUp({
 				content: `${error}`,
 				ephemeral: true,
 			});
@@ -109,9 +114,14 @@ class SlashCommand extends Subcommand {
 	public async chatInputRemove(interaction: Command.ChatInputCommandInteraction) {
 		const username = interaction.options.getString("username", true);
 
+		await interaction.deferReply({
+			ephemeral: false,
+			fetchReply: true
+		});
+
 		const userId = await GetUserIdFromName(username);
 		if (!userId) {
-			return interaction.reply({
+			return interaction.followUp({
 				content: `Failed to resolve username: ${username}`,
 				ephemeral: true,
 			});
@@ -121,12 +131,12 @@ class SlashCommand extends Subcommand {
 
 		try {
 			await removeRobloxWhitelist(userId.toString());
-			return interaction.reply({
+			return interaction.followUp({
 				content: `Successfully unwhitelisted [${ud.displayName}](https://fxroblox.com/users/${userId})`,
 				ephemeral: true,
 			});
 		} catch (error) {
-			return interaction.reply({
+			return interaction.followUp({
 				content: `${error}`,
 				ephemeral: true,
 			});

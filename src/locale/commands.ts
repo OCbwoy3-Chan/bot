@@ -1,15 +1,16 @@
 import { HarmCategory } from "@google/generative-ai";
 import { RobloxUserBan } from "@prisma/client";
 import { PlayerInfo } from "noblox.js";
-import { getDistroName, measureCPULatency } from "../lib/Utility";
+import { getDistroNameSync, measureCPULatency } from "../lib/Utility";
 import { GetBanData } from "../services/Database/helpers/RobloxBan";
+
+const distro = getDistroNameSync()
 
 export const infoCommand = {
 	genContent: async (roundTrip: string, gatewayPing: string) => {
-		const distro = await getDistroName();
 		const wtf = process.hrtime();
 		// 1000000
-		const cpuLatency = wtf[0] / 1000000000 + wtf[1] / 1000000;
+		// const cpuLatency = wtf[0] / 1000000000 + wtf[1] / 1000000;
 
 		return [
 			`> # [ocbwoy3.dev](<https://ocbwoy3.dev>) (${distro.trim()})`,
@@ -38,7 +39,7 @@ export const gbanFederation = {
 
 export const general = {
 	errors: {
-		notOwner: (): string => "> Missing permission `BOT_OWNER`",
+		notOwner: (): string => "> You are not the owner of this bot!",
 		missingPermission: (requiredPerm: string): string =>
 			`> Missing permission \`${requiredPerm}\``,
 		invalidRoleId: (roleId: number): string =>
