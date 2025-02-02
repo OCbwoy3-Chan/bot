@@ -45,6 +45,12 @@ export class MessageComponentHandler extends InteractionHandler {
 				"112-confirm-unban-",
 				""
 			);
+
+			await interaction.deferReply({
+				ephemeral: false,
+				fetchReply: true
+			});
+
 			const ru = await GetUserDetails(parseInt(userid));
 
 			if (!(await IsWhitelisted(interaction.user.id))) {
@@ -57,13 +63,13 @@ export class MessageComponentHandler extends InteractionHandler {
 			try {
 				await UnbanUser(userid);
 			} catch (e_) {
-				return await interaction.reply({
+				return await interaction.followUp({
 					content: `> ${e_}`,
 					ephemeral: true,
 				});
 			}
 
-			return await interaction.reply({
+			return await interaction.followUp({
 				content: `> [${ru.displayName}](https://fxroblox.com/users/${userid}) has been unbanned.`,
 				ephemeral: false,
 			});
@@ -76,6 +82,11 @@ export class MessageComponentHandler extends InteractionHandler {
 					ephemeral: true,
 				});
 			}
+
+			await interaction.deferReply({
+				ephemeral: false,
+				fetchReply: true
+			});
 
 			const userid = interaction.customId.replace("112-unban-", "");
 
@@ -90,7 +101,7 @@ export class MessageComponentHandler extends InteractionHandler {
 
 			const ru = await GetUserDetails(parseInt(userid));
 
-			return await interaction.reply({
+			return await interaction.followUp({
 				content: `> Are you sure you want to unban [${ru.displayName}](https://fxroblox.com/users/${userid})?`,
 				components: [row as any],
 				ephemeral: true,

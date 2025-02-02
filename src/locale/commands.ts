@@ -71,6 +71,7 @@ export const banningCommands = {
 		userNotBanned: (name: string) => `${name} is not banned!`,
 		usernameResolveFail: () =>
 			"Failed to resolve input to a valid Roblox player.",
+		ownerHackbanOnly: () => "Only the bot owner can hack-ban!" // totally not stolen from wickbot
 	},
 	success: {
 		userBanSuccessMessage: (name: string) => `${name} has been banned!`,
@@ -83,20 +84,17 @@ export const banningCommands = {
 
 > **Moderator:** <@${bd.moderatorId}>
 > **Reason:** ${bd.reason}
-> **Unbanned:** ${
-					bd.bannedUntil === "-1"
+> **Unbanned:** ${bd.bannedUntil === "-1"
 						? "never"
 						: `<t:${parseInt(bd.bannedUntil)}>`
-				}`;
+					}`;
 			}
-			return `> # [${d.displayName} (@${
-				d.username
-			})](https://fxroblox.com/users/${i})
-> ${
-				d.isBanned
+			return `> # [${d.displayName} (@${d.username
+				})](https://fxroblox.com/users/${i})
+> ${d.isBanned
 					? "**Account Deleted**"
 					: "**Roblox Account**"
-			}${ap}`;
+				}${ap}`;
 		},
 	},
 	lookups: {

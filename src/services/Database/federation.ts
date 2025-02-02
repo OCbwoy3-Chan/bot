@@ -2,6 +2,8 @@ import fs from "fs";
 import path from "path";
 import { logger } from "../../lib/Utility";
 import { FederatedInstance } from "./FederatedInstance";
+import { prisma } from "./db";
+import { UnbanUser } from "./helpers/RobloxBan";
 
 const registeredInstances: FederatedInstance[] = [];
 
@@ -39,9 +41,6 @@ export async function banUserAcrossFederations(
 					.banUser(userId, reason)
 					.then(() => {
 						resolve(true);
-						logger.info(
-							`[FEDERATION] Banned ${userId} from ${instance.name}`
-						);
 					})
 					.catch((e) => {
 						fails.push(instance.name);
@@ -71,9 +70,6 @@ export async function unbanUserAcrossFederations(
 				const p = instance
 					.unbanUser(userId)
 					.then(() => {
-						logger.info(
-							`[FEDERATION] Unbanned ${userId} from ${instance.name}`
-						);
 						resolve(true);
 					})
 					.catch((e) => {
@@ -89,8 +85,31 @@ export async function unbanUserAcrossFederations(
 	return fails;
 }
 
+export async function federateHackbans(): Promise<void> {
+	const fed_hack = await prisma.robloxUserBan.findMany()
+	for (const user of fed_hack) {
+		if ((Number(user.bannedUntil)*1000 < Date.now()) && (user.bannedUntil !== "-1")) {
+			try {
+				await UnbanUser(user.userId);
+			} catch {}
+		} else {
+			if (user.hackBan) {
+				await banUserAcrossFederations(user.userId, user.reason);
+				await new Promise(resolve => setTimeout(() => { resolve(null) }, 200))
+			}
+		}
+	}
+}
+
 export async function loadAllInstances() {
 	const instancesPath = path.join(__dirname, "instances");
+
+	(async () => {
+		while (true) {
+			await federateHackbans();
+			await new Promise((resolve) => setTimeout(resolve, 5000));
+		}
+	})();
 
 	fs.readdirSync(instancesPath).forEach((file) => {
 		if (file.endsWith(".ts")) {
@@ -99,7 +118,8 @@ export async function loadAllInstances() {
 			);
 			try {
 				require(path.join(instancesPath, file));
-			} catch {}
+			} catch { }
 		}
 	});
+
 }

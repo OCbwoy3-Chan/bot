@@ -1,3 +1,4 @@
+import { logger } from "@112/Utility";
 import { FederatedInstance } from "../FederatedInstance";
 import { registerFederatedInstance } from "../federation";
 
@@ -6,7 +7,18 @@ class Karma extends FederatedInstance {
 		super("Karma", "https://karma.ocbwoy3.dev");
 	}
 
+	public async getBanReason(id: string): Promise<string | null> {
+		try {
+			const bans = await fetch(`${this.rootUrl}/bans`)
+			const banData = await bans.json()
+			return banData[id] ? banData[id].reason : null
+		} catch {
+			return null;
+		}
+	}
+
 	public async banUser(id: string, reason: string): Promise<void> {
+		if ((await this.getBanReason(id)) === `(112) ${reason}`) return;
 		const res = await fetch(`${this.rootUrl}/banplayer`, {
 			method: "POST",
 			body: JSON.stringify({
@@ -20,6 +32,9 @@ class Karma extends FederatedInstance {
 			},
 		});
 		res.text().then(console.log);
+		logger.info(
+			`[FEDERATION] Banned ${id} from ${this.name} for reason: ${reason}`
+		);
 	}
 
 	public async unbanUser(id: string): Promise<void> {
@@ -34,6 +49,9 @@ class Karma extends FederatedInstance {
 			},
 		});
 		res.text().then(console.log);
+		logger.info(
+			`[FEDERATION] Unbanned ${id} from ${this.name}`
+		);
 	}
 }
 

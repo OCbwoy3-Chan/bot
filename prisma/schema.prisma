@@ -18,7 +18,8 @@ model RobloxUserBan {
     privateReason String?
     moderatorId   String
     moderatorName String
-    bannedFrom    String // SB, OCbwoy3sMultiverse, All
+    bannedFrom    String  @default("All") // SB, OCbwoy3sMultiverse, All // ! DEPRECATED
+    hackBan       Boolean @default(false)
 }
 
 // Appeals

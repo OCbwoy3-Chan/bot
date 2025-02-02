@@ -61,7 +61,7 @@ export async function BanUser(params: BanParams): Promise<void> {
 		throw `<@${user}> is whitelisted and cannot be banned.`
 	}
 	logger.info(
-		`[NEW BAN] ${params.UserID} by ${params.ModeratorName}, ${new Date(
+		`[NEW BAN] ${params.hackBan ? "HACKBAN " :""}${params.UserID} by ${params.ModeratorName}, ${new Date(
 			parseInt(params.BannedUntil) * 1000
 		).toISOString()} (${params.Reason})`
 	);
@@ -78,6 +78,7 @@ export async function BanUser(params: BanParams): Promise<void> {
 			moderatorId: params.ModeratorId,
 			moderatorName: params.ModeratorName,
 			bannedFrom: params.BannedFrom,
+			hackBan: params.hackBan
 		},
 	});
 	await RefreshAllBanlands();
@@ -94,10 +95,11 @@ export async function UpdateUserBan(params: UpdateBanParams): Promise<void> {
 	if (!IsValidBanningScope(params.BannedFrom))
 		throw `Invalid banning scope \`${params.BannedFrom}\``;
 	logger.info(
-		`[UPDATE BAN] ${params.UserID} by ${params.ModeratorName}, ${new Date(
+		`[UPDATE BAN] ${params.hackBan ? "HACKBAN " :""}${params.UserID} by ${params.ModeratorName}, ${new Date(
 			parseInt(params.BannedUntil) * 1000
 		).toISOString()} (${params.Reason})`
 	);
+	await new Promise((resolve) => setTimeout(resolve, 3000)); // hardcoded
 	banUserAcrossFederations(
 		params.UserID,
 		params.Reason || "Unspecified reason"
@@ -114,6 +116,7 @@ export async function UpdateUserBan(params: UpdateBanParams): Promise<void> {
 			moderatorId: params.ModeratorId,
 			moderatorName: params.ModeratorName,
 			bannedFrom: params.BannedFrom,
+			hackBan: params.hackBan
 		},
 	});
 	await RefreshAllBanlands();
@@ -128,6 +131,7 @@ export async function UnbanUser(userid: string): Promise<void> {
 		throw "User is not banned";
 	}
 	logger.info(`[UNBAN] ${userid}`);
+	await new Promise((resolve) => setTimeout(resolve, 3000)); // hardcoded
 	unbanUserAcrossFederations(userid).catch(() => { });
 	await prisma.robloxUserBan.delete({
 		where: {
