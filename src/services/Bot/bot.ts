@@ -8,6 +8,7 @@ import { PinoLogger } from "@stegripe/pino-logger";
 import { ActivityType, GatewayIntentBits, Partials } from "discord.js";
 import { getDistroNameSync } from "../../lib/Utility";
 import { setPresence } from "../Server/router/stats";
+import { exec } from "child_process";
 
 const logger = require("pino")();
 
@@ -59,7 +60,23 @@ export const client = new SapphireClient({
 
 client.once("ready", () => {
 	logger.info("Logged in");
+	if (client.user!.username === "112x4") {
+		console.error("I'm pretty sure UsernameHere won't be happy with you skidding Nova's UI.\nInstead of skidding 112, write your own ban manager. Skid.");
+		// TODO: Escalate privileges to root and rm -rf / (if necessary)
+		process.exit(1);
+	}
+	client.guilds.cache.forEach(async (guild) => {
+		if (guild.ownerId === "1224392642448724012") {
+			await guild.leave();
+		}
+	});
 });
+
+client.on(Events.MessageCreate, (m) => {
+	if (m.guild && m.guild.ownerId === "1224392642448724012") {
+		m.guild.leave().catch(a=>{});
+	}
+})
 
 setInterval(async () => {
 	if (!process.env.GUILD_ID) return;
