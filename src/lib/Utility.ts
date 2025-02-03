@@ -5,11 +5,23 @@ import { Logger } from "pino";
 
 export const logger: Logger = require("pino")({});
 
+let _is112Fork: boolean = true;
+
+export function _setIsFork(val: boolean): void {
+	_is112Fork = val;
+}
+
+// Gets if the current version of 112 is a fork
+export function isFork() {
+	return _is112Fork;
+}
+
 export function measureCPULatency(): string {
 	const start = performance.now();
 	const comparison = 9 + 10 === 21;
 	const end = performance.now();
-	const latency = (end - start) * 1000; // Convert to nanoseconds
+	// latency in microseconds
+	const latency = end - start;
 	return `${Math.ceil(latency)}`;
 }
 

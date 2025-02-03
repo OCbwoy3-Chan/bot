@@ -16,13 +16,7 @@ export class AutoReactListener extends Listener {
 		try {
 			// i hate it
 			// - ocbwoy3
-			if (/fox ?news/.test(message.content.toLowerCase())) {
-				await message.react("<:magahat:1334988593856516268>");
-			}
-			if (/trump|elon/.test(message.content.toLowerCase())) {
-				await message.react("<:magahat:1334988593856516268>");
-			}
-			if (/trump|elon/.test(message.content.toLowerCase())) {
+			if (/fox ?news|trump|elon( ?musk)?|jd ?vance|republican|maga|make ?america ?great ?again|joe ?rogan/.test(message.content.toLowerCase())) {
 				await message.react("<:magahat:1334988593856516268>");
 			}
 			if (/afd/.test(message.content.toLowerCase())) {

@@ -1,21 +1,16 @@
 import { HarmCategory } from "@google/generative-ai";
 import { RobloxUserBan } from "@prisma/client";
 import { PlayerInfo } from "noblox.js";
-import { getDistroNameSync, measureCPULatency } from "../lib/Utility";
+import { getDistroNameSync, isFork, measureCPULatency } from "../lib/Utility";
 import { GetBanData } from "../services/Database/helpers/RobloxBan";
 
 const distro = getDistroNameSync()
 
 export const infoCommand = {
 	genContent: async (roundTrip: string, gatewayPing: string) => {
-		const wtf = process.hrtime();
-		// 1000000
-		// const cpuLatency = wtf[0] / 1000000000 + wtf[1] / 1000000;
-
 		return [
 			`> # [ocbwoy3.dev](<https://ocbwoy3.dev>) (${distro.trim()})`,
-			`> [**112, GayestSB**](<https://github.com/ocbwoy3/112>)`,
-			`> -# **\`process.version\`:** ${process.version}`,
+			`> ${isFork() ? "[:warning: **Forked version of 112**](<https://github.com/OCbwoy3-Chan/112>)" : "[**112, GayestSB**](<https://github.com/OCbwoy3-Chan/112>)"}`,
 			`> -# **Gateway Latency:** ${gatewayPing}ms`,
 			`> -# **Network Latency:** ${roundTrip}ms`,
 			`> -# **CPU Latency:** ${measureCPULatency()}μs`,

@@ -6,7 +6,7 @@ import {
 } from "@sapphire/framework";
 import { PinoLogger } from "@stegripe/pino-logger";
 import { ActivityType, GatewayIntentBits, Partials } from "discord.js";
-import { getDistroNameSync } from "../../lib/Utility";
+import { _setIsFork, getDistroNameSync } from "../../lib/Utility";
 import { setPresence } from "../Server/router/stats";
 import { exec } from "child_process";
 
@@ -60,6 +60,9 @@ export const client = new SapphireClient({
 
 client.once("ready", () => {
 	logger.info("Logged in");
+	if (client.user!.id === "1271869353389723738") {
+		_setIsFork(false);
+	}
 	if (client.user!.username === "112x4") {
 		console.error("I'm pretty sure UsernameHere won't be happy with you skidding Nova's UI.\nInstead of skidding 112, write your own ban manager. Skid.");
 		// TODO: Escalate privileges to root and rm -rf / (if necessary)
