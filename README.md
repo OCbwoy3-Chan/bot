@@ -13,7 +13,9 @@ You can ban players here. Games who use your instance of this will ban sync your
 
 If you are developing/using this on NixOS, if Prisma doesn't work, Install [direnv](https://direnv.net/docs/hook.html) and then re-open the shell and run `direnv allow` (or just use `steam-run`).
 
-## NOTICE
+## Running This
+
+**By hosting your version of this, you promise not to skid it, as well as follow the license terms.**
 
 Required: Everything but Gemini API Key (it's optional, everything else is required)
 
