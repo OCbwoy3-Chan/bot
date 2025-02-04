@@ -57,4 +57,4 @@ async function func(args: any): Promise<any> {
 	return await record.json();
 }
 
-registerTool(func, meta);
+// registerTool(func, meta);
