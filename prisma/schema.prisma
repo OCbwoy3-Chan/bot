@@ -20,6 +20,7 @@ model RobloxUserBan {
     moderatorName String
     bannedFrom    String  @default("All") // SB, OCbwoy3sMultiverse, All // ! DEPRECATED
     hackBan       Boolean @default(false)
+	noFederated   Boolean @default(false) @ignore // TODO - Per-ban federation
 }
 
 // Appeals

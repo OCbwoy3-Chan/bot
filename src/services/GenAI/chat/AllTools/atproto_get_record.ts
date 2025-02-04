@@ -1,0 +1,48 @@
+import { AtUri, BskyAgent } from "@atproto/api";
+import { HandleResolver } from "@atproto/identity";
+import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
+import { addTest, registerTool } from "../tools";
+
+const meta: FunctionDeclaration = {
+	name: "getAtprotoRecord",
+	description:
+		"Turns a AT-URI into a Bluesky Record with it's data using the AT Protocol. Can be used to fetch a post's raw record details, or raw profile info. Such URI example is as at://did:plc:s7cesz7cr6ybltaryy4meb6y/app.bsky.feed.post/3lguftq3iqc2n which can easily be transformed from https://bsky.app/profile/ocbwoy3.dev/post/3lguftq3iqc2n , just transform the Domain to DID. post -> app.bsky.graph.post, the last part after post is the rkey. Without /post/rkey, it's collection app.bsky.actor.profile with rkey self",
+	parameters: {
+		required: ["uri"],
+		type: SchemaType.OBJECT,
+		description: "getAtprotoRecord parameters",
+		properties: {
+			uri: {
+				description: "The record's uri",
+				type: SchemaType.STRING,
+			},
+		},
+	},
+};
+
+addTest(meta.name, {
+	uri: "at://did:plc:s7cesz7cr6ybltaryy4meb6y/app.bsky.feed.post/3lguftq3iqc2n"
+});
+
+async function getPdsFromDid(did: string): Promise<string> {
+	const didDoc = await fetch(`https://plc.directory/${did}`);
+	const json = await didDoc.json();
+	return json.service.find((s: any) => s.id === '#atproto_pds')?.serviceEndpoint || '';
+}
+
+async function func(args: any): Promise<any> {
+	const uri = new AtUri(args.uri as string);
+	const pds = await getPdsFromDid(uri.host);
+	// console.log(`${pds}/xrpc/com.atproto.repo.getRecord?repo=${uri.host}&collection=${uri.collection}&rkey=${uri.rkey}`)
+	// atproto get record no auth required hack
+	const data = await fetch(`${pds}/xrpc/com.atproto.repo.getRecord?repo=${uri.host}&collection=${uri.collection}&rkey=${uri.rkey}`,{
+		headers: {
+			'Content-Type': 'application/json',
+		}
+	});
+	return await data.json();
+}
+
+// func({uri: "at://did:plc:s7cesz7cr6ybltaryy4meb6y/app.bsky.feed.post/3lguftq3iqc2n"}).then(a=>console.log(a));
+
+registerTool(func, meta);

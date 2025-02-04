@@ -1,3 +1,4 @@
+import { exec } from "child_process";
 import figlet from "figlet";
 import { Logger } from "pino";
 const logger: Logger = require("pino")();
@@ -5,6 +6,9 @@ const logger: Logger = require("pino")();
 require("dotenv").configDotenv(); // chad workaround typescript
 
 const SERVICE_LOAD_ORDER = ["Database", "Server", "GenAI", "Bot"];
+
+exec("clear");
+console.clear();
 
 async function loadServices() {
 	for (var service of SERVICE_LOAD_ORDER) {

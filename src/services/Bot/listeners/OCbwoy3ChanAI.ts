@@ -19,7 +19,7 @@ import { GetChannelPrompt, GetGuildPrompt } from "../../Database/helpers/AISetti
 let savedChatSession: Chat | null = null;
 
 let ChatPrompt = "default";
-let AIModel = "gemini-1.5-flash";
+let AIModel = "gemini-2.0-flash-exp";
 
 export function SetChatPrompt(p: string) {
 	if (!getPrompt(p)) throw "Prompt doesn't exist";
@@ -30,6 +30,10 @@ export function SetChatPrompt(p: string) {
 export function SetAIModel(p: string) {
 	AIModel = p;
 	savedChatSession = null;
+}
+
+export function GetAIModel() {
+	return AIModel
 }
 
 const staticAIContext = {

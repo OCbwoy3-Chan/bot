@@ -16,6 +16,7 @@ import {
 } from "discord.js";
 import { Part } from "@google/generative-ai";
 import { getDistroNameSync } from "@112/Utility";
+import { GetAIModel } from "../listeners/OCbwoy3ChanAI";
 
 class AskCommand extends Command {
     public constructor(
@@ -92,7 +93,7 @@ class AskCommand extends Command {
             }
         }
 
-        const chat = chatManager.getChat(interaction.channelId, "gemini-1.5-flash", prompt);
+        const chat = chatManager.getChat(interaction.channelId, GetAIModel(), prompt);
 
         const parts: Array<string | Part> = [message];
         if (vision) {
@@ -118,7 +119,7 @@ class AskCommand extends Command {
             chatbotUserId: interaction.client.user!.id,
             currentAiModel: chat.chatModel,
             currentChannel: interaction.channelId,
-            currentUserStatusOrWhatTheUserIsDoingListeningToEtc: "not usable with /ask command",
+            currentUserStatusOrWhatTheUserIsDoingListeningToEtc: { error: "not usable with /ask command" },
             currentServer: interaction.guild
                 ? {
                     name: interaction.guild.name,

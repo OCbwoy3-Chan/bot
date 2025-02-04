@@ -24,10 +24,6 @@ addTest(meta.name,{
 	didOrHandle: "ocbwoy3.dev"
 });
 
-const agent = new BskyAgent({
-	service: "https://public.api.bsky.app",
-});
-
 async function func(args: any): Promise<any> {
 	let did = args.didOrHandle as string;
 
@@ -49,21 +45,16 @@ async function func(args: any): Promise<any> {
 		);
 	}
 
-	const serviceEndpoint = service.serviceEndpoint;
+	const pds = service.serviceEndpoint;
 
-	const { data: user } = await agent.app.bsky.actor.getProfile({
-		actor: did,
+	// atproto get record no auth required hack
+	const record = await fetch(`${pds}/xrpc/com.atproto.repo.getRecord?repo=${did}&collection=app.bsky.actor.profile&rkey=self`,{
+		headers: {
+			'Content-Type': 'application/json',
+		}
 	});
 
-	return {
-		userDid: did,
-		joinDate: user.indexedAt,
-		displayName: user.displayName,
-		handle: user.handle,
-		description: user.description,
-		pds: serviceEndpoint,
-		rawProfileRecord: user,
-	};
+	return await record.json();
 }
 
 registerTool(func, meta);
