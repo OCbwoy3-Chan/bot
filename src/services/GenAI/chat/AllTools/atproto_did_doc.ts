@@ -36,4 +36,4 @@ async function func(args: any): Promise<any> {
 	return await didDoc.json();
 }
 
-registerTool(func, meta);
+// registerTool(func, meta);
