@@ -45,4 +45,4 @@ async function func(args: any): Promise<any> {
 
 // func({uri: "at://did:plc:s7cesz7cr6ybltaryy4meb6y/app.bsky.feed.post/3lguftq3iqc2n"}).then(a=>console.log(a));
 
-registerTool(func, meta);
+// registerTool(func, meta);
