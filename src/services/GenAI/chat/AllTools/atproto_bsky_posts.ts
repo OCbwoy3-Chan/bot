@@ -126,4 +126,4 @@ async function func(args: any): Promise<any> {
 	*/
 }
 
-registerTool(func, meta);
+// registerTool(func, meta);
