@@ -48,11 +48,13 @@ export const client = new SapphireClient({
 		}),
 	},
 	presence: {
-		status: "idle",
+		status: "dnd",
 		activities: [
 			{
-				name: `${getDistroNameSync()} ${process.arch}`,
-				type: ActivityType.Playing,
+				name: `${getDistroNameSync()}`,
+				type: ActivityType.Custom,
+				/* latvian politics */
+				state: `"${btoa("RXMsIFLFq2RvbGZzIEJyxJNtYW5pcywgZXNtdSBwaWV0ZWljaXMgcGlrZXR1IMWhZWl0IHBpZSBTYWVpbWFzLCAyLmF1Z3VzdMSBIDExOjMwLTEzOjMwCg==")}"`
 			},
 		],
 	},
