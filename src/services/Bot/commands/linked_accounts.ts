@@ -43,10 +43,18 @@ class SlashCommand extends Command {
 	): Promise<any> {
 		const user = interaction.targetUser;
 
+		await interaction.deferReply({
+			ephemeral: false,
+			fetchReply: true
+		});
+
 		const linkedAccounts = await prisma.whitelist_RobloxUser.findMany({
 			where: {
 				discordId: {
 					equals: user.id
+				},
+				hidden: {
+					not: true
 				}
 			}
 		})
@@ -73,7 +81,7 @@ class SlashCommand extends Command {
 			});
 		}
 
-		await interaction.reply({
+		await interaction.followUp({
 			embeds: [embed],
 			ephemeral: false,
 			files: filesToSend.map((a) => {

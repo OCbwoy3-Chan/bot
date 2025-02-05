@@ -1,6 +1,6 @@
 import { getIdFromUsername, PlayerInfo } from "noblox.js";
 import { UserIdResolveCacheWipeInterval } from "./Constants";
-import { logger } from "./Utility";
+import { fetchWithTimeout, logger } from "./Utility";
 
 let usernameIdCache: { [username: string]: number } = {};
 let playerInfoCache: { [userid: string]: PlayerInfo } = {};
@@ -22,11 +22,11 @@ type RobloxAPIResponse = {
 async function getRawAccountDetails(
 	userid: string
 ): Promise<RobloxAPIResponse> {
-	const d = await fetch(`https://users.roblox.com/v1/users/${userid}`, {
+	const d = await fetchWithTimeout(`https://users.roblox.com/v1/users/${userid}`, {
 		headers: {
 			"SEC-CH-UA-PLATFORM": "Linux",
 			"User-Agent":
-				"Mozilla/5.0 (X11; Linux x86_64) 112/1.0 (+https://ocbwoy3.dev)",
+				"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)",
 		},
 	});
 	const j = (await d.json()) as RobloxAPIResponse;

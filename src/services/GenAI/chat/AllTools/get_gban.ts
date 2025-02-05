@@ -29,7 +29,7 @@ addTest(meta.name, {
 	userid: "1523324373"
 });
 
-async function fetchWithTimeout(url: string, opts: any) {
+async function fetchWithTimeout(url: string, opts?: any) {
 	const timeout = 2500;
 
 	const controller = new AbortController();
@@ -40,6 +40,10 @@ async function fetchWithTimeout(url: string, opts: any) {
 		signal: controller.signal
 	});
 	clearTimeout(id);
+
+	if (controller.signal.aborted) {
+		throw new Error(`Took too long to fetch ${url} (>${timeout}ms)`);
+	}
 
 	return response;
 }
@@ -64,7 +68,9 @@ async function getNovaReason(
 			? { reason: bans[userid].reason, attributionRequired: true }
 			: null;
 	} catch (e_) {
-		return { javascriptFetchError: `${e_} ` };
+		let m = `${e_}`;
+		if (m.includes("AbortError")) m = "Request took too long to complete (>2500ms)"
+		return { javascriptFetchError: m };
 	}
 }
 
@@ -88,7 +94,9 @@ async function getAParamReason(
 			? { reason: bans[userid], attributionRequired: true }
 			: null;
 	} catch (e_) {
-		return { javascriptFetchError: `${e_} ` };
+		let m = `${e_}`;
+		if (m.includes("AbortError")) m = "Request took too long to complete (>2500ms)"
+		return { javascriptFetchError: m };
 	}
 }
 

@@ -19,7 +19,7 @@ import { GetChannelPrompt, GetGuildPrompt } from "../../Database/helpers/AISetti
 let savedChatSession: Chat | null = null;
 
 let ChatPrompt = "default";
-let AIModel = "gemini-2.0-flash-exp";
+let AIModel = "gemini-1.5-flash";
 
 export function SetChatPrompt(p: string) {
 	if (!getPrompt(p)) throw "Prompt doesn't exist";
@@ -81,6 +81,30 @@ export class OCbwoy3ChanAI extends Listener {
 								Buffer.from(JSON.stringify(testResults)),
 								{
 									name: "results.json"
+								}
+							)
+						]
+					})
+					return;
+				}
+				if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Prompt")) {
+					let prompt = ChatPrompt;
+					const channelPrompt = await GetChannelPrompt(m2.channel.id);
+					if (channelPrompt) {
+						prompt = channelPrompt;
+					} else if (m2.guild) {
+						const guildPrompt = await GetGuildPrompt(m2.guild.id);
+						if (guildPrompt) {
+							prompt = guildPrompt;
+						}
+					}
+					await m2.reply({
+						content: `${m2.author.id} ${AIModel} ${ChatPrompt}`,
+						files: [
+							new AttachmentBuilder(
+								Buffer.from(getPrompt(prompt)?.toString() || ""),
+								{
+									name: "system.txt"
 								}
 							)
 						]

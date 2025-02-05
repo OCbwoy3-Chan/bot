@@ -33,21 +33,21 @@ export function areGenAIFeaturesEnabled(): boolean {
 }
 
 export const AllModels: { [a: string]: { m: string; t: string } } = {
+
+	// GEMINI 2.0
+	// "Gemini 2.0 Flash Thinking Experimental 01-21": { m: "gemini-2.0-flash-thinking-exp-01-21", t: "1mil" },
+	// TODO - Add Gemini 2.0 models here when native tool support is avaiable
+
 	// GEMINI 1.5
 
 	"Gemini 1.5 Pro": { m: "gemini-1.5-pro", t: "2mil" },
 	"Gemini 1.5 Flash": { m: "gemini-1.5-flash", t: "1mil" },
 	"Gemini 1.5 Flash 8B": { m: "gemini-1.5-flash-8b", t: "1mil" },
 
-	// EXPERIMENTAL
+	// PREVEIEW
 
-	"Gemini 2.0 Flash Experimental": {
-		m: "gemini-2.0-flash-exp",
-		t: "1.04mil",
-	},
-	"Gemini Experimental 1206": { m: "gemini-exp-1206", t: "2.09mil" },
-	"LearnLM 1.5 Pro Experimental": {
-		m: "learnlm-1.5-pro-experimental",
-		t: "32k",
-	},
+	"Gemini 2.0 Flash Experimental": { m: "gemini-2.0-flash-exp", t: "1mil" },
+	"Gemini Experimental 1206": { m: "gemini-exp-1206", t: "2mil" },
+	"LearnLM 1.5 Pro Experimental": { m: "learnlm-1.5-pro-experimental", t: "32k" },
+
 };

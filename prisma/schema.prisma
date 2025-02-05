@@ -20,7 +20,7 @@ model RobloxUserBan {
     moderatorName String
     bannedFrom    String  @default("All") // SB, OCbwoy3sMultiverse, All // ! DEPRECATED
     hackBan       Boolean @default(false)
-	noFederated   Boolean @default(false) @ignore // TODO - Per-ban federation
+    noFederate    Boolean @default(false) @ignore // TODO - Per-ban federation
 }
 
 // Appeals
@@ -35,16 +35,19 @@ model RobloxUserAppeal {
 // Whitelist
 
 model Whitelist {
-    id String @id @unique
+    id     String  @id @unique
+    hidden Boolean @default(false)
 }
 
 model Whitelist_RobloxUser {
-    robloxId  String @id @unique
+    robloxId  String  @id @unique
     discordId String
+    hidden    Boolean @default(false)
 }
 
 model Whitelist_OCbwoy3ChanAI {
-    id String @id @unique
+    id     String  @id @unique
+    hidden Boolean @default(false)
 }
 
 // AI

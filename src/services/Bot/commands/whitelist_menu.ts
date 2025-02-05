@@ -10,6 +10,7 @@ import {
 	UserContextMenuCommandInteraction,
 } from "discord.js";
 import { IsWhitelisted } from "../../Database/helpers/DiscordWhitelist";
+import { IsAIWhitelisted } from "@db/helpers/AIWhitelist";
 
 class SlashCommand extends Command {
 	public constructor(
@@ -44,6 +45,11 @@ class SlashCommand extends Command {
 	): Promise<any> {
 		const user = interaction.targetUser;
 
+		await interaction.deferReply({
+			ephemeral: false,
+			fetchReply: true
+		});
+
 		const embed: APIEmbed = {
 			title: `${user.displayName}`,
 			fields: [
@@ -58,6 +64,10 @@ class SlashCommand extends Command {
 				{
 					name: "Is Whitelisted?",
 					value: `${(await IsWhitelisted(user.id)) ? "Yes" : "No"}`,
+				},
+				{
+					name: "Is AI Whitelisted?",
+					value: `${(await IsAIWhitelisted(user.id)) ? "Yes" : "No"}`,
 				},
 			],
 			thumbnail: { url: user.displayAvatarURL() },
@@ -85,7 +95,7 @@ class SlashCommand extends Command {
 			aiWhitelistButton
 		);
 
-		await interaction.reply({
+		await interaction.followUp({
 			embeds: [embed],
 			components: [row as any],
 			ephemeral: false,

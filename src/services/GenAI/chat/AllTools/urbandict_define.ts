@@ -1,5 +1,6 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { addTest, registerTool } from "../tools";
+import { fetchWithTimeout } from "@112/Utility";
 
 const meta: FunctionDeclaration = {
 	name: "urbanDefine",
@@ -23,7 +24,7 @@ addTest(meta.name,{
 });
 
 async function func(args: any): Promise<any> {
-	const r = await fetch(
+	const r = await fetchWithTimeout(
 		`https://api.urbandictionary.com/v0/define?term=${encodeURIComponent(
 			args.query
 		)}`

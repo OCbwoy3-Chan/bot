@@ -60,3 +60,22 @@ export function getDistroNameSync(): string {
 		return platform();
 	}
 }
+
+export async function fetchWithTimeout(url: string, opts?: any) {
+	const timeout = 2500;
+
+	const controller = new AbortController();
+	const id = setTimeout(() => controller.abort(), timeout);
+
+	const response = await fetch(url, {
+		...opts,
+		signal: controller.signal
+	});
+	clearTimeout(id);
+
+	if (controller.signal.aborted) {
+		throw new Error(`Took too long to fetch ${url} (>${timeout}ms)`);
+	}
+
+	return response;
+}

@@ -1,4 +1,4 @@
-import { logger } from "@112/Utility";
+import { fetchWithTimeout, logger } from "@112/Utility";
 import { FederatedInstance } from "../FederatedInstance";
 import { registerFederatedInstance } from "../federation";
 
@@ -9,7 +9,7 @@ class Karma extends FederatedInstance {
 
 	public async getBanReason(id: string): Promise<string | null> {
 		try {
-			const bans = await fetch(`${this.rootUrl}/bans`)
+			const bans = await fetchWithTimeout(`${this.rootUrl}/bans`)
 			const banData = await bans.json()
 			return banData[id] ? banData[id].reason : null
 		} catch {
@@ -19,7 +19,7 @@ class Karma extends FederatedInstance {
 
 	public async banUser(id: string, reason: string): Promise<void> {
 		if ((await this.getBanReason(id)) === `(112) ${reason}`) return;
-		const res = await fetch(`${this.rootUrl}/banplayer`, {
+		const res = await fetchWithTimeout(`${this.rootUrl}/banplayer`, {
 			method: "POST",
 			body: JSON.stringify({
 				UserId: Number(id),
@@ -38,7 +38,7 @@ class Karma extends FederatedInstance {
 	}
 
 	public async unbanUser(id: string): Promise<void> {
-		const res = await fetch(`${this.rootUrl}/unbanplayer`, {
+		const res = await fetchWithTimeout(`${this.rootUrl}/unbanplayer`, {
 			method: "POST",
 			body: JSON.stringify({
 				UserId: Number(id),
