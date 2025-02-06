@@ -6,6 +6,7 @@ import {
 	Events,
 	Message,
 	RawFile,
+	TextBasedChannel,
 } from "discord.js";
 import { getDistroNameSync } from "@112/Utility";
 import { IsAIWhitelisted } from "@db/helpers/AIWhitelist";
@@ -69,7 +70,10 @@ export class OCbwoy3ChanAI extends Listener {
 		client.on(Events.MessageCreate, async (m2: Message) => {
 			if (m2.author.id === client.user!.id) return;
 			if (!m2.mentions.has(client.user!.id)) return;
-			if (BlacklistedMentions.test(m2.content)) return; // temporary fix - this should be replaced with send permissions check instead
+			if (BlacklistedMentions.test(m2.content)) return;
+			if (!m2.channel.isDMBased()) {
+				if (!m2.channel.permissionsFor(client.user!.id)?.has("SendMessages")) return;
+			}
 			if ((await IsAIWhitelisted(m2.author.id)) !== true) return;
 
 			if (m2.author.id === process.env.OWNER_ID!) {
