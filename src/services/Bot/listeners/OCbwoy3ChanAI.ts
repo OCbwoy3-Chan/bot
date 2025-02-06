@@ -20,7 +20,7 @@ import { GetChannelPrompt, GetGuildPrompt } from "../../Database/helpers/AISetti
 let savedChatSession: Chat | null = null;
 
 let ChatPrompt = "default";
-let AIModel = "gemini-1.5-flash";
+let AIModel = "gemini-2.0-flash-lite-preview-02-05";
 let BlacklistedMentions = /@(?:here|everyone)/;
 
 export function SetChatPrompt(p: string) {
@@ -257,7 +257,7 @@ export class OCbwoy3ChanAI extends Listener {
 				currentChannel: m.channel.id,
 				currentUserStatusOrWhatTheUserIsDoingListeningToEtc: m.member
 					? m.member.presence?.toJSON()
-					: "avaiable only in servers",
+					: { error: "avaiable only in servers"},
 				currentServer: m.guild
 					? {
 						name: m.guild.name,
@@ -278,6 +278,9 @@ export class OCbwoy3ChanAI extends Listener {
 					parts,
 					params
 				);
+				if (toolsUsed.length !== 0) {
+					void m.react("⚙️").catch(a=>{})
+				}
 				if (response.length === 0) throw "Got empty message";
 				if (response.trim().replace(/ +/g, " ").length > 2000) {
 					filesToSend.push({

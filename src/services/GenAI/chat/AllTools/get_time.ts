@@ -2,7 +2,7 @@ import { FunctionDeclaration } from "@google/generative-ai";
 import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
-	name: "getTime",
+	name: "time_now",
 	description:
 		"Gets the current date/time right now.",
 };

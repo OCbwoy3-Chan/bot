@@ -11,6 +11,7 @@ import {
     ActionRowBuilder,
     ApplicationIntegrationType,
     AttachmentBuilder,
+    GuildChannel,
     InteractionContextType,
     TextChannel
 } from "discord.js";
@@ -127,7 +128,7 @@ class AskCommand extends Command {
                 }
                 : null,
             currentChannelM: {
-                name: interaction.channel?.isDMBased() ? null : (interaction.channel as TextChannel).name,
+                name: interaction.channel ? ((interaction.channel as GuildChannel).name || null) : null,
             },
             currentDistro: getDistroNameSync(),
             currentWorkingDir: process.cwd(),

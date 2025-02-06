@@ -3,7 +3,7 @@ import { GetUserDetails, GetUserIdFromName } from "../../../../lib/roblox";
 import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
-	name: "resolveRobloxName",
+	name: "roblox.name2info",
 	description:
 		"Resolves a Roblox Username to user details including name, display name, user id, etc.",
 	parameters: {

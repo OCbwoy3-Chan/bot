@@ -3,7 +3,7 @@ import { client } from "../../../Bot/bot";
 import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
-	name: "getDiscordUser",
+	name: "discord.get_user",
 	description: "Gets the information about the given Discord User.",
 	parameters: {
 		required: ["id"],

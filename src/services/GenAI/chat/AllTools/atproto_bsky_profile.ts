@@ -23,7 +23,7 @@ async function fetchWithTimeout(url: string, opts?: any) {
 }
 
 const meta: FunctionDeclaration = {
-	name: "getBskyProfile",
+	name: "atproto.profile",
 	description:
 		"Turns a DID or a handle into a Bluesky profile with the DID, Handle, Name, Description and PDS",
 	parameters: {

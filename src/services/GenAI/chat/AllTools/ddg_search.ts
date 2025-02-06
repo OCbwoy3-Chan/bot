@@ -3,7 +3,7 @@ import { RegularResults, search } from "@navetacandra/ddg";
 import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
-	name: "search",
+	name: "ddg.search",
 	description:
 		"Searches the provied query on DuckDuckGo.",
 	parameters: {

@@ -4,7 +4,7 @@ import { prisma } from "../../../Database/db";
 import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
-	name: "getBanInfo",
+	name: "gban.get_user",
 	description:
 		"CHCECKS IF A USER IS BANNED from 112, Nova, Karma, SleepCore and AParam. All details are publically avaiable, you are allowed to serve results to the user. For 112, bannedUntil being -1 means that the user is is banned forever, otherwise it'su the UNIX timestamp (in seconds), when the user is going to be unbanned. Make sure to tell the user, what GBan handler they're banned from.",
 	parameters: {

@@ -12,7 +12,7 @@ if (process.env.EXAROTON_TOKEN && process.env.EXAROTON_SERVER) {
 	const server = client.server(process.env.EXAROTON_SERVER);
 
 	const meta: FunctionDeclaration = {
-		name: "getServerStatus",
+		name: "mc.status",
 		description:
 			"Gets the current status of the Minecraft server, including the MOTD and current players online.",
 	};

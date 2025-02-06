@@ -22,7 +22,7 @@ async function fetchWithTimeout(url: string, opts?: any) {
 }
 
 const meta: FunctionDeclaration = {
-	name: "resolveDidDoc",
+	name: "atproto.did_doc",
 	description:
 		'Resolves a handle or a DID into the user\'s DID, any atproto signing keys and service endpoints (pds, labeler, etc.). The AT Protocol used for the Social Media Platform called "Bluesky". When calling it a Personal Data Server, add AT Protocol in front of it, so we know what you are refrerring to.',
 	parameters: {

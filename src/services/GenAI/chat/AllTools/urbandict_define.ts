@@ -3,7 +3,7 @@ import { addTest, registerTool } from "../tools";
 import { fetchWithTimeout } from "@112/Utility";
 
 const meta: FunctionDeclaration = {
-	name: "urbanDefine",
+	name: "urban",
 	description:
 		"Searches Urban Dictionary for the definition of the given query, most likely slang.",
 	parameters: {

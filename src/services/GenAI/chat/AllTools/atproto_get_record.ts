@@ -23,7 +23,7 @@ async function fetchWithTimeout(url: string, opts?: any) {
 }
 
 const meta: FunctionDeclaration = {
-	name: "getAtprotoRecord",
+	name: "atproto.get_record",
 	description:
 		"Turns a AT-URI into a Bluesky Record with it's data using the AT Protocol. Can be used to fetch a post's raw record details, or raw profile info. Such URI example is as at://did:plc:s7cesz7cr6ybltaryy4meb6y/app.bsky.feed.post/3lguftq3iqc2n which can easily be transformed from https://bsky.app/profile/ocbwoy3.dev/post/3lguftq3iqc2n , just transform the Domain to DID. post -> app.bsky.graph.post, the last part after post is the rkey. Without /post/rkey, it's collection app.bsky.actor.profile with rkey self",
 	parameters: {

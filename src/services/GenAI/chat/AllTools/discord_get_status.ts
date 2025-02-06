@@ -7,7 +7,7 @@ import { client } from "../../../Bot/bot";
 import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
-	name: "getStatus",
+	name: "discord.get_status",
 	description:
 		"Gets the given user's discord status which includes the current activities, music, games, online status (including platforms where), etc. embedded = discord on xbox/ps4/ps5",
 	parameters: {

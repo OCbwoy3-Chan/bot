@@ -23,6 +23,17 @@ model RobloxUserBan {
     noFederate    Boolean @default(false) @ignore // TODO - Per-ban federation
 }
 
+// TODO: Nova Sync
+model RobloxUserBan_ThirdPartyFed {
+    userId       String
+    banHandlerId String
+    reason       String
+    moderatorId  String?
+
+    @@id([userId, banHandlerId])
+	@@ignore
+}
+
 // Appeals
 
 model RobloxUserAppeal {

@@ -1,19 +1,34 @@
 import { HarmCategory } from "@google/generative-ai";
 import { RobloxUserBan } from "@prisma/client";
 import { PlayerInfo } from "noblox.js";
-import { getDistroNameSync, isFork, measureCPULatency } from "../lib/Utility";
+import { getDistroNameSync, measureCPULatency } from "../lib/Utility";
 import { GetBanData } from "../services/Database/helpers/RobloxBan";
+import { prisma } from "@db/db";
+import { freemem, totalmem, uptime } from "os";
 
 const distro = getDistroNameSync()
 
 export const infoCommand = {
 	genContent: async (roundTrip: string, gatewayPing: string) => {
+		const upd = uptime();
+		const days = Math.floor(upd / 86400);
+		const hours = Math.floor((upd % 86400) / 3600);
+		const minutes = Math.floor((upd % 3600) / 60);
+		const seconds = Math.floor(upd % 60);
+		const uptimeStr = `${days}d ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+		const totalMemoryGB = Math.round(totalmem() / 1024 / 1024 / 1024 * 100) / 100;
+		const usedMemoryGB = Math.round(freemem() / 1024 / 1024 / 1024 * 100) / 100;
+
 		return [
-			`> # [ocbwoy3.dev](<https://ocbwoy3.dev>) (${distro.trim()})`,
-			`> ${isFork() ? "[:warning: **Forked version of 112**](<https://github.com/OCbwoy3-Chan/112>)" : "[**112, GayestSB**](<https://github.com/OCbwoy3-Chan/112>)"}`,
-			`> -# **Gateway Latency:** ${gatewayPing}ms`,
-			`> -# **Network Latency:** ${roundTrip}ms`,
-			`> -# **CPU Latency:** ${measureCPULatency()}μs`,
+			`> # [ocbwoy3.dev](<https://ocbwoy3.dev>)`,
+			`> Running on **${distro}**`,
+			`> -# **Gateway Lat:** ${gatewayPing}ms`,
+			`> -# **Network Lat:** ${roundTrip}ms`,
+			`> -# **CPU Lat:** ${measureCPULatency()}μs`,
+			`> -# **Uptime:** ${uptimeStr}`,
+			`> -# **Memory:** ${usedMemoryGB}/${totalMemoryGB} GB`,
+			`> -# **Banned Users:** ${(await prisma.robloxUserBan.findMany()).length}`
 		].join("\n");
 	},
 };
