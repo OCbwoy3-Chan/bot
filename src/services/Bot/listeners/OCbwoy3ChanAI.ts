@@ -20,6 +20,7 @@ let savedChatSession: Chat | null = null;
 
 let ChatPrompt = "default";
 let AIModel = "gemini-1.5-flash";
+let BlacklistedMentions = /@(?:here|everyone)/;
 
 export function SetChatPrompt(p: string) {
 	if (!getPrompt(p)) throw "Prompt doesn't exist";
@@ -68,6 +69,7 @@ export class OCbwoy3ChanAI extends Listener {
 		client.on(Events.MessageCreate, async (m2: Message) => {
 			if (m2.author.id === client.user!.id) return;
 			if (!m2.mentions.has(client.user!.id)) return;
+			if (BlacklistedMentions.test(m2.content)) return; // temporary fix - this should be replaced with send permissions check instead
 			if ((await IsAIWhitelisted(m2.author.id)) !== true) return;
 
 			if (m2.author.id === process.env.OWNER_ID!) {
