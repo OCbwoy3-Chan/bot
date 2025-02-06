@@ -64,9 +64,9 @@ class AskCommand extends Command {
     public override async chatInputRun(
         interaction: Command.ChatInputCommandInteraction
     ) {
-        if (interaction.user.id !== process.env.OWNER_ID) {
+        if (!(await IsAIWhitelisted(interaction.user.id))) {
             return await interaction.reply({
-                content: general.errors.notOwner(),
+                content: general.errors.missingPermission("GENERATIVE_AI"),
                 ephemeral: true,
             });
         }
