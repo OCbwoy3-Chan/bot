@@ -107,29 +107,7 @@ async function func(args: any): Promise<any> {
 		did = (await hdlres.resolve(did)) || (args.didOrHandle as string);
 	}
 
-	const didDoc = await fetchWithTimeout(`https://plc.directory/${did}`);
-	const didDocJson = await didDoc.json();
-	const service = didDocJson.service.find(
-		(s: any) =>
-			s.id === "#atproto_pds" && s.type === "AtprotoPersonalDataServer"
-	);
-
-	if (!service) {
-		throw new Error(
-			"Cannot find #atproto_pds with type AtprotoPersonalDataServer in user's did doc"
-		);
-	}
-
-	const pds = service.serviceEndpoint;
-
-	// atproto get record no auth required hack
-	const record = await fetchWithTimeout(`${pds}/xrpc/com.atproto.repo.getRecord?repo=${did}&collection=app.bsky.actor.profile&rkey=self`,{
-		headers: {
-			'Content-Type': 'application/json',
-		}
-	});
-
-	let appview = {};
+	let appview = {error:"Service owner did not provide ATProto credentials"};
 
 	if (agent.did) {
 		const d = await agent.app.bsky.actor.getProfile({
@@ -148,10 +126,7 @@ async function func(args: any): Promise<any> {
 
 	console.log(appview);
 
-	return {
-		appview,
-		record: (await record.json())
-	}
+	return appview
 }
 
 registerTool(func, meta);
