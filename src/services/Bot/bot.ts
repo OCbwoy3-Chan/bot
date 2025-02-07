@@ -51,7 +51,7 @@ export const client = new SapphireClient({
 		status: "dnd",
 		activities: [
 			{
-				name: `Latvian Politics`,
+				name: `the AT Protocol`,
 				type: ActivityType.Playing,
 				// this is a cry for help
 			},
