@@ -25,15 +25,6 @@ export async function updateForm(id: string, authorId: string, questions: FormQu
 	});
 }
 
-updateForm("test", "ocbwoy3", [
-	{
-		type: FormQuestionType.TEXT,
-		question: "Best Roblox Game?",
-		description: "Regretevator, Obviously.",
-		options: []
-	}
-])
-
 export async function getForm(formId: string) {
 	// console.log(formId)
 	const f = await prisma.form.findFirst({

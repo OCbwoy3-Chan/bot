@@ -17,7 +17,7 @@ If you are developing/using this on NixOS, if Prisma doesn't work, Install [dire
 
 **By hosting your version of this, you promise not to skid it, as well as follow the license terms.**
 
-Required: Everything but Gemini API Key (it's optional, everything else is required)
+Optionally you can include ATProto credentials (to enable the ai bsky profile tool), and the Gemini API key to enable Generative AI features. 
 
 ## Additional notices
 
