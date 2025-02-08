@@ -51,9 +51,9 @@ export const client = new SapphireClient({
 		status: "dnd",
 		activities: [
 			{
-				name: `the AT Protocol`,
+				name: `AT Protocol`,
+				state: "Bluesky Social - @ocbwoy3.dev",
 				type: ActivityType.Playing,
-				// this is a cry for help
 			},
 		],
 	},

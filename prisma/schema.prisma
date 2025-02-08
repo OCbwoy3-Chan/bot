@@ -31,7 +31,7 @@ model RobloxUserBan_ThirdPartyFed {
     moderatorId  String?
 
     @@id([userId, banHandlerId])
-	@@ignore
+    @@ignore
 }
 
 // Appeals
@@ -43,7 +43,7 @@ model RobloxUserAppeal {
     appealMessage String
 }
 
-// Whitelist
+// Whitelists
 
 model Whitelist {
     id     String  @id @unique
@@ -61,7 +61,7 @@ model Whitelist_OCbwoy3ChanAI {
     hidden Boolean @default(false)
 }
 
-// AI
+// AI Configs
 
 model OCbwoy3ChanAI_ChannelSettings {
     id           String  @id @unique
@@ -71,6 +71,22 @@ model OCbwoy3ChanAI_ChannelSettings {
 model OCbwoy3ChanAI_GuildSettings {
     id           String  @id @unique
     forcedPrompt String?
+}
+
+// Forms
+
+model Form {
+    id        String @id @unique @default(cuid())
+    questions String
+    authorId  String
+}
+
+model FormResponse {
+    id           String @id @unique @default(cuid())
+    formId       String
+    respondentId String
+    ipAddress    String
+    answers      String
 }
 
 // Test

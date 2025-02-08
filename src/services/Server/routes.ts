@@ -4,6 +4,7 @@ import {
 	BanlandCacheHelper,
 } from "../../lib/BanlandCacheHelper";
 import { router, setNumBans } from "./router/stats";
+import { formRouter } from "./router/forms";
 
 export const app = express();
 
@@ -28,6 +29,7 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.use(router);
 
+
 const AllBanlandCacheHelper = new BanlandCacheHelper("All");
 AllBanlandCacheHelper._updateBanCountFunc = setNumBans;
 
@@ -37,6 +39,15 @@ app.get("/banland.json", async (req: Request, res: Response) => {
 	res.send(await AllBanlandCacheHelper.GetCachedBanland());
 });
 
+app.get("/bans", async (req: Request, res: Response) => {
+	res.send(await AllBanlandCacheHelper.GetCachedBanland());
+});
+
 app.get("/.prikolshub/banland.json", async (req: Request, res: Response) => {
 	res.send(await AllBanlandCacheHelper.GetCachedBanland());
 });
+
+/*
+app.use(express.json());
+app.use(formRouter);
+*/
