@@ -36,6 +36,7 @@
     "noblox.js": "^6.0.2",
     "nsfwjs": "^4.2.1",
     "pino": "^9.4.0",
+    "puppeteer-core": "^24.2.0",
     "sapphire": "^0.0.3",
     "tsc-watch": "^6.2.0"
   },

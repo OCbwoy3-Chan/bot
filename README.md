@@ -17,7 +17,9 @@ If you are developing/using this on NixOS, if Prisma doesn't work, Install [dire
 
 **By hosting your version of this, you promise not to skid it, as well as follow the license terms.**
 
-Optionally you can include ATProto credentials (to enable the ai bsky profile tool), and the Gemini API key to enable Generative AI features. 
+Optionally you can include ATProto credentials (to enable the ai bsky profile tool), and the Gemini API key to enable Generative AI features.
+
+~~Install puppeteer by running `bun run node_modules/puppeteer/install.mjs`.~~
 
 ## Additional notices
 
