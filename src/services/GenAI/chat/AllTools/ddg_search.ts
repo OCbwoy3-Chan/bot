@@ -39,7 +39,7 @@ async function func(args: any): Promise<any> {
 			query: (args as any).query as string,
 			next: `${searchResults.next}`,
 		});
-		let results2 = (searchResults.results as RegularResults).map(
+		let results2 = (searchResults2.results as RegularResults).map(
 			(result) => {
 				return {
 					title: result.title,
