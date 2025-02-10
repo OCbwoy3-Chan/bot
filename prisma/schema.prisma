@@ -73,6 +73,13 @@ model OCbwoy3ChanAI_GuildSettings {
     forcedPrompt String?
 }
 
+// AI Data
+
+model OCbwoy3ChanAI_UserMemory {
+	id        String @id @unique
+	memory    String // JSON
+}
+
 // Forms
 
 model Form {
