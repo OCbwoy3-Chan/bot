@@ -9,7 +9,7 @@ import { addTest, registerTool } from "../tools";
 const meta: FunctionDeclaration = {
 	name: "discord.get_status",
 	description:
-		"Gets the given user's discord status which includes the current activities, music, games, online status (including platforms where), etc. embedded = discord on xbox/ps4/ps5",
+		"Retrieves the Discord user's status, including activities, music, games, online status, and platform info (e.g., Xbox, PS4, PS5).",
 	parameters: {
 		required: ["id"],
 		type: SchemaType.OBJECT,

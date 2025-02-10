@@ -5,7 +5,7 @@ import { addTest, registerTool } from "../tools";
 const meta: FunctionDeclaration = {
 	name: "roblox.name2id",
 	description:
-		"Resolves a Roblox UserID to user details including name, display name, etc.",
+		"Resolves a Roblox UserID into user details such as name, display name, etc.",
 	parameters: {
 		required: ["userid"],
 		type: SchemaType.OBJECT,

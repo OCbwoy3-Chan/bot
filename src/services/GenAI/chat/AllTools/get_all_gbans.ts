@@ -24,7 +24,7 @@ async function fetchWithTimeout(url: string, opts?: any) {
 const meta: FunctionDeclaration = {
 	name: "gban.get_all",
 	description:
-		"Gets ALL Gbans/Bans from 112, Nova, Karma, SleepCore and AParam. All details are publically avaiable, you are allowed to serve results to the user. For 112, bannedUntil being -1 means that the user is is banned forever, otherwise it'su the UNIX timestamp (in seconds), when the user is going to be unbanned. Make sure to tell the user, what GBan handler they're banned from.",
+		"Retrieves all bans (Gbans) from systems like 112, Nova, Karma, SleepCore, and AParam. Details are publicly available and should not be obscured. -1 = Banned Forever",
 };
 
 addTest(meta.name, null);

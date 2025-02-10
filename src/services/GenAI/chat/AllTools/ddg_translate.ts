@@ -4,18 +4,18 @@ import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "ddg.translate",
-	description: "Translates the provied query on DuckDuckGo.",
+	description: "Translates a query into a target language using DuckDuckGo.",
 	parameters: {
 		required: ["target", "query"],
 		type: SchemaType.OBJECT,
 		description: "Translate parameters",
 		properties: {
 			target: {
-				description: "Target language ISO 639 alpha-2 code",
+				description: "The target language ISO code (e.g., en).",
 				type: SchemaType.STRING,
 			},
 			query: {
-				description: "String to translate",
+				description: "The text to translate.",
 				type: SchemaType.STRING,
 			},
 		},

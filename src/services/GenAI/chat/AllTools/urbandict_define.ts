@@ -5,14 +5,14 @@ import { fetchWithTimeout } from "@112/Utility";
 const meta: FunctionDeclaration = {
 	name: "urban",
 	description:
-		"Searches Urban Dictionary for the definition of the given query, most likely slang.",
+		"Searches Urban Dictionary for the definition of a given query.",
 	parameters: {
 		required: ["query"],
 		type: SchemaType.OBJECT,
 		description: "urbanDefine parameters",
 		properties: {
 			query: {
-				description: "Words to search for",
+				description: "The word or slang to search for.",
 				type: SchemaType.STRING,
 			},
 		},

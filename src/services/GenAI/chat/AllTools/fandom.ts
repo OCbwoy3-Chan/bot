@@ -19,7 +19,7 @@ function transformToApiUrl(wikiUrl: string) {
 const meta: FunctionDeclaration = {
 	name: "fandom",
 	description:
-		"Gets text from a page in a fandom.com wiki. Prefer this over using the puppeteer tool.",
+		"Extracts text from a page on a fandom.com wiki. Recommended over Puppeteer.",
 	parameters: {
 		required: [],
 		type: SchemaType.OBJECT,
@@ -27,7 +27,7 @@ const meta: FunctionDeclaration = {
 		properties: {
 			url: {
 				description:
-					"The {wikiName}.fandom.com/wiki/PAGE_NAME url to extract.",
+					"The URL of the specific wiki page (e.g., `{wikiName}.fandom.com/wiki/PAGE_NAME`).",
 				type: SchemaType.STRING,
 			}
 		},

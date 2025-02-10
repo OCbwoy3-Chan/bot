@@ -25,7 +25,7 @@ async function fetchWithTimeout(url: string, opts?: any) {
 const meta: FunctionDeclaration = {
 	name: "atproto.get_posts",
 	description:
-		"Turns a DID or a handle into Bluesky posts. Can also be used to retrieve Bluesky profile information.",
+		"Retrieves posts from Bluesky using a DID or handle.",
 	parameters: {
 		required: ["didOrHandle"],
 		type: SchemaType.OBJECT,

@@ -9,7 +9,7 @@ import { logger } from "@112/Utility";
 const meta: FunctionDeclaration = {
 	name: "puppeteer",
 	description:
-		"Gets text from a website with puppeteer.",
+		"Retrieves text from a website using Puppeteer.",
 	parameters: {
 		required: [],
 		type: SchemaType.OBJECT,
@@ -17,7 +17,7 @@ const meta: FunctionDeclaration = {
 		properties: {
 			url: {
 				description:
-					"The website URL to visit.",
+					"The URL of the website to visit.",
 				type: SchemaType.STRING,
 			}
 		},

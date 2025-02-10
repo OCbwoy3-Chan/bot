@@ -5,14 +5,14 @@ import { addTest, registerTool } from "../tools";
 const meta: FunctionDeclaration = {
 	name: "ddg.search",
 	description:
-		"Searches the provied query on DuckDuckGo.",
+		"Performs a search query on DuckDuckGo.",
 	parameters: {
 		required: ["query"],
 		type: SchemaType.OBJECT,
 		description: "Seach parameters",
 		properties: {
 			query: {
-				description: "Data to search for",
+				description: "The search query.",
 				type: SchemaType.STRING,
 			},
 		},

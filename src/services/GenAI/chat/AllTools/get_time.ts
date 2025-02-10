@@ -4,7 +4,7 @@ import { addTest, registerTool } from "../tools";
 const meta: FunctionDeclaration = {
 	name: "time_now",
 	description:
-		"Gets the current date/time right now.",
+		"Fetches the current date and time.",
 };
 
 addTest(meta.name,null);

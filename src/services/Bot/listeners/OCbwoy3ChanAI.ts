@@ -16,6 +16,7 @@ import { getPrompt } from "@ocbwoy3chanai/prompt/GeneratePrompt";
 import { testAllTools } from "@ocbwoy3chanai/ToolTest";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
 import { GetChannelPrompt, GetGuildPrompt } from "../../Database/helpers/AISettings";
+import { getToolMetas } from "@ocbwoy3chanai/chat/tools";
 
 let savedChatSession: Chat | null = null;
 
@@ -87,6 +88,34 @@ export class OCbwoy3ChanAI extends Listener {
 								Buffer.from(JSON.stringify(testResults)),
 								{
 									name: "results.json"
+								}
+							)
+						]
+					})
+					return;
+				}if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Tools")) {
+					const tools = await getToolMetas();
+					let tString = tools.map(a=>{
+						let b: string[] = [];
+						if (a.parameters) {
+							b = [
+								(a.parameters.description || "No description provided"),
+								`Type: ${a.parameters.type}`,
+								`Required: ${a.parameters.required?.join(", ")}`,
+								Object.entries(a.parameters.properties).map(([name, data])=>{
+									return `Param: ${name} - ${JSON.stringify(data)}`
+								}).join("\n")
+							]
+						}
+						return `${a.name} - ${a.description}\n${b.join("\n")}`
+					}).join("\n\n")
+					await m2.reply({
+						content: "ok",
+						files: [
+							new AttachmentBuilder(
+								Buffer.from(tString),
+								{
+									name: "tools.txt"
 								}
 							)
 						]

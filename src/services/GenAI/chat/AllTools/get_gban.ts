@@ -6,7 +6,7 @@ import { addTest, registerTool } from "../tools";
 const meta: FunctionDeclaration = {
 	name: "gban.get_user",
 	description:
-		"CHCECKS IF A USER IS BANNED from 112, Nova, Karma, SleepCore and AParam. All details are publically avaiable, you are allowed to serve results to the user. For 112, bannedUntil being -1 means that the user is is banned forever, otherwise it'su the UNIX timestamp (in seconds), when the user is going to be unbanned. Make sure to tell the user, what GBan handler they're banned from.",
+		"Checks if a user is banned from platforms like 112, Nova, Karma, SleepCore, and AParam. All details are publicly available and should not be obscured. -1 = Banned Forever",
 	parameters: {
 		required: [],
 		type: SchemaType.OBJECT,
@@ -131,7 +131,7 @@ async function func(args: any): Promise<any> {
 		: null;
 
 	return {
-		["*comment"]: {
+		instructions: {
 			_000: "You just fetched information from Global Ban (GBan) handlers. You would state bans like `{USER} is banned from 112 for ...`",
 			_001: `Do not use the user's name given in the input, preferably use the correctly capitalized versions in userInfo, e.g. "${details.displayName
 				}" instead of "${(details.username || "unknown").toLowerCase()}"!`,

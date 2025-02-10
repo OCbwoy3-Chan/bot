@@ -26,7 +26,7 @@ async function fetchWithTimeout(url: string, opts?: any) {
 const meta: FunctionDeclaration = {
 	name: "atproto.profile",
 	description:
-		"Gets the Name, Display Name, Bio, Description, Labels, Self-Labels, Pronouns, Avatar, Status and other metadata about a Bluesky user. Use the labeler's name and the label's localized metadata!! !no-unauthenticated is used to prevent unauthenticated users from viewing the profile. ",
+		"Fetches profile metadata from Bluesky (Name, Display Name, Bio, Labels, etc.). For unauthenticated users, use !no-unauthenticated.",
 	parameters: {
 		required: ["didOrHandle"],
 		type: SchemaType.OBJECT,
@@ -91,8 +91,8 @@ async function func(args: any): Promise<any> {
 					(p.policies.labelValueDefinitions || []).forEach(l=>{
 						labels[`${p.creator.did}/${l.identifier}`] = {labeler: p.creator.displayName, serverity: l.severity, name: l.locales[0].name, description: l.locales[0].description, id: l.identifier, blurs: l.blurs}
 					})
-					labels[`${p.creator.did}/!hide`] = {labeler: p.creator.displayName, serverity: "hide", description: "Hides the content", id: "!hide", blurs: false}
-					labels[`${p.creator.did}/!warn`] = {labeler: p.creator.displayName, serverity: "warn", description: "Warns the user before showing the content", id: "!warn", blurs: false}
+					labels[`${p.creator.did}/!hide`] = {labeler: p.creator.displayName, serverity: "hide", description: "Hides the content from subscribers of the labeler", id: "!hide", blurs: false}
+					labels[`${p.creator.did}/!warn`] = {labeler: p.creator.displayName, serverity: "warn", description: "Warns subscribers upon clicking this profile.", id: "!warn", blurs: false}
 				});
 			} catch(e_) {
 				console.error(e_)
@@ -107,7 +107,7 @@ async function func(args: any): Promise<any> {
 		did = (await hdlres.resolve(did)) || (args.didOrHandle as string);
 	}
 
-	let appview = {error:"Service owner did not provide ATProto credentials"};
+	let appview: any = {error:"Service owner did not provide ATProto credentials"};
 
 	if (agent.did) {
 		const d = await agent.app.bsky.actor.getProfile({
@@ -119,6 +119,9 @@ async function func(args: any): Promise<any> {
 		})
 		let x = d.data
 		x.labels = (d.data.labels || []).map(a=>{
+			if (a.src == x.did && a.val == "!no-unauthenticated") {
+				return {labeler: (x.displayName || x.handle), serverity: "hide", description: "Global atproto label. This profile is hidden from logged-out users in apps which respect the !no-unautenticated label.", id: a.val, blurs: false}
+			}
 			return labels[`${a.src}/${a.val}`] || {labeler: a.src, serverity: "unknown", description: "Unknown", id: a.val, blurs: false}
 		})
 		appview = x;

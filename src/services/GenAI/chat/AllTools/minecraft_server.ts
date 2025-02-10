@@ -14,7 +14,7 @@ if (process.env.EXAROTON_TOKEN && process.env.EXAROTON_SERVER) {
 	const meta: FunctionDeclaration = {
 		name: "mc.status",
 		description:
-			"Gets the current status of the Minecraft server, including the MOTD and current players online.",
+			"Fetches the status of a Minecraft server, including the MOTD and the number of players online.",
 	};
 
 	async function func(args: any): Promise<any> {

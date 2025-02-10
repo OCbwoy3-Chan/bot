@@ -4,7 +4,7 @@ import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "discord.get_user",
-	description: "Gets the information about the given Discord User.",
+	description: "Retrieves detailed information about a Discord user.",
 	parameters: {
 		required: ["id"],
 		type: SchemaType.OBJECT,
