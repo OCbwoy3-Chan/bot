@@ -8,166 +8,233 @@ import { GetChannelPrompt, GetGuildPrompt } from "../../Database/helpers/AISetti
 import { AIContext, Chat } from "@ocbwoy3chanai/chat/index";
 
 import {
-    ActionRowBuilder,
-    ApplicationIntegrationType,
-    AttachmentBuilder,
-    GuildChannel,
-    InteractionContextType,
-    TextChannel
+	ActionRow,
+	ActionRowBuilder,
+	ApplicationIntegrationType,
+	AttachmentBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	GuildChannel,
+	InteractionContextType,
+	MessageActionRowComponent,
+	TextChannel
 } from "discord.js";
 import { Part } from "@google/generative-ai";
 import { getDistroNameSync } from "@112/Utility";
 import { GetAIModel } from "../listeners/OCbwoy3ChanAI";
+import { client } from "../bot";
 
 class AskCommand extends Command {
-    public constructor(
-        context: Subcommand.LoaderContext,
-        options: Subcommand.Options
-    ) {
-        super(context, {
-            ...options,
-            description: "Asks OCbwoy3-Chan a question",
-            preconditions: (<unknown>[]) as PreconditionEntryResolvable[],
-        });
-    }
+	public constructor(
+		context: Subcommand.LoaderContext,
+		options: Subcommand.Options
+	) {
+		super(context, {
+			...options,
+			description: "Asks OCbwoy3-Chan a question",
+			preconditions: (<unknown>[]) as PreconditionEntryResolvable[],
+		});
+	}
 
-    public override registerApplicationCommands(registry: Command.Registry) {
-        registry.registerChatInputCommand((builder) =>
-            builder
-                .setName(this.name)
-                .setDescription(this.description)
-                .setContexts(
-                    InteractionContextType.BotDM,
-                    InteractionContextType.Guild,
-                    InteractionContextType.PrivateChannel
-                )
-                .setIntegrationTypes(
-                    ApplicationIntegrationType.GuildInstall,
-                    ApplicationIntegrationType.UserInstall
-                )
-                .setName("ask")
-                .setDescription("Ask OCbwoy3-Chan a question")
-                .addStringOption((option) =>
-                    option
-                        .setName("message")
-                        .setDescription("The message to ask")
-                        .setRequired(true)
-                )
-                .addAttachmentOption((option) =>
-                    option
-                        .setName("vision")
-                        .setDescription("Include vision analysis")
-                        .setRequired(false)
-                )
-        );
-    }
+	public override registerApplicationCommands(registry: Command.Registry) {
+		registry.registerChatInputCommand((builder) =>
+			builder
+				.setName(this.name)
+				.setDescription(this.description)
+				.setContexts(
+					InteractionContextType.BotDM,
+					InteractionContextType.Guild,
+					InteractionContextType.PrivateChannel
+				)
+				.setIntegrationTypes(
+					ApplicationIntegrationType.GuildInstall,
+					ApplicationIntegrationType.UserInstall
+				)
+				.setName("ask")
+				.setDescription("Ask OCbwoy3-Chan a question")
+				.addStringOption((option) =>
+					option
+						.setName("message")
+						.setDescription("The message to ask")
+						.setRequired(true)
+				)
+				.addAttachmentOption((option) =>
+					option
+						.setName("vision")
+						.setDescription("Include vision analysis")
+						.setRequired(false)
+				)
+		);
+	}
 
-    public override async chatInputRun(
-        interaction: Command.ChatInputCommandInteraction
-    ) {
-        if (!(await IsAIWhitelisted(interaction.user.id))) {
-            return await interaction.reply({
-                content: general.errors.missingPermission("GENERATIVE_AI"),
-                ephemeral: true,
-            });
-        }
-        if (!areGenAIFeaturesEnabled()) {
-            return await interaction.reply(general.errors.genai.aiDisabled());
-        }
+	public override async chatInputRun(
+		interaction: Command.ChatInputCommandInteraction
+	) {
+		if (!(await IsAIWhitelisted(interaction.user.id))) {
+			return await interaction.reply({
+				content: general.errors.missingPermission("GENERATIVE_AI"),
+				ephemeral: true,
+			});
+		}
+		if (!areGenAIFeaturesEnabled()) {
+			return await interaction.reply(general.errors.genai.aiDisabled());
+		}
 
-        await interaction.deferReply({
-            ephemeral: false,
-            fetchReply: true
-        });
+		await interaction.deferReply({
+			ephemeral: false,
+			fetchReply: true
+		});
 
-        const message = interaction.options.getString("message", true);
-        const vision = interaction.options.getAttachment("vision", false) ? true : false;
+		const message = interaction.options.getString("message", true);
+		const vision = interaction.options.getAttachment("vision", false) ? true : false;
 
-        let prompt = "default";
-        const channelPrompt = await GetChannelPrompt(interaction.channelId);
-        if (channelPrompt) {
-            prompt = channelPrompt;
-        } else if (interaction.guildId) {
-            const guildPrompt = await GetGuildPrompt(interaction.guildId);
-            if (guildPrompt) {
-                prompt = guildPrompt;
-            }
-        }
+		let prompt = "default";
+		const channelPrompt = await GetChannelPrompt(interaction.channelId);
+		if (channelPrompt) {
+			prompt = channelPrompt;
+		} else if (interaction.guildId) {
+			const guildPrompt = await GetGuildPrompt(interaction.guildId);
+			if (guildPrompt) {
+				prompt = guildPrompt;
+			}
+		}
 
-        const chat = chatManager.getChat(interaction.channelId, GetAIModel(), prompt);
+		const chat = chatManager.getChat(interaction.channelId, GetAIModel(), prompt);
 
-        const parts: Array<string | Part> = [message];
-        if (vision) {
-            for (const attachment of [interaction.options.getAttachment("vision", true)]) {
-                try {
-                    const response = await fetch(attachment.url);
-                    const raw = await response.arrayBuffer();
-                    const mimeType = response.headers.get("content-type") || "text/plain";
-                    parts.push({
-                        inlineData: {
-                            data: Buffer.from(raw).toString("base64"),
-                            mimeType: mimeType,
-                        },
-                    });
-                } catch (e_) {
-                    console.warn(`Failed to download attachment: ${e_}`);
-                }
-            }
-        }
+		const parts: Array<string | Part> = [message];
+		if (vision) {
+			for (const attachment of [interaction.options.getAttachment("vision", true)]) {
+				try {
+					const response = await fetch(attachment.url);
+					const raw = await response.arrayBuffer();
+					const mimeType = response.headers.get("content-type") || "text/plain";
+					parts.push({
+						inlineData: {
+							data: Buffer.from(raw).toString("base64"),
+							mimeType: mimeType,
+						},
+					});
+				} catch (e_) {
+					console.warn(`Failed to download attachment: ${e_}`);
+				}
+			}
+		}
 
-        const params: AIContext = {
-            askingUserId: interaction.user.id,
-            chatbotUserId: interaction.client.user!.id,
-            currentAiModel: chat.chatModel,
-            currentChannel: interaction.channelId,
-            currentUserStatusOrWhatTheUserIsDoingListeningToEtc: { error: "not usable with /ask command" },
-            currentServer: interaction.guild
-                ? {
-                    name: interaction.guild.name,
-                    id: interaction.guild.id,
-                }
-                : null,
-            currentChannelM: {
-                name: interaction.channel ? ((interaction.channel as GuildChannel).name || null) : null,
-            },
-            currentDistro: getDistroNameSync(),
-            currentWorkingDir: process.cwd(),
-        };
+		const params: AIContext = {
+			askingUserId: interaction.user.id,
+			chatbotUserId: interaction.client.user!.id,
+			currentAiModel: chat.chatModel,
+			currentChannel: interaction.channelId,
+			currentUserStatusOrWhatTheUserIsDoingListeningToEtc: { error: "not usable with /ask command" },
+			currentServer: interaction.guild
+				? {
+					name: interaction.guild.name,
+					id: interaction.guild.id,
+				}
+				: null,
+			currentChannelM: {
+				name: interaction.channel ? ((interaction.channel as GuildChannel).name || null) : null,
+			},
+			currentDistro: getDistroNameSync(),
+			currentWorkingDir: process.cwd(),
+		};
 
-        let response = "";
-        let toolsUsed: string[] = [];
-        let err: any = false;
-        try {
-            [response, toolsUsed] = await chat.generateResponse(parts, params);
-            if (response.length === 0) throw "Got empty message";
-            if (response.trim().replace(/ +/g, " ").length > 2000) {
-                return await interaction.followUp({
-                    content: "> Message too long, sending as file.",
-                    files: [
-                        new AttachmentBuilder(Buffer.from(response), {
-                            name: "message.txt",
-                        }),
-                    ],
-                    ephemeral: true,
-                });
-            }
-        } catch (e_) {
-            err = e_;
-            chatManager.clearChat(interaction.channelId);
-        }
+		let response = "";
+		let toolsUsed: string[] = [];
+		let err: any = false;
+		let rows: any[] = [];
+		try {
+			[response, toolsUsed] = await chat.generateResponse(parts, params);
 
-        if (err !== false) {
-            return await interaction.followUp({
-                content: `> ${err}`,
-                ephemeral: true,
-            });
-        }
+			let t: { emoji: string, label: string, id: string }[] = [];
 
-        return await interaction.followUp({
-            content: response,
-            ephemeral: false,
-        });
-    }
+			if (toolsUsed.includes("memory.add") || toolsUsed.includes("memory.delete") || toolsUsed.includes("memory.update")) {
+				t.push({
+					emoji: "📓",
+					label: "Memory updated",
+					id: "ocbwoy3chan_tool_noop_mem"
+				})
+			}
+
+			if (toolsUsed.includes("atproto.get_posts") || toolsUsed.includes("atproto.profile") || toolsUsed.includes("atproto.did_doc") || toolsUsed.includes("atproto.get_record")) {
+				t.push({
+					emoji: client.user!.id === "1271869353389723738" ? "<:bsky:1329812129288552458>" : "🦋",
+					label: "AT Protocol",
+					id: "ocbwoy3chan_tool_noop_atproto"
+				})
+			}
+
+			if (toolsUsed.includes("ddg.search")) {
+				t.push({
+					emoji: "🪿",
+					label: "DuckDuckGo",
+					id: "ocbwoy3chan_tool_noop_ddg"
+				})
+			}
+
+			if (toolsUsed.includes("puppeteer")) {
+				t.push({
+					emoji: "🪆",
+					label: "Puppeteer",
+					id: "ocbwoy3chan_tool_noop_puppeteer"
+				})
+			}
+
+			if (toolsUsed.includes("fandom")) {
+				t.push({
+					emoji: "🔬",
+					label: "Fandom",
+					id: "ocbwoy3chan_tool_noop_fandom"
+				})
+			}
+
+
+			const buttons: ButtonBuilder[] = t.map((tool) =>
+				new ButtonBuilder()
+					.setLabel(tool.label)
+					.setEmoji(tool.emoji)
+					.setCustomId(tool.id)
+					.setStyle(ButtonStyle.Secondary)
+			);
+
+			for (let i = 0; i < buttons.length; i += 4) {
+				const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+					...buttons.slice(i, i + 4)
+				);
+				rows.push(row);
+			}
+
+			if (response.length === 0) throw "Got empty message";
+			if (response.trim().replace(/ +/g, " ").length > 2000) {
+				return await interaction.followUp({
+					content: "> Message too long, sending as file.",
+					files: [
+						new AttachmentBuilder(Buffer.from(response), {
+							name: "message.txt",
+						}),
+					],
+					components: rows as any,
+					ephemeral: true,
+				});
+			}
+		} catch (e_) {
+			err = e_;
+			chatManager.clearChat(interaction.channelId);
+		}
+
+		if (err !== false) {
+			return await interaction.followUp({
+				content: `> ${err}`,
+				ephemeral: true,
+			});
+		}
+
+		return await interaction.followUp({
+			content: response,
+			ephemeral: false,
+			components: rows as any
+		});
+	}
 }
 
 export default AskCommand;

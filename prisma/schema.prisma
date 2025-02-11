@@ -76,8 +76,9 @@ model OCbwoy3ChanAI_GuildSettings {
 // AI Data
 
 model OCbwoy3ChanAI_UserMemory {
-	id        String @id @unique
-	memory    String // JSON
+    id     String @id @unique @default(cuid())
+    user   String
+    memory String
 }
 
 // Forms

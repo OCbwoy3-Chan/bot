@@ -10,7 +10,7 @@ import {
 } from "discord.js";
 import { getDistroNameSync } from "@112/Utility";
 import { IsAIWhitelisted } from "@db/helpers/AIWhitelist";
-import { AIContext, Chat } from "@ocbwoy3chanai/chat/index";
+import { AIContext, Chat, tools } from "@ocbwoy3chanai/chat/index";
 import { areGenAIFeaturesEnabled } from "@ocbwoy3chanai/gemini";
 import { getPrompt } from "@ocbwoy3chanai/prompt/GeneratePrompt";
 import { testAllTools } from "@ocbwoy3chanai/ToolTest";
@@ -21,7 +21,7 @@ import { getToolMetas } from "@ocbwoy3chanai/chat/tools";
 let savedChatSession: Chat | null = null;
 
 let ChatPrompt = "default";
-let AIModel = "gemini-2.0-flash-lite-preview-02-05";
+let AIModel = "gemini-2.0-flash-exp";
 let BlacklistedMentions = /@(?:here|everyone)/;
 
 export function SetChatPrompt(p: string) {
@@ -309,6 +309,9 @@ export class OCbwoy3ChanAI extends Listener {
 				);
 				if (toolsUsed.length !== 0) {
 					void m.react("⚙️").catch(a=>{})
+				}
+				if (toolsUsed.includes("memory.add") || toolsUsed.includes("memory.delete") || toolsUsed.includes("memory.update")) {
+					void m.react("📓").catch(a=>{})
 				}
 				if (response.length === 0) throw "Got empty message";
 				if (response.trim().replace(/ +/g, " ").length > 2000) {

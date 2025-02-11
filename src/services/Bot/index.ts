@@ -14,7 +14,7 @@ class BotService {
 			process.exit(1);
 		}
 		client.login(process.env.DISCORD_TOKEN).catch((e_) => {
-			this.logger.child({ error: e_ }).fatal("Bot threw an exception!");
+			this.logger.child({ error: e_ }).fatal("Bot threw a FATAL exception!");
 			this.logger.fatal("You might have given 112 an invalid token!");
 			this.logger.fatal(
 				"If the gateway did not send OP_HELLO in time, Discord has an outage!"

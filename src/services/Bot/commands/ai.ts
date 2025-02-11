@@ -9,7 +9,7 @@ import {
 } from "discord.js";
 import { general } from "../../../locale/commands";
 import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
-import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
+import { AI_HELP_MSG, areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { getCachedPromptsJ } from "../../GenAI/prompt/GeneratePrompt";
 import {
 	clearOCbwoy3ChansHistory,
@@ -31,6 +31,10 @@ class SlashCommand extends Subcommand {
 				{
 					name: "reset",
 					chatInputRun: "chatInputClear",
+				},
+				{
+					name: "help",
+					chatInputRun: "chatInputHelp",
 				},
 				{
 					name: "set_character",
@@ -61,6 +65,11 @@ class SlashCommand extends Subcommand {
 				)
 				.addSubcommand((builder) =>
 					builder
+						.setName("help")
+						.setDescription("Displays OCbwoy3-Chan's usage guide")
+				)
+				.addSubcommand((builder) =>
+					builder
 						.setName("set_character")
 						.setDescription("Sets OCbwoy3-Chan's system prompt in the current channel")
 						.addStringOption((option) =>
@@ -72,6 +81,15 @@ class SlashCommand extends Subcommand {
 						)
 				)
 		);
+	}
+
+	public async chatInputHelp(
+		interaction: Subcommand.ChatInputCommandInteraction
+	) {
+		return await interaction.reply({
+			content: AI_HELP_MSG,
+			ephemeral: true,
+		});
 	}
 
 	public async chatInputClear(

@@ -49,9 +49,10 @@ export type GenerationConfig = {
 export class Chat {
 	chatSession: ChatSession | null = null;
 	callHistory: { [hash: string]: any } = {}; // Store previous calls
+	usersInChat: string[] = []
 
 	constructor(
-		public chatModel: string = "learnlm-1.5-pro-experimental",
+		public chatModel: string = "gemini-2.0-flash-lite-preview-02-05",
 		public prompt: string = "ocbwoy3-chan",
 		public cfg: GenerationConfig = { temperature: 1, topP: 0.95, topK: 40 }
 	) {
@@ -121,6 +122,10 @@ export class Chat {
 
 		let result: GenerateContentResult | null = null;
 		let loopCount = 0;
+
+		if (ctx && !this.usersInChat.includes(ctx.askingUserId)) {
+			ctx.mustFetchMemories = true;
+		}
 
 		let toolsUsed: string[] = [];
 
