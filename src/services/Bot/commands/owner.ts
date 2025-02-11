@@ -10,6 +10,7 @@ import {
 import { general } from "../../../locale/commands";
 import { prisma } from "../../Database/db";
 import { AllModels, areGenAIFeaturesEnabled } from "../../GenAI/gemini";
+import { resetOCbwoy3ChansAPIKey } from "services/Server/router/chat";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -38,6 +39,10 @@ class SlashCommand extends Subcommand {
 				{
 					name: "kill",
 					chatInputRun: "chatInputKill",
+				},
+				{
+					name: "apikey",
+					chatInputRun: "chatInputApiKey",
 				},
 				{
 					name: "reset_ai",
@@ -79,6 +84,11 @@ class SlashCommand extends Subcommand {
 					)
 					.addSubcommand((command) =>
 						command
+							.setName("apikey")
+							.setDescription("Generates a single-use API Key for OCbwoy3-Chan AI")
+					)
+					.addSubcommand((command) =>
+						command
 							.setName("reset_ai")
 							.setDescription("Resets AI preferences of ALL channels/guilds")
 					)
@@ -113,6 +123,17 @@ class SlashCommand extends Subcommand {
 			content: `> **${wl.length} users genai whitelisted**${wl.map(
 				(a) => `\n> <@${a.id}>`
 			)}`,
+			ephemeral: true,
+		});
+	}
+
+	public async chatInputApiKey(
+		interaction: Command.ChatInputCommandInteraction
+	) {
+		const wl = await prisma.whitelist_OCbwoy3ChanAI.findMany();
+
+		return interaction.reply({
+			content: `\`\`\`${resetOCbwoy3ChansAPIKey()}\`\`\``,
 			ephemeral: true,
 		});
 	}

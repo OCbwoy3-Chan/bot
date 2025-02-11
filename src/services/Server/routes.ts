@@ -5,6 +5,7 @@ import {
 } from "../../lib/BanlandCacheHelper";
 import { router, setNumBans } from "./router/stats";
 import { formRouter } from "./router/forms";
+import { aiRouter } from "./router/chat";
 
 export const app = express();
 
@@ -46,6 +47,8 @@ app.get("/bans", async (req: Request, res: Response) => {
 app.get("/.prikolshub/banland.json", async (req: Request, res: Response) => {
 	res.send(await AllBanlandCacheHelper.GetCachedBanland());
 });
+
+app.use(aiRouter);
 
 /*
 app.use(express.json());
