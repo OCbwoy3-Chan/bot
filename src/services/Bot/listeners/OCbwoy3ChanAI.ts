@@ -276,7 +276,7 @@ export class OCbwoy3ChanAI extends Listener {
 			}
 
 			if (m.channel.type === ChannelType.GuildText) {
-				void m.channel.sendTyping();
+				void m.channel.sendTyping().catch(a=>{});
 			}
 
 			const params: AIContext = {

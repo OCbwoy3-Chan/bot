@@ -73,6 +73,8 @@ const LABELER_DIDS = [
 
 let labels: {[a:string]: any} = {};
 
+/* stupid pds' appview ratelimits wtf */
+
 async function func(args: any): Promise<any> {
 
 	if (!agent.did) {
