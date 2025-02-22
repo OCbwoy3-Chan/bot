@@ -129,8 +129,8 @@ async function func(args: any): Promise<any> {
 					(p.policies.labelValueDefinitions || []).forEach(l=>{
 						labels[`${p.creator.did}/${l.identifier}`] = {labeler: p.creator.displayName, serverity: l.severity, name: l.locales[0].name, description: l.locales[0].description, id: l.identifier, blurs: l.blurs}
 					})
-					labels[`${p.creator.did}/!hide`] = {labeler: p.creator.displayName, serverity: "hide", description: "Hides the content from subscribers of the labeler", id: "!hide", blurs: false}
-					labels[`${p.creator.did}/!warn`] = {labeler: p.creator.displayName, serverity: "warn", description: "Warns subscribers upon clicking this profile.", id: "!warn", blurs: false}
+					labels[`${p.creator.did}/!hide`] = {labeler: p.creator.displayName, serverity: "hide", description: "This content has been hidden by the moderators. This content has been labeled with the !hide global label value defined by the AT Protocol. ", id: "!hide", blurs: false}
+					labels[`${p.creator.did}/!warn`] = {labeler: p.creator.displayName, serverity: "warn", description: "This content has received a general warning from moderators. This content has been labeled with the !warn global label value defined by the AT Protocol. ", id: "!warn", blurs: false}
 				});
 			} catch(e_) {
 				console.error(e_)
@@ -152,13 +152,13 @@ async function func(args: any): Promise<any> {
 			actor: did
 		},{
 			headers: {
-				'atproto-accept-labelers': 'did:plc:ar7c4by46qjdydhdevvrndac;redact, did:plc:newitj5jo3uel7o4mnf3vj2o, did:plc:wkoofae5uytcm7bjncmev6n6, did:plc:jcce2sa3fgue4wiocvf7e7xj, did:plc:e4elbtctnfqocyfcml6h2lf7, did:plc:eeptyms6w2crpi6h73ok7qjt, did:plc:bv3lcacietc6fkdokxfqtdkj, did:plc:yv4nuaj3jshcuh2d2ivykgiz, did:plc:ubt73xes4uesthuuhbqwf37d, did:plc:lcdcygpdeiittdmdeddxwt4w, did:plc:pbmxe3tfpkts72wi74weijpo, did:plc:4ugewi6aca52a62u62jccbl7, did:plc:qu7zmf6snbnlkgoq7yehuimr, did:plc:i65enriuag7n5fgkopbqtkyk, did:plc:4grtcppa6rdgx3hgomz6kfdj, did:plc:mxsvcwyq6mofumlwyxiws3g5, did:plc:snxoa2w2hj2bdewwczlxpzif, did:plc:5bs7ob2txc2fub2ikvkjgkaf, did:plc:2pduupjftektqoitfekc2x76'
+				'atproto-accept-labelers': LABELERS
 			}
 		})
 		let x = d.data
 		x.labels = (d.data.labels || []).map(a=>{
 			if (a.src == x.did && a.val == "!no-unauthenticated") {
-				return {labeler: (x.displayName || x.handle), serverity: "hide", description: "Global atproto label. This profile is hidden from logged-out users in apps which respect the !no-unautenticated label.", id: a.val, blurs: false}
+				return {labeler: (x.displayName || x.handle), serverity: "hide", description: "This profile is labeled with the !no-unauthenticaed label value defined by the AT Protocol and is hidden from all logged-out users in client apps which respect the label.", id: a.val, blurs: false}
 			}
 			return labels[`${a.src}/${a.val}`] || {labeler: a.src, serverity: "unknown", description: "Unknown", id: a.val, blurs: false}
 		})
