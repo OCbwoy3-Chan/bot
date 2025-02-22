@@ -127,10 +127,10 @@ async function func(args: any): Promise<any> {
 				labelers.data.views.forEach(v => {
 					let p = v as LabelerViewDetailed;
 					(p.policies.labelValueDefinitions || []).forEach(l=>{
-						labels[`${p.creator.did}/${l.identifier}`] = {labeler: p.creator.displayName, serverity: l.severity, name: l.locales[0].name, description: l.locales[0].description, id: l.identifier, blurs: l.blurs}
+						labels[`${p.creator.did}/${l.identifier}`] = {labeler_did: p.creator.did, labeler: p.creator.displayName, serverity: l.severity, name: l.locales[0].name, description: l.locales[0].description, id: l.identifier, blurs: l.blurs}
 					})
-					labels[`${p.creator.did}/!hide`] = {labeler: p.creator.displayName, serverity: "hide", description: "This content has been hidden by the moderators. This content has been labeled with the !hide global label value defined by the AT Protocol. ", id: "!hide", blurs: false}
-					labels[`${p.creator.did}/!warn`] = {labeler: p.creator.displayName, serverity: "warn", description: "This content has received a general warning from moderators. This content has been labeled with the !warn global label value defined by the AT Protocol. ", id: "!warn", blurs: false}
+					labels[`${p.creator.did}/!hide`] = {labeler_did: p.creator.did, labeler: p.creator.displayName, serverity: "hide", description: "This content has been hidden by the moderators. This content has been labeled with the !hide global label value defined by the AT Protocol. ", id: "!hide", blurs: false}
+					labels[`${p.creator.did}/!warn`] = {labeler_did: p.creator.did, labeler: p.creator.displayName, serverity: "warn", description: "This content has received a general warning from moderators. This content has been labeled with the !warn global label value defined by the AT Protocol. ", id: "!warn", blurs: false}
 				});
 			} catch(e_) {
 				console.error(e_)
@@ -160,7 +160,7 @@ async function func(args: any): Promise<any> {
 			if (a.src == x.did && a.val == "!no-unauthenticated") {
 				return {labeler: (x.displayName || x.handle), serverity: "hide", description: "This profile is labeled with the !no-unauthenticaed label value defined by the AT Protocol and is hidden from all logged-out users in client apps which respect the label.", id: a.val, blurs: false}
 			}
-			return labels[`${a.src}/${a.val}`] || {labeler: a.src, serverity: "unknown", description: "Unknown", id: a.val, blurs: false}
+			return labels[`${a.src}/${a.val}`] || {labeler_did: a.src, labeler: a.src, serverity: "unknown", description: "Unknown", id: a.val, blurs: false}
 		})
 		appview = x;
 	}
