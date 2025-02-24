@@ -89,14 +89,6 @@ class SlashCommand extends Subcommand {
 									.setRequired(false)
 									.setAutocomplete(true)
 							)
-							.addBooleanOption((option) =>
-								option
-									.setName("hackban")
-									.setDescription(
-										"If the user is hack-banned or not"
-									)
-									.setRequired(false)
-							)
 					)
 					.addSubcommand((command) =>
 						command
@@ -126,14 +118,6 @@ class SlashCommand extends Subcommand {
 									)
 									.setRequired(false)
 									.setAutocomplete(true)
-							)
-							.addBooleanOption((option) =>
-								option
-									.setName("hackban")
-									.setDescription(
-										"The new hackban state"
-									)
-									.setRequired(false)
 							)
 					)
 			// .addStringOption(x=>x.setName("user").setDescription("The Username of the user to ban").setRequired(true))
@@ -212,19 +196,6 @@ class SlashCommand extends Subcommand {
 		const scope = "All"; // ! DEPRECATED
 
 		let isHackban = false;
-		const hackbanOpt = interaction.options.getBoolean("hackban", false)
-		// owner-only hackban
-
-		if (hackbanOpt !== null) {
-			if (interaction.user.id === process.env.OWNER_ID!) {
-				isHackban = true;
-			} else {
-				return await interaction.followUp({
-					content: `> ${banningCommands.errors.ownerHackbanOnly()}`,
-					ephemeral: true,
-				});
-			}
-		}
 
 		// console.log(Math.ceil(Date.now()/1000),duration);
 
@@ -315,19 +286,6 @@ class SlashCommand extends Subcommand {
 		const scope = "All"; // ! DEPRECATED
 
 		let isHackban = existingBan.hackBan;
-		const hackbanOpt = interaction.options.getBoolean("hackban", false)
-		// owner-only hackban
-
-		if (hackbanOpt !== null) {
-			if (interaction.user.id === process.env.OWNER_ID!) {
-				isHackban = true;
-			} else {
-				return await interaction.followUp({
-					content: `> ${banningCommands.errors.ownerHackbanOnly()}`,
-					ephemeral: true,
-				});
-			}
-		}
 
 		let date: number = Math.ceil(Date.now() / 1000) + Math.abs(duration);
 
