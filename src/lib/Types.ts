@@ -10,6 +10,7 @@ export type BanParams = {
 	ModeratorName: string;
 	BannedFrom: BanlandScope;
 	hackBan?: boolean;
+	noFederate?: boolean
 };
 
 // See RobloxUserBan in schema.prisma
@@ -22,6 +23,7 @@ export type UpdateBanParams = {
 	ModeratorName?: string;
 	BannedFrom: BanlandScope;
 	hackBan?: boolean;
+	noFederate?: boolean
 };
 
 export type BanlandEntry = {

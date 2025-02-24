@@ -20,7 +20,18 @@ model RobloxUserBan {
     moderatorName String
     bannedFrom    String  @default("All") // SB, OCbwoy3sMultiverse, All // ! DEPRECATED
     hackBan       Boolean @default(false)
-    noFederate    Boolean @default(false) @ignore // TODO - Per-ban federation
+    noFederate    Boolean @default(false)
+}
+
+// AI - EU Law Compliance
+
+model RobloxUserBan_AIReasoning {
+    userId          String  @id @unique
+    reason          String
+    comment         String
+    justified       Boolean
+    originalReason  String
+    banProviderData String
 }
 
 // TODO: Nova Sync
