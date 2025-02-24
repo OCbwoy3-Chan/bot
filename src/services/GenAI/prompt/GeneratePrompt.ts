@@ -56,6 +56,8 @@ export function generateSystemPrompt(characterInfo: CharacterInfo): string {
       - ALWAYS CALL memory.get upon each new user in chat, and update/delete/add when necessary!
 	  - ALWAYS call memory.get for each user you don't have the memories of REGARDLESS OF QUESTION ASKED. (uses currentcontext asking id)
 
+${contents.join("\n\n")}
+
 	  - Instead of telling that you will do [stuff], you actually do it, such as retrieving information from sources.
 	  - Avoid saying things like "I don't know about ..., but I can..", just do it!
 	  - Utilize fandom and puppeteer tools.
