@@ -113,7 +113,7 @@ model FormResponse {
 model VDWorld {
     name               String
     worldGeneratorType String  @default("FLAT") // FLAT
-    worldGeneratorSeed Int     @default(0)
+    worldGeneratorSeed BigInt  @default(0)
     id                 String  @id @unique @default(uuid())
     jobidLock          String?
 }
