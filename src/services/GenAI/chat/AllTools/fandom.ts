@@ -2,16 +2,16 @@ import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { addTest, registerTool } from "../tools";
 
 function transformToApiUrl(wikiUrl: string) {
-    try {
-        const url = new URL(wikiUrl);
-        const wikiName = url.hostname.split('.')[0];
-        const pageTitle = decodeURIComponent(url.pathname.replace('/wiki/', ''));
+	try {
+		const url = new URL(wikiUrl);
+		const wikiName = url.hostname.split('.')[0];
+		const pageTitle = decodeURIComponent(url.pathname.replace('/wiki/', ''));
 
-        return `https://${wikiName}.fandom.com/api.php?action=query&prop=revisions&titles=${encodeURIComponent(pageTitle)}&rvprop=content&format=json`;
-    } catch (error) {
-        console.error("Invalid URL:", error);
-        return null;
-    }
+		return `https://${wikiName}.fandom.com/api.php?action=query&prop=revisions&titles=${encodeURIComponent(pageTitle)}&rvprop=content&format=json`;
+	} catch (error) {
+		console.error("Invalid URL:", error);
+		return null;
+	}
 }
 
 // Example usage

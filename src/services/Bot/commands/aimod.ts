@@ -11,7 +11,7 @@ import { general } from "../../../locale/commands";
 import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { generateBanReason } from "../../GenAI/gen";
-import { BanUser } from "../../Database/helpers/RobloxBan";
+import { BanUser, UpdateUserBan } from "../../Database/helpers/RobloxBan";
 import { GetUserIdFromName, GetUserDetails } from "../../../lib/roblox";
 
 class SlashCommand extends Subcommand {
@@ -104,7 +104,10 @@ class SlashCommand extends Subcommand {
 
 
 		return interaction.followUp({
-			content: `I've deemed [${userDetails.displayName}](https://fxroblox.com/users/${userId})'s ban to be **${banReason.justified ? 'justified' : 'unjust'}**.\n**Reason:** \`\`\`${banReason.ban_reason}\`\`\`\nHere's my reasoning behind it: \`\`\`${banReason.comment}\`\`\``,
+			content: `I've deemed [${userDetails.displayName}](https://fxroblox.com/users/${userId})'s ban to be **${banReason.justified ? 'justified' : 'unjust'}**.
+**Reason:** \`\`\`${banReason.ban_reason}\`\`\`\n
+${banReason.explanation}
+-# ${banReason.comment}`,
 			ephemeral: false,
 		});
 	}
@@ -138,16 +141,33 @@ class SlashCommand extends Subcommand {
 		const userDetails = await GetUserDetails(userId);
 
 		try {
-			await BanUser({
-				UserID: userId.toString(),
-				ModeratorId: interaction.user.id,
-				ModeratorName: interaction.user.displayName,
-				BannedFrom: "All", // DEPRECATED
-				BannedUntil: "-1", // Banned forever
-				Reason: banReason.ban_reason,
-				hackBan: false,
-				noFederate: true
-			});
+			try {
+				await BanUser({
+					UserID: userId.toString(),
+					ModeratorId: interaction.user.id,
+					ModeratorName: interaction.user.displayName,
+					BannedFrom: "All", // DEPRECATED
+					BannedUntil: "-1", // Banned forever
+					Reason: banReason.ban_reason,
+					PrivateReason: `AI Generated Ban - Justified: ${banReason.justified} | ${banReason.comment} | ${banReason.explanation}`,
+					hackBan: false,
+					noFederate: true
+				});
+			} catch (e_) {
+				if (`${e_}`.includes('User is already banned')) {
+					await UpdateUserBan({
+						UserID: userId.toString(),
+						ModeratorId: interaction.user.id,
+						ModeratorName: interaction.user.displayName,
+						BannedFrom: "All", // DEPRECATED
+						BannedUntil: "-1", // Banned forever
+						Reason: banReason.ban_reason,
+						PrivateReason: `AI Generated Ban - Justified: ${banReason.justified} | ${banReason.comment} | ${banReason.explanation}`,
+						hackBan: false,
+						noFederate: true
+					});
+				}
+			}
 			return interaction.followUp({
 				content: `Successfully banned [${userDetails.displayName}](https://fxroblox.com/users/${userId}) with reason:\n\`\`\`${banReason.ban_reason}\`\`\``,
 				ephemeral: false,

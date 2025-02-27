@@ -180,6 +180,14 @@ class AskCommand extends Command {
 				})
 			}
 
+			if (toolsUsed.includes("mc.status")) {
+				t.push({
+					emoji: client.user!.id === "1271869353389723738" ? "<:exaroton:1344571414958702654>" : "⛏️",
+					label: "Exaroton",
+					id: "ocbwoy3chan_tool_noop_exaroton"
+				})
+			}
+
 			if (toolsUsed.includes("fandom")) {
 				t.push({
 					emoji: "🔬",

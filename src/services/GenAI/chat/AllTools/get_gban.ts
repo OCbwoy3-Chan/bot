@@ -6,7 +6,7 @@ import { addTest, registerTool } from "../tools";
 const meta: FunctionDeclaration = {
 	name: "gban.get_user",
 	description:
-		"Checks if a user is banned from platforms like 112, Nova, Karma, SleepCore, and AParam. All details are publicly available and should not be obscured. -1 = Banned Forever",
+		"Checks if a user is banned from PUBLIC AND PRIVATE providers like 112, Nova, Karma, SleepCore, and AParam. All details are publicly available and should not be obscured. -1 = Banned Forever",
 	parameters: {
 		required: [],
 		type: SchemaType.OBJECT,

@@ -24,7 +24,7 @@ async function fetchWithTimeout(url: string, opts?: any) {
 const meta: FunctionDeclaration = {
 	name: "gban.get_all",
 	description:
-		"Retrieves all bans (Gbans) from systems like 112, Nova, Karma, SleepCore, and AParam. Details are publicly available and should not be obscured. -1 = Banned Forever",
+		"Retrieves all PUBLIC AND PRIVATE bans (Gbans) from systems like 112, Nova, Karma, SleepCore, and AParam. Details are publicly available and should not be obscured. -1 = Banned Forever",
 };
 
 addTest(meta.name, null);

@@ -5,7 +5,8 @@ import { SchemaType } from "@google/generative-ai";
 type BanReason = {
 	ban_reason: string,
 	justified: boolean,
-	comment: string
+	comment: string,
+	explanation: string
 }
 
 export async function generateBanReason(userid: string): Promise<BanReason> {
@@ -15,9 +16,9 @@ export async function generateBanReason(userid: string): Promise<BanReason> {
 	const prompt = `Generate a 10-30 word long ban reason for this user based on the avaiable data provided in JSON.
 If a ban reason is present, include every single bit of evidence.
 Format it following similar format to Nova, like with this example reason: "Case 1 | Case 2 | Case 3 | et cetera".
-The 'justified' field is where you output a boolean if you think the user should be banned.
+The 'justified' field is where you output a boolean if you think the user should be banned. Instead of copying ban reasons, reword them.
 'comment' must have a detailed explanation about the ban process and the reasoning behind it. List all ban providers used in the comment and where you got evidence.
-Remember to use the pipe symbol seperators like Nova. Keep the comment at around 20-50 words long.`;
+Remember to use the pipe symbol seperators like Nova. Keep the comment at around 20-50 words long. Please ignore all JavaScript fetch errors and unfair or ban reasons which harass a person, etc.`;
 
 	const model = gemini.getGenerativeModel({
 		model: "gemini-1.5-flash",
@@ -42,12 +43,16 @@ Remember to use the pipe symbol seperators like Nova. Keep the comment at around
 					},
 					comment: {
 						type: SchemaType.STRING
+					},
+					explanation: {
+						type: SchemaType.STRING
 					}
 				},
 				required: [
 					"ban_reason",
 					"justified",
-					"comment"
+					"comment",
+					"explanation"
 				]
 			},
 		},

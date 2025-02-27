@@ -1,9 +1,10 @@
 import { FunctionDeclaration } from "@google/generative-ai";
 import { Client } from "exaroton";
+import { client as DJSClient } from "../../../Bot/bot"
 import { addTest, registerTool } from "../tools";
 
 let cached = {};
-let cacheReset = Date.now()-1000;
+let cacheReset = Date.now() - 1000;
 
 if (process.env.EXAROTON_TOKEN && process.env.EXAROTON_SERVER) {
 
@@ -14,7 +15,7 @@ if (process.env.EXAROTON_TOKEN && process.env.EXAROTON_SERVER) {
 	const meta: FunctionDeclaration = {
 		name: "mc.status",
 		description:
-			"Fetches the status of a Minecraft server, including the MOTD and the number of players online.",
+			"Fetches the status of the owner's Minecraft server, including the MOTD and the number of players online.",
 	};
 
 	async function func(args: any): Promise<any> {
@@ -34,11 +35,13 @@ if (process.env.EXAROTON_TOKEN && process.env.EXAROTON_SERVER) {
 			// name: status.name,
 			status: s,
 			motd: status.motd,
-			players: status.player,
+			software: status.software,
+			players: status.players,
+			address: (DJSClient.user!.id === "1271869353389723738" ? "create.darktru.win" : (status.address || { cantGetAddressError: "ServerNotOnline" }))
 		};
 
 		cached = c;
-		cacheReset = Date.now()+5000;
+		cacheReset = Date.now() + 5000;
 		return c;
 
 	}

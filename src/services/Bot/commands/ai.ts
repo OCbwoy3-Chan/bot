@@ -142,7 +142,7 @@ try { chatManager.clearChat(interaction.channelId); } catch {};
 			.setCustomId("ocbwoy3chanai_select_char")
 			.setPlaceholder("Make a selection!")
 			.addOptions(
-				getCachedPromptsJ().map((a) => {
+				getCachedPromptsJ().filter(a=>!a.hidden).map((a) => {
 					return new StringSelectMenuOptionBuilder()
 						.setLabel(a.name)
 						.setDescription(a.description)

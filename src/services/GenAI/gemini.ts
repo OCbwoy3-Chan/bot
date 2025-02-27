@@ -51,13 +51,13 @@ export const AllModels: { [a: string]: { m: string; t: string } } = {
 
 export const AI_HELP_MSG = `# OCbwoy3-Chan
 **This is an experimental AI chatbot built for assisting users Discord.**
-I am built on Google's Gemini API and have multimodal capabilities with text, audio, video and code.
+I am built on Google's Gemini API and can generate content from text, audio, video and code. Sadly it's not multimodal.
 
 OCbwoy3-Chan will become more helpful as you chat, picking up on details and preferences to tailor its responses to your needs and selected character, similar to ChatGPT.
 
 **To understand what OCbwoy3-Chan remembers or teach it something new, just ask it:**
 - “Remember that I like concise responses.”
-- “My favourite song is Ogles!”
+- “My favourite song is Staircase Hell!”
 - “What do you remember about me?”
 - “What's my favourite song?”
 
@@ -65,8 +65,8 @@ Sometimes OCbwoy3-Chan would forget to save something, so asking it to do so wou
 
 **OCbwoy3-Chan can also use a variety of tools, such as**
 - Searching [DuckDuckGo](<https://duckduckgo.com>),
-- [Looking up Profiles on Bluesky](<https://atproto.com>),
-- Interacting with Roblox's APIs,
+- Querying data from Bluesky with the [AT Protocol](<https://atproto.com>),
+- Utilizing Roblox's APIs,
 - Fetching GBans,
 - Looking up pages on [Fandom](<https://fandom.com>),
 - Scraping websites with [Puppeteer](<https://pptr.dev>),

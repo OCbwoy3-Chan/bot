@@ -14,13 +14,16 @@ export class AutoReactListener extends Listener {
 		if (message.client.user.id !== "1271869353389723738") return;
 
 		try {
-			// i hate it
+			// i hate this so much
 			// - ocbwoy3
-			if (/fox ?news|(donald ?j? ?)?trump|elon(ia)?( ?musk)?|jd ?vance|republican|maga|make ?america ?great ?again|joe ?rogan/.test(message.content.toLowerCase())) {
+			if (/fox ?news|(donald( ?j)? ?)?trump|elon(ia)?( ?musk)?|jd ?vance|republican|maga|make ?america ?great ?again|joe ?rogan/.test(message.content.toLowerCase())) {
 				await message.react("<:magahat:1334988593856516268>");
 			}
-			if (/afd/.test(message.content.toLowerCase())) {
-				await message.react("<:AfD:1334990340180021329>");
+			if (/afd|alternative ?for ?germany|(alternative?|absteig) ?f[üu]r ?deutschland/.test(message.content.toLowerCase())) {
+				await message.react("<:afd:1344575300666916864>");
+			}
+			if (/(alice ?)?w(ei|ie)del/.test(message.content.toLowerCase())) {
+				await message.react("<:weidel:1344575766645440542>");
 			}
 			if (/(jesse ?)?singal/.test(message.content.toLowerCase())) {
 				await message.react("<:uhh:1337362664137031761>");
