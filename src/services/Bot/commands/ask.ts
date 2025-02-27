@@ -180,7 +180,7 @@ class AskCommand extends Command {
 				})
 			}
 
-			if (toolsUsed.includes("mc.status")) {
+			if (toolsUsed.includes("mc.status") || toolsUsed.includes("exaroton.credits")) {
 				t.push({
 					emoji: client.user!.id === "1271869353389723738" ? "<:exaroton:1344571414958702654>" : "⛏️",
 					label: "Exaroton",
