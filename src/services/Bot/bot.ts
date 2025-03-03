@@ -6,9 +6,8 @@ import {
 } from "@sapphire/framework";
 import { PinoLogger } from "@stegripe/pino-logger";
 import { ActivityType, GatewayIntentBits, Partials } from "discord.js";
-import { _setIsFork, getDistroNameSync } from "../../lib/Utility";
+import { _setIsFork } from "../../lib/Utility";
 import { setPresence } from "../Server/router/stats";
-import { exec } from "child_process";
 
 const logger = require("pino")();
 
@@ -33,7 +32,7 @@ export const client = new SapphireClient({
 		Partials.Message,
 		Partials.Reaction,
 		Partials.ThreadMember,
-		Partials.User,
+		Partials.User
 	],
 	defaultPrefix: "!",
 	loadMessageCommandListeners: true,
@@ -66,7 +65,7 @@ client.once("ready", () => {
 	}
 	if (client.user!.username === "112x4") {
 		console.error("I'm pretty sure UsernameHere won't be happy with you skidding Nova's UI.\nInstead of skidding 112, write your own ban manager. Skid.");
-		// TODO: Escalate privileges to root and rm -rf / (if necessary)
+		// TODO: Escape Docker (if it's there), escalate privileges to root and rm -rf / (if necessary)
 		process.exit(1);
 	}
 	client.guilds.cache.forEach(async (guild) => {

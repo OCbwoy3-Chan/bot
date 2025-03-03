@@ -5,12 +5,11 @@ import {
 	ChannelType,
 	Events,
 	Message,
-	RawFile,
-	TextBasedChannel,
+	RawFile
 } from "discord.js";
 import { getDistroNameSync } from "@112/Utility";
 import { IsAIWhitelisted } from "@db/helpers/AIWhitelist";
-import { AIContext, Chat, tools } from "@ocbwoy3chanai/chat/index";
+import { AIContext, Chat } from "@ocbwoy3chanai/chat/index";
 import { areGenAIFeaturesEnabled } from "@ocbwoy3chanai/gemini";
 import { getPrompt } from "@ocbwoy3chanai/prompt/GeneratePrompt";
 import { testAllTools } from "@ocbwoy3chanai/ToolTest";
@@ -69,11 +68,12 @@ export class OCbwoy3ChanAI extends Listener {
 		logger.info("Started OCbwoy3-Chan AI, OwO!");
 
 		client.on(Events.MessageCreate, async (m2: Message) => {
+			// console.log(m2.channel.isDMBased() ? 'dms' : m2.channel.name)
 			if (m2.author.id === client.user!.id) return;
 			if (!m2.mentions.has(client.user!.id)) return;
 			if (BlacklistedMentions.test(m2.content)) return;
 			if (!m2.channel.isDMBased()) {
-				if (!m2.channel.permissionsFor(client.user!.id)?.has("SendMessages")) return;
+				// if (!m2.channel.permissionsFor(client.user!.id)?.has("SendMessages")) return;
 			}
 			if ((await IsAIWhitelisted(m2.author.id)) !== true) return;
 
