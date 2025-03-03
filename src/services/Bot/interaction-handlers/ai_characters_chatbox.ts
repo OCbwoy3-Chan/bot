@@ -31,7 +31,7 @@ export class AutocompleteHandler extends InteractionHandler {
 		switch (focusedOption.name) {
 			case "prompt": {
 				let sr: [string, string][] = [];
-				getCachedPromptsJ().filter(a=>!a.hidden).forEach((v) => {
+				getCachedPromptsJ().filter(a=>(interaction.user.id === "486147449703104523" ? true : !a.hidden)).forEach((v) => {
 					if (
 						`${v.name}\0${v.filename}\0${v.description}`
 							.toUpperCase()
