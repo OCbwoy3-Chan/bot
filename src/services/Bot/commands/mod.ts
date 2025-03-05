@@ -89,6 +89,12 @@ class SlashCommand extends Subcommand {
 									.setRequired(false)
 									.setAutocomplete(true)
 							)
+							.addBooleanOption((option) =>
+								option
+									.setName("local")
+									.setDescription("If the ban is not propogated to other services")
+									.setRequired(false)
+							)
 					)
 					.addSubcommand((command) =>
 						command
@@ -118,6 +124,12 @@ class SlashCommand extends Subcommand {
 									)
 									.setRequired(false)
 									.setAutocomplete(true)
+							)
+							.addBooleanOption((option) =>
+								option
+									.setName("local")
+									.setDescription("If the ban is not propogated to other services")
+									.setRequired(false)
 							)
 					)
 			// .addStringOption(x=>x.setName("user").setDescription("The Username of the user to ban").setRequired(true))
@@ -189,10 +201,12 @@ class SlashCommand extends Subcommand {
 		});
 
 		const reason =
-			(interaction.options.get("reason")?.value as string) ||
+			interaction.options.getString("reason") ||
 			"Unspecified reason";
 		const duration =
-			(interaction.options.get("duration")?.value as number) || -1;
+			interaction.options.getNumber("duration") || -1;
+		const nofed =
+			interaction.options.getBoolean("local") || true;
 		const scope = "All"; // ! DEPRECATED
 
 		let isHackban = false;
@@ -224,7 +238,8 @@ class SlashCommand extends Subcommand {
 				BannedFrom: scope as BanlandScope, // ! DEPRECATED
 				BannedUntil: date.toString(),
 				Reason: reason,
-				hackBan: isHackban
+				hackBan: isHackban,
+				noFederate: nofed
 			});
 		} catch (e_) {
 			return interaction.followUp({ content: `> ${e_}`, ephemeral: true });
@@ -276,13 +291,15 @@ class SlashCommand extends Subcommand {
 		}
 
 		const reason =
-			(interaction.options.get("reason")?.value as string) ||
+			interaction.options.getString("reason") ||
 			existingBan.reason ||
 			"Unspecified reason";
 		const duration =
-			(interaction.options.get("duration")?.value as number) ||
+			interaction.options.getNumber("duration") ||
 			parseInt(existingBan.bannedUntil) - Math.ceil(Date.now() / 1000) ||
 			-1;
+		const nofed =
+			interaction.options.getBoolean("local") || existingBan.noFederate;
 		const scope = "All"; // ! DEPRECATED
 
 		let isHackban = existingBan.hackBan;
@@ -303,7 +320,8 @@ class SlashCommand extends Subcommand {
 				BannedFrom: scope as BanlandScope, // ! DEPRECATED
 				BannedUntil: date.toString(),
 				Reason: reason,
-				hackBan: isHackban
+				hackBan: isHackban,
+				noFederate: nofed
 			});
 		} catch (e_) {
 			return interaction.followUp({ content: `> ${e_}`, ephemeral: true });

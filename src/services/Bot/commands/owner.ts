@@ -11,6 +11,7 @@ import { general } from "../../../locale/commands";
 import { prisma } from "../../Database/db";
 import { AllModels, areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { resetOCbwoy3ChansAPIKey } from "services/Server/router/chat";
+import { captureSentryException } from "@112/SentryUtil";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -47,6 +48,10 @@ class SlashCommand extends Subcommand {
 				{
 					name: "reset_ai",
 					chatInputRun: "chatInputKillAI",
+				},
+				{
+					name: "sentry_error",
+					chatInputRun: "chatInputSentryError",
 				},
 			],
 		});
@@ -96,6 +101,11 @@ class SlashCommand extends Subcommand {
 						command
 							.setName("set_model")
 							.setDescription("Sets OCbwoy3-Chan's AI Model")
+					)
+					.addSubcommand((command) =>
+						command
+							.setName("sentry_error")
+							.setDescription("Triggers a command error and reports it to Sentry (if DSN is specified)")
 					)
 			// .addStringOption(x=>x.setName("user").setDescription("The Username of the user to ban").setRequired(true))
 		);
@@ -189,6 +199,20 @@ class SlashCommand extends Subcommand {
 			content: "> Done",
 			ephemeral: true
 		})
+	}
+
+	public async chatInputSentryError(
+		interaction: Command.ChatInputCommandInteraction
+	) {
+		await interaction.reply({
+			content: "ok",
+			ephemeral: true
+		})
+		try {
+			throw "hi sentry!";
+		} catch(e) {
+			captureSentryException(e)
+		}
 	}
 }
 

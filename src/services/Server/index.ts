@@ -16,7 +16,11 @@ class ServerService {
 	}
 }
 
-export const Service = new ServerService(require("pino")());
+export const Service = new ServerService(require("pino")({
+	base: {
+		pid: "server"
+	}
+}));
 
 export async function StartService(): Promise<void> {
 	await Service._StartService();

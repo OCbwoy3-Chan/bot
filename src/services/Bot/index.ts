@@ -1,5 +1,7 @@
 import { Logger } from "pino";
 import { client } from "./bot";
+import { InitSentry } from "@112/SentryUtil";
+import { logger } from "@112/Utility";
 
 class BotService {
 	constructor(private readonly logger: Logger) {}
@@ -24,8 +26,14 @@ class BotService {
 	}
 }
 
-export const Service = new BotService(require("pino")());
+export const Service = new BotService(require("pino")({
+	base: {
+		pid: "bot"
+	}
+}));
 
 export async function StartService(): Promise<void> {
+	logger.info("LATE-STAGE SENTRY INIT");
+	InitSentry();
 	await Service._StartService();
 }

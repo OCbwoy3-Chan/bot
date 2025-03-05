@@ -2,8 +2,6 @@ import fs from "fs";
 import path from "path";
 import { logger } from "../../lib/Utility";
 import { FederatedInstance } from "./FederatedInstance";
-import { prisma } from "./db";
-import { UnbanUser } from "./helpers/RobloxBan";
 
 const registeredInstances: FederatedInstance[] = [];
 
@@ -33,6 +31,7 @@ export async function banUserAcrossFederations(
 	userId: string,
 	reason: string
 ): Promise<string[]> {
+	await new Promise((resolve) => setTimeout(resolve, 1500)); // hardcoded
 	let fails: string[] = [];
 	const banPromises = registeredInstances.map(
 		(instance) =>

@@ -1,9 +1,15 @@
+import { configDotenv } from "dotenv";
+configDotenv();
+
 import { exec } from "child_process";
 import figlet from "figlet";
 import { Logger } from "pino";
-const logger: Logger = require("pino")();
+const logger: Logger = require("pino")({
+	base: {
+		pid: "init"
+	}
+});
 
-require("dotenv").configDotenv(); // chad workaround typescript
 
 const SERVICE_LOAD_ORDER = ["Database", "Server", "GenAI", "Bot"];
 

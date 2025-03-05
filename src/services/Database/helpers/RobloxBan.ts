@@ -105,7 +105,6 @@ export async function UpdateUserBan(params: UpdateBanParams): Promise<void> {
 		).toISOString()} (${params.Reason})`
 	);
 	if ((params.noFederate || oldBan.noFederate || false) === false) {
-		await new Promise((resolve) => setTimeout(resolve, 3000)); // hardcoded
 		banUserAcrossFederations(
 			params.UserID,
 			params.Reason || "Unspecified reason"

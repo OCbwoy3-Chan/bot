@@ -23,6 +23,7 @@
     "@sapphire/decorators": "^6.1.1",
     "@sapphire/framework": "^5.2.1",
     "@sapphire/plugin-subcommands": "^7.0.0",
+    "@sentry/bun": "^9.4.0",
     "@stegripe/pino-logger": "^1.0.2",
     "@tensorflow/tfjs": "^4.22.0",
     "@types/bun": "^1.1.15",

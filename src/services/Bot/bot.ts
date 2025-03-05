@@ -1,15 +1,19 @@
 import {
-	ApplicationCommandRegistries,
-	Events,
-	RegisterBehavior,
-	SapphireClient,
+	ApplicationCommandRegistries, RegisterBehavior,
+	SapphireClient
 } from "@sapphire/framework";
 import { PinoLogger } from "@stegripe/pino-logger";
 import { ActivityType, GatewayIntentBits, Partials } from "discord.js";
 import { _setIsFork } from "../../lib/Utility";
 import { setPresence } from "../Server/router/stats";
+import { hostname } from "os";
+import { captureSentryException } from "@112/SentryUtil";
 
-const logger = require("pino")();
+const logger = require("pino")({
+	base: {
+		pid: "bot"
+	}
+});
 
 // fucking magic
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(
@@ -40,9 +44,9 @@ export const client = new SapphireClient({
 	caseInsensitivePrefixes: true,
 	logger: {
 		instance: new PinoLogger({
-			name: "sapphire",
+			name: "bot",
 			formatters: {
-				bindings: () => ({ pid: `sapph` }),
+				bindings: () => ({ pid: `bot` }),
 			},
 		}),
 	},
@@ -62,24 +66,17 @@ client.once("ready", () => {
 	logger.info("Logged in");
 	if (client.user!.id === "1271869353389723738") {
 		_setIsFork(false);
-	}
-	if (client.user!.username === "112x4") {
-		console.error("I'm pretty sure UsernameHere won't be happy with you skidding Nova's UI.\nInstead of skidding 112, write your own ban manager. Skid.");
-		// TODO: Escape Docker (if it's there), escalate privileges to root and rm -rf / (if necessary)
-		process.exit(1);
-	}
-	client.guilds.cache.forEach(async (guild) => {
-		if (guild.ownerId === "1224392642448724012") {
-			await guild.leave();
+		if (hostname() === "ocbwoy3-pc") {
+			_setIsFork(true);
 		}
-	});
+	}
 });
 
-client.on(Events.MessageCreate, (m) => {
-	if (m.guild && m.guild.ownerId === "1224392642448724012") {
-		m.guild.leave().catch(a=>{});
+client.on("error",(err)=>{
+	if (err.message && !err.message.includes("webhook")) {
+		captureSentryException(err)
 	}
-})
+});
 
 setInterval(async () => {
 	if (!process.env.GUILD_ID) return;

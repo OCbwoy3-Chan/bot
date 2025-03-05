@@ -3,7 +3,11 @@ import { arch, platform } from "os";
 import { performance } from "perf_hooks";
 import { Logger } from "pino";
 
-export const logger: Logger = require("pino")({});
+export const logger: Logger = require("pino")({
+	base: {
+		pid: "112"
+	}
+});
 
 let _is112Fork: boolean = true;
 
