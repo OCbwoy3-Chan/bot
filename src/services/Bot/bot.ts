@@ -58,7 +58,7 @@ export const client = new SapphireClient({
 				name: `1V1ING SKIDS ROBLOX RIVALS`, // trash
 				state: "@ocbwoy3.dev on Bluesky",
 				url: "https://twitch.tv/support",
-				type: ActivityType.Watching,
+				type: ActivityType.Streaming,
 			},
 		],
 	},
