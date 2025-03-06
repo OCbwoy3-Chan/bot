@@ -28,6 +28,9 @@ export class AutoReactListener extends Listener {
 			if (/(jesse ?)?singal/.test(message.content.toLowerCase())) {
 				await message.react("<:uhh:1337362664137031761>");
 			}
+			if (/darktru/.test(message.content.toLowerCase())) {
+				await message.react("<:uhh:1337362664137031761>");
+			}
 		} catch (error) {
 			this.container.logger.error(`Failed to react to message: ${error}`);
 		}

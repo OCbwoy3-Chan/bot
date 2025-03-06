@@ -53,10 +53,12 @@ export const client = new SapphireClient({
 	presence: {
 		status: "dnd",
 		activities: [
+			// guys trust me it's completely random
 			{
-				name: `AT Protocol`,
-				state: "Bluesky Social - @ocbwoy3.dev",
-				type: ActivityType.Playing,
+				name: `1V1ING SKIDS ROBLOX RIVALS`, // trash
+				state: "@ocbwoy3.dev on Bluesky",
+				url: "https://twitch.tv/support",
+				type: ActivityType.Watching,
 			},
 		],
 	},
