@@ -206,7 +206,7 @@ class SlashCommand extends Subcommand {
 		const duration =
 			interaction.options.getNumber("duration") || -1;
 		const nofed =
-			interaction.options.getBoolean("local") || true;
+			interaction.options.getBoolean("local") || false;
 		const scope = "All"; // ! DEPRECATED
 
 		let isHackban = false;
@@ -299,7 +299,7 @@ class SlashCommand extends Subcommand {
 			parseInt(existingBan.bannedUntil) - Math.ceil(Date.now() / 1000) ||
 			-1;
 		const nofed =
-			interaction.options.getBoolean("local") || existingBan.noFederate;
+			interaction.options.getBoolean("local") || existingBan.noFederate || false;
 		const scope = "All"; // ! DEPRECATED
 
 		let isHackban = existingBan.hackBan;

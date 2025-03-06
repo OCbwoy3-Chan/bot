@@ -1,11 +1,8 @@
 import { PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import {
-	ActionRowBuilder,
 	ApplicationIntegrationType,
-	InteractionContextType,
-	StringSelectMenuBuilder,
-	StringSelectMenuOptionBuilder,
+	InteractionContextType
 } from "discord.js";
 import { general } from "../../../locale/commands";
 import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
@@ -13,6 +10,7 @@ import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { generateBanReason } from "../../GenAI/gen";
 import { BanUser, UpdateUserBan } from "../../Database/helpers/RobloxBan";
 import { GetUserIdFromName, GetUserDetails } from "../../../lib/roblox";
+import { isEuropean } from "@112/Utility";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -87,6 +85,10 @@ class SlashCommand extends Subcommand {
 		if (!areGenAIFeaturesEnabled()) {
 			return await interaction.reply(general.errors.genai.aiDisabled());
 		}
+		if (isEuropean()) {
+			return await interaction.reply(general.errors.genai.illegalInEurope());
+		}
+
 
 		await interaction.deferReply({ ephemeral: false });
 
@@ -123,6 +125,9 @@ ${banReason.explanation}
 		}
 		if (!areGenAIFeaturesEnabled()) {
 			return await interaction.reply(general.errors.genai.aiDisabled());
+		}
+		if (isEuropean()) {
+			return await interaction.reply(general.errors.genai.illegalInEurope());
 		}
 
 		await interaction.deferReply({ ephemeral: false });

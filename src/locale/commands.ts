@@ -1,7 +1,7 @@
 import { HarmCategory } from "@google/generative-ai";
 import { RobloxUserBan } from "@prisma/client";
 import { PlayerInfo } from "noblox.js";
-import { getDistroNameSync, measureCPULatency } from "../lib/Utility";
+import { getDistroNameSync, isEuropean, isFork, measureCPULatency } from "../lib/Utility";
 import { GetBanData } from "../services/Database/helpers/RobloxBan";
 import { prisma } from "@db/db";
 import { freemem, totalmem, uptime } from "os";
@@ -21,14 +21,14 @@ export const infoCommand = {
 		const usedMemoryGB = Math.round(freemem() / 1024 / 1024 / 1024 * 100) / 100;
 
 		return [
-			`> # [ocbwoy3.dev](<https://ocbwoy3.dev>)`,
-			`> Running on **${distro}**`,
+			`> # [ocbwoy3.dev](<https://ocbwoy3.dev>)${isEuropean() ? " :flag_eu:" : ""}`,
+			`> Running on **${distro}**${isFork() ? `\n> -# ***FORKED VERSION OF 112***` : ""}`,
 			`> -# **Gateway Lat:** ${gatewayPing}ms`,
 			`> -# **Network Lat:** ${roundTrip}ms`,
 			`> -# **CPU Lat:** ${measureCPULatency()}μs`,
 			`> -# **Uptime:** ${uptimeStr}`,
 			`> -# **Memory:** ${usedMemoryGB}/${totalMemoryGB} GB`,
-			`> -# **Banned Users:** ${(await prisma.robloxUserBan.findMany()).length}`
+			`> -# **Banned Users:** ${(await prisma.robloxUserBan.findMany()).length}`,
 		].join("\n");
 	},
 };
@@ -55,6 +55,7 @@ export const general = {
 		invalidRoleId: (roleId: number): string =>
 			`> Invalid Role with ID \`${roleId}\``,
 		genai: {
+			illegalInEurope: (): string => "> AI Moderation is illegal in the European Union.",
 			unsafeRequest: (category: HarmCategory): string => {
 				let a = category.toString();
 				if (category === HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT)

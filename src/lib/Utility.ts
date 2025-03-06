@@ -15,10 +15,44 @@ export function _setIsFork(val: boolean): void {
 	_is112Fork = val;
 }
 
+let _isEuropean: boolean = true;
+
+export function _setIsEuropean(val: boolean): void {
+	_isEuropean = val;
+}
+
+// Gets if 112 is is hosted in the European Union
+export function isEuropean() {
+	return _isEuropean;
+}
+
 // Gets if the current version of 112 is a fork
 export function isFork() {
 	return _is112Fork;
 }
+
+export async function _determineEuropeanness(): Promise<void> {
+	const EUROPEAN_COUNTRIES = [
+		"BE", "CZ", "BG", "DK", "DE", "EE", "EL", "ES", "FR", "HR", "IE", "CY", "LT", "IT", "LV", "LU", "HU", "MT", "NL", "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE",
+		// "UK" // brexit
+	];
+	if (process.env.BYPASS_EUROPEAN_CHECK === "1") {
+		_setIsEuropean(false);
+		logger.warn("Bypassing EU Check");
+		return;
+	}
+	try {
+		const response = await fetch("https://ipapi.co/json/");
+		const data = await response.json();
+		_setIsEuropean(data.continent_code === "EU" ? true : false);
+		logger.info(`${isEuropean() ? "" : "Not "}European!`);
+	} catch (error) {
+		logger.error("Failed to determine Europeanness, defaulting to true", error);
+		_setIsEuropean(true);
+	}
+}
+
+_determineEuropeanness().catch(a=>{})
 
 export function measureCPULatency(): string {
 	const start = performance.now();
