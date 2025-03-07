@@ -53,18 +53,17 @@ export const client = new SapphireClient({
 	presence: {
 		status: "dnd",
 		activities: [
-			// guys trust me it's completely random
+			// CHATGPT GENERATED STATUS
 			{
-				name: `1V1ING SKIDS ROBLOX RIVALS`, // trash
-				state: "@ocbwoy3.dev on Bluesky",
-				url: "https://twitch.tv/support",
-				type: ActivityType.Streaming,
-			},
+				name: "skids vanish into thin air",
+				state: "another one bites the dust",
+				type: ActivityType.Watching,
+			}
 		],
 	},
 });
 
-client.once("ready", () => {
+client.once("ready", async() => {
 	logger.info("Logged in");
 	if (client.user!.id === "1271869353389723738") {
 		_setIsFork(false);
@@ -72,27 +71,32 @@ client.once("ready", () => {
 			_setIsFork(true);
 		}
 	}
+	if (!process.env.GUILD_ID) {
+		try {
+			const g = await client.guilds.resolve(process.env.GUILD_ID!);
+			if (!g) {
+				await client.guilds.fetch(process.env.GUILD_ID!);
+				return;
+			}
+			setInterval(async () => {
+				try {
+					const m = g.members.resolve(process.env.OWNER_ID!);
+					if (!m) {
+						await g.members.fetch(process.env.OWNER_ID!);
+						return;
+					}
+					setPresence(m.presence?.toJSON() || null);
+				} catch {}
+			}, 100);
+		} catch(e_) {
+			captureSentryException(e_);
+		}
+	};
 });
 
-client.on("error",(err)=>{
+client.on("error", (err) => {
 	if (err.message && !err.message.includes("webhook")) {
 		captureSentryException(err)
 	}
 });
 
-setInterval(async () => {
-	if (!process.env.GUILD_ID) return;
-	try {
-		const g = await client.guilds.resolve(process.env.GUILD_ID!);
-		if (!g) {
-			await client.guilds.fetch(process.env.GUILD_ID!);
-			return;
-		}
-		const m = g.members.resolve(process.env.OWNER_ID!);
-		if (!m) {
-			await g.members.fetch(process.env.OWNER_ID!);
-			return;
-		}
-		setPresence(m.presence?.toJSON() || null);
-	} catch {}
-}, 100);

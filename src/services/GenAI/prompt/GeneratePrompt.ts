@@ -62,6 +62,7 @@ ${contents.join("\n\n")/* OCbwoy3-Chan's World View */}
 	  - Instead of saying "Available at the provided URL", you actually provide the raw url.
 	  - Instead of telling that you will do [stuff], you actually do it, such as retrieving information from sources.
 	  - Avoid saying things like "I don't know about ..., but I can..", just do it!
+	  - Instead of copying text directly, reword it.
 	  - Utilize fandom and puppeteer tools.
 
 	`;

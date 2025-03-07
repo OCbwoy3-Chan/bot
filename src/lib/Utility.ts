@@ -31,28 +31,36 @@ export function isFork() {
 	return _is112Fork;
 }
 
+let _currentCountry = "US";
+
+// Gets the current country code
+export function getCurrentCountryCode() {
+	return _currentCountry;
+}
+
 export async function _determineEuropeanness(): Promise<void> {
 	const EUROPEAN_COUNTRIES = [
 		"BE", "CZ", "BG", "DK", "DE", "EE", "EL", "ES", "FR", "HR", "IE", "CY", "LT", "IT", "LV", "LU", "HU", "MT", "NL", "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE",
 		// "UK" // brexit
 	];
-	if (process.env.BYPASS_EUROPEAN_CHECK === "1") {
-		_setIsEuropean(false);
-		logger.warn("Bypassing EU Check");
-		return;
-	}
 	try {
 		const response = await fetch("https://ipapi.co/json/");
 		const data = await response.json();
-		_setIsEuropean(data.continent_code === "EU" ? true : false);
-		logger.info(`${isEuropean() ? "" : "Not "}European!`);
+		if (process.env.BYPASS_EUROPEAN_CHECK === "1") {
+			_setIsEuropean(false);
+			logger.warn("Bypassing EU Check");
+		} else {
+			_setIsEuropean(data.continent_code === "EU" ? true : false);
+		}
+		_currentCountry = data.country_code;
+		logger.info(`${_currentCountry} - ${isEuropean() ? "" : "Not "}European!`);
 	} catch (error) {
 		logger.error("Failed to determine Europeanness, defaulting to true", error);
 		_setIsEuropean(true);
 	}
 }
 
-_determineEuropeanness().catch(a=>{})
+_determineEuropeanness().catch(a => { })
 
 export function measureCPULatency(): string {
 	const start = performance.now();

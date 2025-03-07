@@ -1,7 +1,7 @@
 import { HarmCategory } from "@google/generative-ai";
 import { RobloxUserBan } from "@prisma/client";
 import { PlayerInfo } from "noblox.js";
-import { getDistroNameSync, isEuropean, isFork, measureCPULatency } from "../lib/Utility";
+import { getDistroNameSync, isFork, measureCPULatency } from "../lib/Utility";
 import { GetBanData } from "../services/Database/helpers/RobloxBan";
 import { prisma } from "@db/db";
 import { freemem, totalmem, uptime } from "os";
@@ -21,8 +21,8 @@ export const infoCommand = {
 		const usedMemoryGB = Math.round(freemem() / 1024 / 1024 / 1024 * 100) / 100;
 
 		return [
-			`> # [ocbwoy3.dev](<https://ocbwoy3.dev>)${isEuropean() ? " :flag_eu:" : ""}`,
-			`> Running on **${distro}**${isFork() ? `\n> -# ***FORKED VERSION OF 112***` : ""}`,
+			// :flag_${getCurrentCountryCode().toLowerCase()}:
+			`> # [ocbwoy3.dev](<https://ocbwoy3.dev>) (${distro}) ${isFork() ? `\n> ***FORKED VERSION OF 112***` : ""}`,
 			`> -# **Gateway Lat:** ${gatewayPing}ms`,
 			`> -# **Network Lat:** ${roundTrip}ms`,
 			`> -# **CPU Lat:** ${measureCPULatency()}μs`,

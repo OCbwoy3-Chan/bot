@@ -93,16 +93,16 @@ export class OCbwoy3ChanAI extends Listener {
 						]
 					})
 					return;
-				}if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Tools")) {
+				} if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Tools")) {
 					const tools = await getToolMetas();
-					let tString = tools.map(a=>{
+					let tString = tools.map(a => {
 						let b: string[] = [];
 						if (a.parameters) {
 							b = [
 								(a.parameters.description || "No description provided"),
 								`Type: ${a.parameters.type}`,
 								`Required: ${a.parameters.required?.join(", ")}`,
-								Object.entries(a.parameters.properties).map(([name, data])=>{
+								Object.entries(a.parameters.properties).map(([name, data]) => {
 									return `Param: ${name} - ${JSON.stringify(data)}`
 								}).join("\n")
 							]
@@ -276,7 +276,7 @@ export class OCbwoy3ChanAI extends Listener {
 			}
 
 			if (m.channel.type === ChannelType.GuildText) {
-				void m.channel.sendTyping().catch(a=>{});
+				void m.channel.sendTyping().catch(a => { });
 			}
 
 			const params: AIContext = {
@@ -286,7 +286,7 @@ export class OCbwoy3ChanAI extends Listener {
 				currentChannel: m.channel.id,
 				currentUserStatusOrWhatTheUserIsDoingListeningToEtc: m.member
 					? m.member.presence?.toJSON()
-					: { error: "avaiable only in servers"},
+					: { error: "avaiable only in servers" },
 				currentServer: m.guild
 					? {
 						name: m.guild.name,
@@ -296,6 +296,7 @@ export class OCbwoy3ChanAI extends Listener {
 				currentChannelM: {
 					name: m.channel.isDMBased() ? null : m.channel.name,
 				},
+				embeds: m.embeds.map(a => a.toJSON()),
 				...staticAIContext,
 			};
 
@@ -308,10 +309,10 @@ export class OCbwoy3ChanAI extends Listener {
 					params
 				);
 				if (toolsUsed.length !== 0) {
-					void m.react("⚙️").catch(a=>{})
+					void m.react("⚙️").catch(a => { })
 				}
 				if (toolsUsed.includes("memory.add") || toolsUsed.includes("memory.delete") || toolsUsed.includes("memory.update")) {
-					void m.react("📓").catch(a=>{})
+					void m.react("📓").catch(a => { })
 				}
 				if (response.length === 0) throw "Got empty message";
 				if (response.trim().replace(/ +/g, " ").length > 2000) {
