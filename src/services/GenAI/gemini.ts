@@ -69,7 +69,7 @@ Sometimes OCbwoy3-Chan would forget to save something, so asking it to do so wou
 - Utilizing Roblox's APIs,
 - Fetching GBans,
 - Looking up pages on [Fandom](<https://fandom.com>),
-- Scraping websites with [Puppeteer](<https://pptr.dev>),
+- Scraping websites with [Playwright](<https://playwright.dev>),
 - and much more..
 
 OCbwoy3-Chan can also roleplay as specific preset characters via the \`/ai set_character\` command.

@@ -5,19 +5,16 @@ import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
 import { GetChannelPrompt, GetGuildPrompt } from "../../Database/helpers/AISettings";
-import { AIContext, Chat } from "@ocbwoy3chanai/chat/index";
+import { AIContext } from "@ocbwoy3chanai/chat/index";
 
 import {
-	ActionRow,
 	ActionRowBuilder,
 	ApplicationIntegrationType,
 	AttachmentBuilder,
 	ButtonBuilder,
 	ButtonStyle,
 	GuildChannel,
-	InteractionContextType,
-	MessageActionRowComponent,
-	TextChannel
+	InteractionContextType
 } from "discord.js";
 import { Part } from "@google/generative-ai";
 import { getDistroNameSync } from "@112/Utility";
@@ -172,11 +169,11 @@ class AskCommand extends Command {
 				})
 			}
 
-			if (toolsUsed.includes("puppeteer")) {
+			if (toolsUsed.includes("get_website_content")) {
 				t.push({
-					emoji: "🪆",
-					label: "Puppeteer",
-					id: "ocbwoy3chan_tool_noop_puppeteer"
+					emoji: "🎭",
+					label: "Playwright",
+					id: "ocbwoy3chan_tool_noop_playwright"
 				})
 			}
 
