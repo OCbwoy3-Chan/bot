@@ -3,11 +3,11 @@ import {
 	SapphireClient
 } from "@sapphire/framework";
 import { PinoLogger } from "@stegripe/pino-logger";
-import { ActivityType, GatewayIntentBits, Partials } from "discord.js";
+import { ActivityType, GatewayIntentBits, Guild, Partials } from "discord.js";
 import { _setIsFork } from "../../lib/Utility";
-import { setPresence } from "../Server/router/stats";
 import { hostname } from "os";
 import { captureSentryException } from "@112/SentryUtil";
+import { setPresence } from "services/Server/router/stats";
 
 const logger = require("pino")({
 	base: {
@@ -63,7 +63,7 @@ export const client = new SapphireClient({
 	},
 });
 
-client.once("ready", async() => {
+client.once("ready", async () => {
 	logger.info("Logged in");
 	if (client.user!.id === "1271869353389723738") {
 		_setIsFork(false);
@@ -71,28 +71,30 @@ client.once("ready", async() => {
 			_setIsFork(true);
 		}
 	}
-	if (!process.env.GUILD_ID) {
-		try {
-			const g = await client.guilds.resolve(process.env.GUILD_ID!);
+});
+
+let g: Guild | null = null;
+
+setInterval(async () => {
+	try {
+		if (!g) {
+			g = await client.guilds.resolve(process.env.GUILD_ID!);
 			if (!g) {
 				await client.guilds.fetch(process.env.GUILD_ID!);
 				return;
 			}
-			setInterval(async () => {
-				try {
-					const m = g.members.resolve(process.env.OWNER_ID!);
-					if (!m) {
-						await g.members.fetch(process.env.OWNER_ID!);
-						return;
-					}
-					setPresence(m.presence?.toJSON() || null);
-				} catch {}
-			}, 100);
-		} catch(e_) {
-			captureSentryException(e_);
 		}
-	};
-});
+	} catch {}
+	try {
+		if (!g) return;
+		const m = g.members.resolve(process.env.OWNER_ID!);
+		if (!m) {
+			await g.members.fetch(process.env.OWNER_ID!);
+			return;
+		}
+		setPresence(m.presence?.toJSON() || null);
+	} catch { }
+}, 100);
 
 client.on("error", (err) => {
 	if (err.message && !err.message.includes("webhook")) {
