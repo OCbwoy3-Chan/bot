@@ -40,7 +40,7 @@ async function func(args: any): Promise<any> {
 
 	const browser = await chromium.launch({
 		executablePath: process.env.CHROMIUM_PATH,
-		headless: false
+		headless: true
 	});
 
 	const ctx = await browser.newContext({
