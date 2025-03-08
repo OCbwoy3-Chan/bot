@@ -16,6 +16,7 @@ import { testAllTools } from "@ocbwoy3chanai/ToolTest";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
 import { GetChannelPrompt, GetGuildPrompt } from "../../Database/helpers/AISettings";
 import { getToolMetas } from "@ocbwoy3chanai/chat/tools";
+import { exec } from "child_process";
 
 let savedChatSession: Chat | null = null;
 
@@ -78,6 +79,11 @@ export class OCbwoy3ChanAI extends Listener {
 			if ((await IsAIWhitelisted(m2.author.id)) !== true) return;
 
 			if (m2.author.id === process.env.OWNER_ID!) {
+				if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Update")) {
+					await m2.reply("ok");
+					exec("./upd.sh");
+					return;
+				}
 				if (m2.content.startsWith("$OCbwoy3ChanAI_Dev ToolTest")) {
 					await m2.reply("testing");
 					const testResults = await testAllTools(m2);
@@ -93,7 +99,8 @@ export class OCbwoy3ChanAI extends Listener {
 						]
 					})
 					return;
-				} if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Tools")) {
+				}
+				if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Tools")) {
 					const tools = await getToolMetas();
 					let tString = tools.map(a => {
 						let b: string[] = [];
