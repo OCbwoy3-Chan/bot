@@ -54,9 +54,9 @@ async function func(args: any): Promise<any> {
 	await page.goto(args.url);
 	await page.setViewportSize({ width: 1080, height: 1024 });
 
-	logger.info(`[PLAYWRIGHT] Waiting 2s`);
+	// logger.info(`[PLAYWRIGHT] Waiting 2s`);
 
-	await new Promise(resolve => setTimeout(resolve, 2000));
+	// await new Promise(resolve => setTimeout(resolve, 2000));
 
 	const textContent = await page.evaluate(() => {
 		return document.body.innerText;

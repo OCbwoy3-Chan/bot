@@ -50,6 +50,8 @@ export class Chat {
 	chatSession: ChatSession | null = null;
 	callHistory: { [hash: string]: any } = {}; // Store previous calls
 	usersInChat: string[] = []
+	messageQueue: Array<{ question: string | Array<string | Part>, ctx?: AIContext, resolve: Function, reject: Function }> = [];
+	isProcessingQueue: boolean = false;
 
 	constructor(
 		public chatModel: string = "gemini-2.0-flash-lite-preview-02-05",
@@ -97,9 +99,9 @@ export class Chat {
 		const chatSession = this.chatSession
 			? this.chatSession
 			: model.startChat({
-					generationConfig,
-					history: [],
-			  });
+				generationConfig,
+				history: [],
+			});
 
 		this.chatSession = chatSession;
 	}
@@ -112,7 +114,24 @@ export class Chat {
 			.digest("hex");
 	}
 
-	public async generateResponse(
+	private async processQueue() {
+		if (this.isProcessingQueue || this.messageQueue.length === 0) return;
+
+		this.isProcessingQueue = true;
+		const { question, ctx, resolve, reject } = this.messageQueue.shift()!;
+
+		try {
+			const response = await this.generateResponseInternal(question, ctx);
+			resolve(response);
+		} catch (error) {
+			reject(error);
+		}
+
+		this.isProcessingQueue = false;
+		this.processQueue();
+	}
+
+	private async generateResponseInternal(
 		question: string | Array<string | Part>,
 		ctx?: AIContext
 	): Promise<[string, string[]]> {
@@ -128,8 +147,6 @@ export class Chat {
 		}
 
 		let toolsUsed: string[] = [];
-
-		// console.log(JSON.stringify(ctx));
 
 		result = await this.chatSession.sendMessage([
 			{
@@ -174,8 +191,7 @@ export class Chat {
 						};
 					}
 					logger.info(
-						`Cached ${
-							funcCall.name
+						`Cached ${funcCall.name
 						} for this gen - ${callHash.slice(0, 7)}...`
 					);
 
@@ -229,10 +245,7 @@ export class Chat {
 			(result as GenerateContentResult).response.text().trim().length ===
 			0
 		) {
-			// return await this.generateResponse(question)
-
 			this.chatSession = null;
-
 			return ["", toolsUsed];
 		}
 
@@ -240,5 +253,15 @@ export class Chat {
 			(result as GenerateContentResult).response.text().trim(),
 			toolsUsed,
 		];
+	}
+
+	public async generateResponse(
+		question: string | Array<string | Part>,
+		ctx?: AIContext
+	): Promise<[string, string[]]> {
+		return new Promise((resolve, reject) => {
+			this.messageQueue.push({ question, ctx, resolve, reject });
+			this.processQueue();
+		});
 	}
 }
