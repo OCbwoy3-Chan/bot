@@ -11,7 +11,7 @@
 	"ban_acted": "Успешно забанил пользователя {{user}} с причиной: {{reason}}",
 	"tools": {
 		"memory_update": "Память обновлена",
-		"atproto": "AT Protocol",
+		"atproto": "AT Протокол",
 		"duckduckgo": "DuckDuckGo",
 		"playwright": "Playwright",
 		"exaroton": "Exaroton",
