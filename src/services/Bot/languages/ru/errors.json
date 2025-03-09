@@ -1,0 +1,11 @@
+{
+	"generic_disallowed": "Ты не можешь использовать эту команду!",
+	"not_bot_owner": "Ты не владелец этого бота!",
+	"missing_wl": "Ты не в вайтлисте!",
+	"missing_perm_with_args": "Осуствует разрешение на `{{permission}}`",
+	"username_resolve": "Не удалось найти пользователя {{user}}",
+	"username_resolve_no_arg": "Не удалось определить имя пользователя.",
+	"ban_fail": "Не удалось забанить пользователя {{user}}",
+	"user_not_banned": "Пользователь не в бане.",
+	"generic": "Ошибка"
+}
