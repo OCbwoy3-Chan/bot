@@ -17,6 +17,7 @@ import { chatManager } from "@ocbwoy3chanai/ChatManager";
 import { GetChannelPrompt, GetGuildPrompt } from "../../Database/helpers/AISettings";
 import { getToolMetas } from "@ocbwoy3chanai/chat/tools";
 import { exec } from "child_process";
+import { r } from "112-l10n";
 
 let savedChatSession: Chat | null = null;
 
@@ -328,7 +329,7 @@ export class OCbwoy3ChanAI extends Listener {
 						name: "message.txt",
 						data: response,
 					});
-					response = "> Message too long, sending as file.";
+					response = await r(m2, "ai:message_too_long");
 				}
 			} catch (e_) {
 				err = e_;

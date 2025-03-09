@@ -1,4 +1,4 @@
-import { AI_HELP_MSG } from "@ocbwoy3chanai/gemini";
+import { r } from "112-l10n";
 import {
 	InteractionHandler,
 	InteractionHandlerTypes,
@@ -34,7 +34,7 @@ export class MessageComponentHandler extends InteractionHandler {
 		if (!interaction.isButton()) return;
 
 		await interaction.reply({
-			content: AI_HELP_MSG,
+			content: (await r(interaction, "ai:help_msg") as any as string[]).join("\n"),
 			ephemeral: true,
 		});
 

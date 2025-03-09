@@ -11,6 +11,8 @@ import { BanlandScope } from "../../../lib/Constants";
 import { GetUserDetails, GetUserIdFromName } from "../../../lib/roblox";
 import { banningCommands } from "../../../locale/commands";
 import { BanUser, GetBanData, UpdateUserBan } from "../../Database/helpers/RobloxBan";
+import { r } from "112-l10n";
+import { IsWhitelisted } from "@db/helpers/DiscordWhitelist";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -20,9 +22,7 @@ class SlashCommand extends Subcommand {
 		super(context, {
 			...options,
 			description: "Commands to manage global bans.",
-			preconditions: (<unknown>[
-				"BanAccess",
-			]) as PreconditionEntryResolvable[],
+			preconditions: (<unknown>[]) as PreconditionEntryResolvable[],
 			subcommands: [
 				{
 					name: "lookup",
@@ -156,7 +156,7 @@ class SlashCommand extends Subcommand {
 		);
 		if (!userid) {
 			return await interaction.reply({
-				content: `> ${banningCommands.errors.usernameResolveFail()}`,
+				content: await r(interaction, "errors:username_resolve_no_arg"),
 				ephemeral: true,
 			});
 		}
@@ -171,7 +171,7 @@ class SlashCommand extends Subcommand {
 
 		if (await GetBanData(userid.toString())) {
 			const stupidFuckingButton2 = new ButtonBuilder()
-				.setLabel("Unban")
+				.setLabel(await r(interaction, "generic:button_unban"))
 				.setCustomId(`112-unban-${userid.toString()}`)
 				.setStyle(ButtonStyle.Danger);
 			row.addComponents(stupidFuckingButton2);
@@ -190,6 +190,13 @@ class SlashCommand extends Subcommand {
 	public async chatInputBan(
 		interaction: Command.ChatInputCommandInteraction
 	) {
+		if (!(await IsWhitelisted(interaction.user.id))) {
+			return await interaction.reply({
+				content: await r(interaction, "errors:missing_wl"),
+				ephemeral: true,
+			});
+		}
+
 		if (!interaction.options.get("user")?.value) {
 			await interaction.reply({ content: ":skull:", ephemeral: true });
 			return;
@@ -202,7 +209,7 @@ class SlashCommand extends Subcommand {
 
 		const reason =
 			interaction.options.getString("reason") ||
-			"Unspecified reason";
+			await r(interaction, "generic:ban_reason_unspecified");
 		const duration =
 			interaction.options.getNumber("duration") || -1;
 		const nofed =
@@ -224,7 +231,7 @@ class SlashCommand extends Subcommand {
 		);
 		if (!userid) {
 			return await interaction.followUp({
-				content: `> ${banningCommands.errors.usernameResolveFail()}`,
+				content: await r(interaction, "errors:username_resolve_no_arg"),
 				ephemeral: true,
 			});
 		}
@@ -253,7 +260,7 @@ class SlashCommand extends Subcommand {
 		const row = new ActionRowBuilder().addComponents(stupidFuckingButton);
 
 		return await interaction.followUp({
-			content: `> Sucessfully banned [${ud.displayName}](https://fxroblox.com/users/${userid})`,
+			content: await r(interaction, "generic:ban_success", { user: `[${ud.displayName}](https://fxroblox.com/users/${userid})` }),
 			components: [(<unknown>row) as any],
 		});
 	}
@@ -261,6 +268,13 @@ class SlashCommand extends Subcommand {
 	public async chatInputUpdate(
 		interaction: Command.ChatInputCommandInteraction
 	) {
+		if (!(await IsWhitelisted(interaction.user.id))) {
+			return await interaction.reply({
+				content: await r(interaction, "errors:missing_wl"),
+				ephemeral: true,
+			});
+		}
+
 		if (!interaction.options.get("user")?.value) {
 			await interaction.reply({ content: ":skull:", ephemeral: true });
 			return;
@@ -277,7 +291,7 @@ class SlashCommand extends Subcommand {
 
 		if (!userid) {
 			return await interaction.followUp({
-				content: `> ${banningCommands.errors.usernameResolveFail()}`,
+				content: await r(interaction, "errors:username_resolve_no_arg"),
 				ephemeral: true,
 			});
 		}
@@ -285,7 +299,7 @@ class SlashCommand extends Subcommand {
 		const existingBan = await GetBanData(userid.toString());
 		if (!existingBan) {
 			return await interaction.followUp({
-				content: `> User is not currently banned.`,
+				content: await r(interaction, "errors:user_not_banned"),
 				ephemeral: true,
 			});
 		}
@@ -293,7 +307,7 @@ class SlashCommand extends Subcommand {
 		const reason =
 			interaction.options.getString("reason") ||
 			existingBan.reason ||
-			"Unspecified reason";
+			await r(interaction, "generic:ban_reason_unspecified");
 		const duration =
 			interaction.options.getNumber("duration") ||
 			parseInt(existingBan.bannedUntil) - Math.ceil(Date.now() / 1000) ||
@@ -335,7 +349,7 @@ class SlashCommand extends Subcommand {
 		const row = new ActionRowBuilder().addComponents(stupidFuckingButton);
 
 		return await interaction.followUp({
-			content: `> Successfully updated [${ud.displayName}](https://fxroblox.com/users/${userid})'s ban`,
+			content: await r(interaction, "generic:ban_update_success", { user: `[${ud.displayName}](https://fxroblox.com/users/${userid})` }),
 			components: [(<unknown>row) as any],
 		});
 	}

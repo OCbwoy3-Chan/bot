@@ -1,0 +1,11 @@
+{
+	"generic_disallowed": "Jūs nevarat izmantot šo komandu!",
+	"not_bot_owner": "Jūs neesat šī bota īpašnieks!",
+	"missing_wl": "Jūs neesat baltajā sarakstā!",
+	"missing_perm_with_args": "Trūkst atļaujas `{{permission}}`",
+	"username_resolve": "Neizdevās atrisināt lietotājvārdu: {{user}}",
+	"username_resolve_no_arg": "Neizdevās atrisināt lietotājvārdu.",
+	"ban_fail": "Neizdevās aizliegt {{user}}",
+	"user_not_banned": "Lietotājs nav aizliegts.",
+	"generic": "Kļūda"
+}

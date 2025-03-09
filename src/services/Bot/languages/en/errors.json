@@ -1,0 +1,11 @@
+{
+	"generic_disallowed": "You cannot use this command!",
+	"not_bot_owner": "You are not the owner of this bot!",
+	"missing_wl": "You are not whitelisted!",
+	"missing_perm_with_args": "Missing permission `{{permission}}`",
+	"username_resolve": "Failed to resolve username: {{user}}",
+	"username_resolve_no_arg": "Failed to resolve username.",
+	"ban_fail": "Unable to ban {{user}}",
+	"user_not_banned": "User not banned.",
+	"generic": "Error"
+}

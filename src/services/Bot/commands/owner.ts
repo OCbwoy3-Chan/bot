@@ -12,6 +12,7 @@ import { prisma } from "../../Database/db";
 import { AllModels, areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { resetOCbwoy3ChansAPIKey } from "services/Server/router/chat";
 import { captureSentryException } from "@112/SentryUtil";
+import { fetchT } from "@sapphire/plugin-i18next";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -204,8 +205,9 @@ class SlashCommand extends Subcommand {
 	public async chatInputSentryError(
 		interaction: Command.ChatInputCommandInteraction
 	) {
+		const tf = await fetchT(interaction);
 		await interaction.reply({
-			content: "ok",
+			content: tf("generic:ok"),
 			ephemeral: true
 		})
 		try {

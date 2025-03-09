@@ -1,0 +1,25 @@
+{
+	"missing_wl": "You are not AI whitelisted!",
+	"get_memories_result": "Here is everything I know about you!",
+	"chat_clear": "Chat cleared.",
+	"char_update": "Character changed, chat cleared.",
+	"char_update_select_template": "Select a character!",
+	"char_update_select": "Select a character!",
+	"not_enabled": "Generative AI features are not enabled.",
+	"eu_compliance": "AI moderation is illegal in the European Union.",
+	"ban_justification": "I've deemed {{user}}'s ban to be {{justified, select, true {justified} false {unjust}}}.",
+	"ban_acted": "Successfully banned {{user}} with reason: {{reason}}",
+	"tools": {
+		"memory_update": "Memory updated",
+		"atproto": "AT Protocol",
+		"duckduckgo": "DuckDuckGo",
+		"playwright": "Playwright",
+		"exaroton": "Exaroton",
+		"fandom": "Fandom"
+	},
+	"message_too_long": "Message too long, sending as a file.",
+	"current_prompt_server": "Current server default character: {{prompt}}",
+	"current_prompt_channel": "Current channel character: {{prompt}}",
+	"no_prompt_set": "No character set!",
+	"update_channel_prompt": "{{user}} updated the channel's character to **{{char}}**"
+}

@@ -1,3 +1,4 @@
+import "@sapphire/plugin-i18next/register";
 import {
 	ApplicationCommandRegistries, RegisterBehavior,
 	SapphireClient
@@ -8,6 +9,11 @@ import { _setIsFork } from "../../lib/Utility";
 import { hostname } from "os";
 import { captureSentryException } from "@112/SentryUtil";
 import { setPresence } from "services/Server/router/stats";
+import { InternationalizationContext } from "@sapphire/plugin-i18next";
+import { prisma } from "@db/db";
+import { join } from "path";
+import { readdirSync, readFileSync } from "fs";
+import { ALL_LANGUAGES } from "112-l10n";
 
 const logger = require("pino")({
 	base: {
@@ -19,6 +25,36 @@ const logger = require("pino")({
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(
 	RegisterBehavior.BulkOverwrite
 );
+
+let cachedGuildLanguages: {[guild: string]: string} = {};
+
+export function _clearCachedGuildLang(id: string) {
+	delete cachedGuildLanguages[id]
+}
+
+function loadTranslations() {
+	const languages = ALL_LANGUAGES.map(a=>a.id);
+	const resources: Record<string, any> = {};
+
+	for (const lang of languages) {
+		const langDir = join(__dirname, `languages/${lang}`);
+		const files = readdirSync(langDir);
+		resources[lang] = { };
+
+		for (const file of files) {
+			const filePath = join(langDir, file);
+			if (file.endsWith('.json')) {
+				const fileContents = readFileSync(filePath, 'utf8');
+				const fileName = file.replace('.json', '');
+				resources[lang][fileName] = JSON.parse(fileContents);
+			}
+		}
+
+		resources[lang].ai.help_msg = readFileSync(join(langDir,"ai_help_msg.txt"),'utf-8')
+	}
+
+	return resources;
+}
 
 export const client = new SapphireClient({
 	intents: [
@@ -53,14 +89,45 @@ export const client = new SapphireClient({
 	presence: {
 		status: "dnd",
 		activities: [
-			// CHATGPT GENERATED STATUS
+			/*
 			{
 				name: "skids vanish into thin air",
 				state: "another one bites the dust",
 				type: ActivityType.Watching,
 			}
+			*/
+			{
+				name: ".gg/yokstar",
+				state: "w server",
+				type: ActivityType.Listening
+			}
 		],
 	},
+	i18n: {
+		i18next: {
+			fallbackLang: "en",
+			// debug: true,
+			resources: loadTranslations(),
+			preload: ALL_LANGUAGES.map(a=>a.id)
+		},
+		fetchLanguage: async (context: InternationalizationContext) => {
+			if (!context.guild) {
+				return 'en';
+			}
+
+			if (!cachedGuildLanguages[context.guild.id]) {
+				const guildSettings = await prisma.guildSetting.findFirst({
+					where: {
+						id: context.guild.id
+					}
+				});
+				cachedGuildLanguages[context.guild.id] = guildSettings?.language || "en-US";
+				return guildSettings?.language || "en-US";
+			}
+			return cachedGuildLanguages[context.guild.id]
+		},
+		defaultMissingKey: "generic:i18n_missing_key"
+	} as any
 });
 
 client.once("ready", async () => {
@@ -84,7 +151,7 @@ setInterval(async () => {
 				return;
 			}
 		}
-	} catch {}
+	} catch { }
 	try {
 		if (!g) return;
 		const m = g.members.resolve(process.env.OWNER_ID!);

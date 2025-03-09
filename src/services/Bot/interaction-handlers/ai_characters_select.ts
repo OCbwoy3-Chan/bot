@@ -10,9 +10,9 @@ import {
 	CharacterInfo,
 	getCachedPromptsJ,
 } from "../../GenAI/prompt/GeneratePrompt";
-import { SetChatPrompt } from "../listeners/OCbwoy3ChanAI";
 import { SetChannelPrompt } from "@db/helpers/AISettings";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
+import { r } from "112-l10n";
 
 export class MenuHandler extends InteractionHandler {
 	public constructor(
@@ -49,16 +49,19 @@ export class MenuHandler extends InteractionHandler {
 
 		if (!prompt[0]) {
 			return await interaction.reply({
-				content: "Character not found",
+				content: await r(interaction, "errors:generic"),
 				ephemeral: true,
 			});
 		}
 
 		await SetChannelPrompt(interaction.channelId, interaction.values[0]);
 
-try { chatManager.clearChat(interaction.channelId); } catch {};
+		try { chatManager.clearChat(interaction.channelId); } catch { };
 		await interaction.reply(
-			`<@${interaction.user.id}> set <#${interaction.channelId}> character to **${prompt[0].name}** (${prompt[0].filename})`
+			await r(interaction, "ai:update_channel_prompt", {
+				user: `<@${interaction.user.id}>`,
+				char: prompt[0].name
+			})
 		);
 	}
 }

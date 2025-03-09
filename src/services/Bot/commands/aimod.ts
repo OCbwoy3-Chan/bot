@@ -4,13 +4,14 @@ import {
 	ApplicationIntegrationType,
 	InteractionContextType
 } from "discord.js";
-import { general } from "../../../locale/commands";
 import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { generateBanReason } from "../../GenAI/gen";
 import { BanUser, UpdateUserBan } from "../../Database/helpers/RobloxBan";
 import { GetUserIdFromName, GetUserDetails } from "../../../lib/roblox";
 import { isEuropean } from "@112/Utility";
+import { r } from "112-l10n";
+import { IsWhitelisted } from "@db/helpers/DiscordWhitelist";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -78,15 +79,21 @@ class SlashCommand extends Subcommand {
 	) {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
-				content: general.errors.missingPermission("GENERATIVE_AI"),
+				content: await r(interaction, "ai:missing_wl"),
+				ephemeral: true,
+			});
+		}
+		if (!(await IsWhitelisted(interaction.user.id))) {
+			return await interaction.reply({
+				content: await r(interaction, "errors:missing_wl"),
 				ephemeral: true,
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
-			return await interaction.reply(general.errors.genai.aiDisabled());
+			return await interaction.reply(await r(interaction, "ai:not_enabled"));
 		}
 		if (isEuropean()) {
-			return await interaction.reply(general.errors.genai.illegalInEurope());
+			return await interaction.reply(await r(interaction, "ai:eu_compliance"));
 		}
 
 
@@ -96,7 +103,7 @@ class SlashCommand extends Subcommand {
 		const userId = await GetUserIdFromName(username);
 		if (!userId) {
 			return interaction.followUp({
-				content: `Failed to resolve username: ${username}`,
+				content: await r(interaction, "errors:username_resolve", { user: username }),
 				ephemeral: true,
 			});
 		}
@@ -104,10 +111,11 @@ class SlashCommand extends Subcommand {
 		const userDetails = await GetUserDetails(userId);
 		const banReason = await generateBanReason(userId.toString());
 
+		const vibe_check = await r(interaction, "ai:ban_justification", { user: `[${userDetails.displayName}](https://fxroblox.com/users/${userId})`, justified: banReason.justified })
 
 		return interaction.followUp({
-			content: `I've deemed [${userDetails.displayName}](https://fxroblox.com/users/${userId})'s ban to be **${banReason.justified ? 'justified' : 'unjust'}**.
-**Reason:** \`\`\`${banReason.ban_reason}\`\`\`\n
+			content: `${vibe_check}
+\`\`\`${banReason.ban_reason}\`\`\`\n
 ${banReason.explanation}
 -# ${banReason.comment}`,
 			ephemeral: false,
@@ -119,15 +127,21 @@ ${banReason.explanation}
 	) {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
-				content: general.errors.missingPermission("GENERATIVE_AI"),
+				content: await r(interaction, "ai:missing_wl"),
+				ephemeral: true,
+			});
+		}
+		if (!(await IsWhitelisted(interaction.user.id))) {
+			return await interaction.reply({
+				content: await r(interaction, "errors:missing_wl"),
 				ephemeral: true,
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
-			return await interaction.reply(general.errors.genai.aiDisabled());
+			return await interaction.reply(await r(interaction, "ai:not_enabled"));
 		}
 		if (isEuropean()) {
-			return await interaction.reply(general.errors.genai.illegalInEurope());
+			return await interaction.reply(await r(interaction, "ai:eu_compliance"));
 		}
 
 		await interaction.deferReply({ ephemeral: false });
@@ -136,7 +150,7 @@ ${banReason.explanation}
 		const userId = await GetUserIdFromName(username);
 		if (!userId) {
 			return interaction.followUp({
-				content: `Failed to resolve username: ${username}`,
+				content: await r(interaction, "errors:username_resolve", { user: username }),
 				ephemeral: true,
 			});
 		}
@@ -174,7 +188,7 @@ ${banReason.explanation}
 				}
 			}
 			return interaction.followUp({
-				content: `Successfully banned [${userDetails.displayName}](https://fxroblox.com/users/${userId}) with reason:\n\`\`\`${banReason.ban_reason}\`\`\``,
+				content: await r(interaction, "ai:ban_acted", { user: `[${userDetails.displayName}](https://fxroblox.com/users/${userId})`, reason: `\`\`\`${banReason.ban_reason}\`\`\`` }),
 				ephemeral: false,
 			});
 		} catch (error) {

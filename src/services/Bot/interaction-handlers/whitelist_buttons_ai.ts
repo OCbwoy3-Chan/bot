@@ -8,6 +8,7 @@ import {
 } from "discord.js";
 import { general } from "../../../locale/commands";
 import { AddAIWhitelist, RemoveAIWhitelist } from "../../Database/helpers/AIWhitelist";
+import { r } from "112-l10n";
 
 export class MessageComponentHandler extends InteractionHandler {
 	public constructor(
@@ -38,7 +39,7 @@ export class MessageComponentHandler extends InteractionHandler {
 		if (interaction.customId.startsWith("112-add-ai-wl-")) {
 			if (interaction.user.id !== process.env.OWNER_ID) {
 				return await interaction.reply({
-					content: general.errors.notOwner(),
+					content: await r(interaction, "errors:not_bot_owner"),
 					ephemeral: true,
 				});
 			}

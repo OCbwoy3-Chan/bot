@@ -6,6 +6,7 @@ import type { StringSelectMenuInteraction } from "discord.js";
 import { general } from "../../../locale/commands";
 import { AllModels, areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { SetAIModel } from "../listeners/OCbwoy3ChanAI";
+import { r } from "112-l10n";
 
 export class MenuHandler extends InteractionHandler {
 	public constructor(
@@ -28,9 +29,7 @@ export class MenuHandler extends InteractionHandler {
 	public async run(interaction: StringSelectMenuInteraction) {
 		if (interaction.user.id !== process.env.OWNER_ID!) {
 			return await interaction.reply({
-				content: general.errors.missingPermission(
-					"GENERATIVE_AI_MANAGE_MODEL"
-				),
+				content: await r(interaction, "errors:generic_disallowed"),
 				ephemeral: true,
 			});
 		}
@@ -44,7 +43,7 @@ export class MenuHandler extends InteractionHandler {
 
 		if (!model[0]) {
 			return await interaction.reply({
-				content: "model not found",
+				content: await r(interaction, "errors:generic"),
 				ephemeral: true,
 			});
 		}

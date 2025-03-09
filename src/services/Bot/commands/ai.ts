@@ -9,14 +9,14 @@ import {
 } from "discord.js";
 import { general } from "../../../locale/commands";
 import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
-import { AI_HELP_MSG, areGenAIFeaturesEnabled } from "../../GenAI/gemini";
+import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { getCachedPromptsJ } from "../../GenAI/prompt/GeneratePrompt";
 import {
-	clearOCbwoy3ChansHistory,
-	SetChatPrompt,
+	clearOCbwoy3ChansHistory
 } from "../listeners/OCbwoy3ChanAI";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
 import { SetChannelPrompt } from "@db/helpers/AISettings";
+import { r } from "112-l10n";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -87,7 +87,7 @@ class SlashCommand extends Subcommand {
 		interaction: Subcommand.ChatInputCommandInteraction
 	) {
 		return await interaction.reply({
-			content: AI_HELP_MSG,
+			content: await r(interaction, "ai:help_msg"),
 			ephemeral: true,
 		});
 	}
@@ -97,7 +97,7 @@ class SlashCommand extends Subcommand {
 	) {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
-				content: general.errors.missingPermission("GENERATIVE_AI"),
+				content: await r(interaction, "ai:missing_wl"),
 				ephemeral: true,
 			});
 		}
@@ -109,7 +109,7 @@ class SlashCommand extends Subcommand {
 try { chatManager.clearChat(interaction.channelId); } catch {};
 
 		return await interaction.reply({
-			content: "Chat history cleared",
+			content: await r(interaction, "ai:chat_clear"),
 			ephemeral: true,
 		});
 	}
@@ -119,12 +119,12 @@ try { chatManager.clearChat(interaction.channelId); } catch {};
 	) {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
-				content: general.errors.missingPermission("GENERATIVE_AI"),
+				content: await r(interaction, "ai:missing_wl"),
 				ephemeral: true,
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
-			return await interaction.reply(general.errors.genai.aiDisabled());
+			return await interaction.reply(await r(interaction, "ai:not_enabled"));
 		}
 
 		if (interaction.options.getString("prompt")) {
@@ -133,14 +133,14 @@ try { chatManager.clearChat(interaction.channelId); } catch {};
 try { chatManager.clearChat(interaction.channelId); } catch {};
 
 			return await interaction.reply({
-				content: "Updated prompt, chat history reset",
+				content: await r(interaction, "ai:char_update"),
 				ephemeral: false,
 			});
 		}
 
 		const select = new StringSelectMenuBuilder()
 			.setCustomId("ocbwoy3chanai_select_char")
-			.setPlaceholder("Make a selection!")
+			.setPlaceholder(await r(interaction, "ai:char_update_select_template"))
 			.addOptions(
 				getCachedPromptsJ().filter(a=>!a.hidden).map((a) => {
 					return new StringSelectMenuOptionBuilder()
@@ -153,7 +153,7 @@ try { chatManager.clearChat(interaction.channelId); } catch {};
 		const row = new ActionRowBuilder().addComponents(select);
 
 		await interaction.reply({
-			content: "Choose a character!",
+			content: await r(interaction, "ai:char_update_select"),
 			components: [row as any],
 		});
 	}

@@ -17,7 +17,8 @@
 			"@l10n/*": [ "locale/commands/*" ],
 			"@ocbwoy3chanai/*": [ "services/GenAI/*", "services/Bot/apis/OCbwoy3ChanAI/*" ],
 			"@112/*": [ "lib/*" ],
-			"@db/*": [ "services/Database/*" ]
+			"@db/*": [ "services/Database/*" ],
+			"112-l10n": [ "services/Bot/languages/l10n_core.ts" ]
 		}
 	}
 }

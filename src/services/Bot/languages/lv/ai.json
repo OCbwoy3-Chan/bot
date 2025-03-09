@@ -1,0 +1,25 @@
+{
+	"missing_wl": "Jūs neesat AI baltajā sarakstā!",
+	"get_memories_result": "Šeit ir viss, ko es zinu par jums!",
+	"chat_clear": "Čats iztīrīts.",
+	"char_update": "Raksturs mainīts, tērzēšana iztīrīta.",
+	"char_update_select_template": "Izvēlieties raksturu!",
+	"char_update_select": "Izvēlieties raksturu!",
+	"not_enabled": "Ģeneratīvā MI funkcijas nav iespējotas.",
+	"eu_compliance": "MI moderācija Eiropas Savienībā ir nelegāla.",
+	"ban_justification": "Es uzskatu, ka {{user}} aizliegums ir {{justified, select, true {pamatojams} false {nepamatojams}}}.",
+	"ban_acted": "Veiksmīgi aizliegts {{user}} ar iemeslu: {{reason}}",
+	"tools": {
+		"memory_update": "Atmiņa atjaunota",
+		"atproto": "AT Protokols",
+		"duckduckgo": "DuckDuckGo",
+		"playwright": "Playwright",
+		"exaroton": "Exaroton",
+		"fandom": "Fandom"
+	},
+	"message_too_long": "Ziņojums par garu, sūtu kā failu.",
+	"current_prompt_server": "Pašreizējais servera noklusējuma raksturs: {{prompt}}",
+	"current_prompt_channel": "Pašreizējais kanāla raksturs: {{prompt}}",
+	"no_prompt_set": "Raksturs nav iestatīts!",
+	"update_channel_prompt": "{{user}} atjaunināja kanāla raksturu uz **{{char}}**"
+}

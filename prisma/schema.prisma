@@ -54,6 +54,13 @@ model RobloxUserAppeal {
     appealMessage String
 }
 
+// Guild Config
+
+model GuildSetting {
+	id String @id @unique
+	language String? // default en-US
+}
+
 // Whitelists
 
 model Whitelist {

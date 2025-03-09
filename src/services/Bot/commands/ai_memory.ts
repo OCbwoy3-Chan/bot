@@ -1,25 +1,14 @@
 import { Command, PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { general } from "../../../locale/commands";
 import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
-import { chatManager } from "@ocbwoy3chanai/ChatManager";
-import { GetChannelPrompt, GetGuildPrompt } from "../../Database/helpers/AISettings";
-import { AIContext, Chat } from "@ocbwoy3chanai/chat/index";
 
 import {
-	ActionRowBuilder,
 	ApplicationIntegrationType,
-	AttachmentBuilder,
-	GuildChannel,
-	InteractionContextType,
-	TextChannel
+	AttachmentBuilder, InteractionContextType
 } from "discord.js";
-import { Part } from "@google/generative-ai";
-import { getDistroNameSync } from "@112/Utility";
-import { GetAIModel } from "../listeners/OCbwoy3ChanAI";
 import { prisma } from "@db/db";
-import { memory } from "@tensorflow/tfjs";
+import { r } from "112-l10n";
 
 class AskCommand extends Command {
 	public constructor(
@@ -56,12 +45,12 @@ class AskCommand extends Command {
 	) {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
-				content: general.errors.missingPermission("GENERATIVE_AI"),
+				content: await r(interaction, "ai:missing_wl"),
 				ephemeral: true,
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
-			return await interaction.reply(general.errors.genai.aiDisabled());
+			return await interaction.reply(await r(interaction, "ai:not_enabled"));
 		}
 
 		await interaction.deferReply({
@@ -76,9 +65,9 @@ class AskCommand extends Command {
 		});
 
 		return await interaction.followUp({
-			content: "Here are all my memories about you.",
+			content: await r(interaction, "ai:get_memories_result"),
 			files: [
-				new AttachmentBuilder(Buffer.from(m.map(a=>`ID: ${a.id} | ${a.memory}`).join("\n")), {
+				new AttachmentBuilder(Buffer.from(m.map(a => `ID: ${a.id} | ${a.memory}`).join("\n")), {
 					name: "memory.txt",
 				}),
 			],

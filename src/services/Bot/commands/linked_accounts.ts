@@ -9,6 +9,7 @@ import {
 	UserContextMenuCommandInteraction
 } from "discord.js";
 import { prisma } from "../../Database/db";
+import { r } from "112-l10n";
 
 class SlashCommand extends Command {
 	public constructor(
@@ -62,7 +63,7 @@ class SlashCommand extends Command {
 		const embed: APIEmbed = {
 			title: `${user.displayName}`,
 			fields: [
-				{ name: "Linked Accounts", value: `${linkedAccounts.length === 0 ? "None" : linkedAccounts.length}`, inline: false }
+				{ name: await r(interaction, "generic:linked_accounts_embed_title"), value: `${linkedAccounts.length === 0 ? await r(interaction, "generic:none_zero_array") : linkedAccounts.length}`, inline: false }
 			],
 			thumbnail: { url: user.displayAvatarURL() },
 			color: 0x00ff00,

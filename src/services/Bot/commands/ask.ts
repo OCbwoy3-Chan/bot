@@ -1,6 +1,5 @@
 import { Command, PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { general } from "../../../locale/commands";
 import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
@@ -20,6 +19,7 @@ import { Part } from "@google/generative-ai";
 import { getDistroNameSync } from "@112/Utility";
 import { GetAIModel } from "../listeners/OCbwoy3ChanAI";
 import { client } from "../bot";
+import { r } from "112-l10n";
 
 class AskCommand extends Command {
 	public constructor(
@@ -69,12 +69,12 @@ class AskCommand extends Command {
 	) {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
-				content: general.errors.missingPermission("GENERATIVE_AI"),
+				content: await r(interaction, "ai:missing_wl"),
 				ephemeral: true,
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
-			return await interaction.reply(general.errors.genai.aiDisabled());
+			return await interaction.reply(await r(interaction, "ai:not_enabled"));
 		}
 
 		await interaction.deferReply({
@@ -148,7 +148,7 @@ class AskCommand extends Command {
 			if (toolsUsed.includes("memory.add") || toolsUsed.includes("memory.delete") || toolsUsed.includes("memory.update")) {
 				t.push({
 					emoji: "📓",
-					label: "Memory updated",
+					label: await r(interaction, "ai:tools.memory_update"),
 					id: "ocbwoy3chan_tool_noop_mem"
 				})
 			}
@@ -156,7 +156,7 @@ class AskCommand extends Command {
 			if (toolsUsed.includes("atproto.get_posts") || toolsUsed.includes("atproto.profile") || toolsUsed.includes("atproto.did_doc") || toolsUsed.includes("atproto.get_record")) {
 				t.push({
 					emoji: client.user!.id === "1271869353389723738" ? "<:bsky:1329812129288552458>" : "🦋",
-					label: "AT Protocol",
+					label: await r(interaction, "ai:tools.atproto"),
 					id: "ocbwoy3chan_tool_noop_atproto"
 				})
 			}
@@ -164,7 +164,7 @@ class AskCommand extends Command {
 			if (toolsUsed.includes("ddg.search")) {
 				t.push({
 					emoji: "🪿",
-					label: "DuckDuckGo",
+					label: await r(interaction, "ai:tools.duckduckgo"),
 					id: "ocbwoy3chan_tool_noop_ddg"
 				})
 			}
@@ -172,7 +172,7 @@ class AskCommand extends Command {
 			if (toolsUsed.includes("get_website_content")) {
 				t.push({
 					emoji: "🎭",
-					label: "Playwright",
+					label: await r(interaction, "ai:tools.playwright"),
 					id: "ocbwoy3chan_tool_noop_playwright"
 				})
 			}
@@ -180,7 +180,7 @@ class AskCommand extends Command {
 			if (toolsUsed.includes("mc.status") || toolsUsed.includes("exaroton.credits")) {
 				t.push({
 					emoji: client.user!.id === "1271869353389723738" ? "<:exaroton:1344571414958702654>" : "⛏️",
-					label: "Exaroton",
+					label: await r(interaction, "ai:tools.exaroton"),
 					id: "ocbwoy3chan_tool_noop_exaroton"
 				})
 			}
@@ -188,7 +188,7 @@ class AskCommand extends Command {
 			if (toolsUsed.includes("fandom")) {
 				t.push({
 					emoji: "🔬",
-					label: "Fandom",
+					label: await r(interaction, "ai:tools.fandom"),
 					id: "ocbwoy3chan_tool_noop_fandom"
 				})
 			}
@@ -212,7 +212,7 @@ class AskCommand extends Command {
 			if (response.length === 0) throw "Got empty message";
 			if (response.trim().replace(/ +/g, " ").length > 2000) {
 				return await interaction.followUp({
-					content: "> Message too long, sending as file.",
+					content: await r(interaction, "ai:mesage_too_long"),
 					files: [
 						new AttachmentBuilder(Buffer.from(response), {
 							name: "message.txt",

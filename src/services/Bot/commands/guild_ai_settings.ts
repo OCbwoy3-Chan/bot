@@ -1,11 +1,8 @@
 import { PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import {
-	ActionRowBuilder,
 	ApplicationIntegrationType,
-	InteractionContextType,
-	StringSelectMenuBuilder,
-	StringSelectMenuOptionBuilder,
+	InteractionContextType
 } from "discord.js";
 import { general } from "../../../locale/commands";
 import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
@@ -18,6 +15,7 @@ import {
 	GetChannelPrompt,
 } from "../../Database/helpers/AISettings";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
+import { r } from "112-l10n";
 
 class GuildSettingsCommand extends Subcommand {
 	public constructor(
@@ -26,20 +24,20 @@ class GuildSettingsCommand extends Subcommand {
 	) {
 		super(context, {
 			...options,
-			name: "guild-setting",
+			name: "guild-ai",
 			description: "Guild AI Settings",
 			preconditions: (<unknown>[]) as PreconditionEntryResolvable[],
 			subcommands: [
 				{
-					name: "reset_guild",
+					name: "reset",
 					chatInputRun: "chatInputClearGuild",
 				},
 				{
-					name: "set_guild_prompt",
+					name: "set",
 					chatInputRun: "chatInputSetGuildPrompt",
 				},
 				{
-					name: "get_guild_prompt",
+					name: "get",
 					chatInputRun: "chatInputGetGuildPrompt",
 				},
 				{
@@ -47,11 +45,11 @@ class GuildSettingsCommand extends Subcommand {
 					chatInputRun: "chatInputClearChannel",
 				},
 				{
-					name: "set_channel_prompt",
+					name: "set_channel",
 					chatInputRun: "chatInputSetChannelPrompt",
 				},
 				{
-					name: "get_channel_prompt",
+					name: "get_channel",
 					chatInputRun: "chatInputGetChannelPrompt",
 				},
 			],
@@ -74,12 +72,12 @@ class GuildSettingsCommand extends Subcommand {
 				)
 				.addSubcommand((builder) =>
 					builder
-						.setName("reset_guild")
+						.setName("reset")
 						.setDescription("Resets the guild's AI prompt")
 				)
 				.addSubcommand((builder) =>
 					builder
-						.setName("set_guild_prompt")
+						.setName("set")
 						.setDescription("Sets the guild's AI prompt")
 						.addStringOption((option) =>
 							option
@@ -91,7 +89,7 @@ class GuildSettingsCommand extends Subcommand {
 				)
 				.addSubcommand((builder) =>
 					builder
-						.setName("get_guild_prompt")
+						.setName("get")
 						.setDescription("Gets the guild's AI prompt")
 				)
 				.addSubcommand((builder) =>
@@ -107,7 +105,7 @@ class GuildSettingsCommand extends Subcommand {
 				)
 				.addSubcommand((builder) =>
 					builder
-						.setName("set_channel_prompt")
+						.setName("set_channel")
 						.setDescription("Sets the channel's AI prompt")
 						.addChannelOption((option) =>
 							option
@@ -124,7 +122,7 @@ class GuildSettingsCommand extends Subcommand {
 				)
 				.addSubcommand((builder) =>
 					builder
-						.setName("get_channel_prompt")
+						.setName("get_channel")
 						.setDescription("Gets the channel's AI prompt")
 						.addChannelOption((option) =>
 							option
@@ -178,7 +176,7 @@ class GuildSettingsCommand extends Subcommand {
 	) {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
-				content: general.errors.missingPermission("GENERATIVE_AI"),
+				content: await r(interaction, "ai:missing_wl"),
 				ephemeral: true,
 			});
 		}
@@ -186,7 +184,7 @@ class GuildSettingsCommand extends Subcommand {
 		const prompt = await GetGuildPrompt(interaction.guildId!);
 
 		return await interaction.reply({
-			content: prompt ? `Current guild AI prompt: ${prompt}` : "No prompt set",
+			content: prompt ? await r(interaction, "ai:current_prompt_server", { prompt }) : await r(interaction, "ai:no_prompt_set"),
 			ephemeral: true,
 		});
 	}
@@ -196,7 +194,7 @@ class GuildSettingsCommand extends Subcommand {
 	) {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
-				content: general.errors.missingPermission("GENERATIVE_AI"),
+				content: await r(interaction, "ai:missing_wl"),
 				ephemeral: true,
 			});
 		}
@@ -204,10 +202,10 @@ class GuildSettingsCommand extends Subcommand {
 		const channelId = interaction.options.getChannel("channel", true);
 		await ClearChannelPrompt(channelId.id);
 
-try { chatManager.clearChat(channelId.id); } catch {};
+		try { chatManager.clearChat(channelId.id); } catch { };
 
 		return await interaction.reply({
-			content: "Channel AI prompt cleared",
+			content: await r(interaction, "generic:done"),
 			ephemeral: true,
 		});
 	}
@@ -217,7 +215,7 @@ try { chatManager.clearChat(channelId.id); } catch {};
 	) {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
-				content: general.errors.missingPermission("GENERATIVE_AI"),
+				content: await r(interaction, "ai:missing_wl"),
 				ephemeral: true,
 			});
 		}
@@ -226,10 +224,10 @@ try { chatManager.clearChat(channelId.id); } catch {};
 		const prompt = interaction.options.getString("prompt", true);
 		await SetChannelPrompt(channelId.id, prompt);
 
-		try { chatManager.clearChat(channelId.id); } catch {};
+		try { chatManager.clearChat(channelId.id); } catch { };
 
 		return await interaction.reply({
-			content: "Channel AI prompt set",
+			content: await r(interaction, "generic:done"),
 			ephemeral: true,
 		});
 	}
@@ -239,7 +237,7 @@ try { chatManager.clearChat(channelId.id); } catch {};
 	) {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
-				content: general.errors.missingPermission("GENERATIVE_AI"),
+				content: await r(interaction, "ai:missing_wl"),
 				ephemeral: true,
 			});
 		}
@@ -248,7 +246,7 @@ try { chatManager.clearChat(channelId.id); } catch {};
 		const prompt = await GetChannelPrompt(channelId.id);
 
 		return await interaction.reply({
-			content: prompt ? `Current channel AI prompt: ${prompt}` : "No prompt set",
+			content: prompt ? await r(interaction, "ai:current_prompt_channel", { prompt }) : await r(interaction, "ai:no_prompt_set"),
 			ephemeral: true,
 		});
 	}

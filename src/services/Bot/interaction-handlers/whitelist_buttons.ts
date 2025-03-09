@@ -6,8 +6,8 @@ import {
 	type ButtonInteraction,
 	type StringSelectMenuInteraction,
 } from "discord.js";
-import { general } from "../../../locale/commands";
 import { AddWhitelist, RemoveWhitelist } from "../../Database/helpers/DiscordWhitelist";
+import { r } from "112-l10n";
 
 export class MessageComponentHandler extends InteractionHandler {
 	public constructor(
@@ -38,7 +38,7 @@ export class MessageComponentHandler extends InteractionHandler {
 		if (interaction.customId.startsWith("112-add-wl-")) {
 			if (interaction.user.id !== process.env.OWNER_ID) {
 				return await interaction.reply({
-					content: general.errors.notOwner(),
+					content: await r(interaction, "errors:not_bot_owner"),
 					ephemeral: true,
 				});
 			}
@@ -64,7 +64,7 @@ export class MessageComponentHandler extends InteractionHandler {
 		if (interaction.customId.startsWith("112-remove-wl-")) {
 			if (interaction.user.id !== process.env.OWNER_ID) {
 				return await interaction.reply({
-					content: general.errors.notOwner(),
+					content: await r(interaction, "errors:not_bot_owner"),
 					ephemeral: true,
 				});
 			}

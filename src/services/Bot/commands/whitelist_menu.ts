@@ -11,6 +11,7 @@ import {
 } from "discord.js";
 import { IsWhitelisted } from "../../Database/helpers/DiscordWhitelist";
 import { IsAIWhitelisted } from "@db/helpers/AIWhitelist";
+import { r } from "112-l10n";
 
 class SlashCommand extends Command {
 	public constructor(
@@ -55,19 +56,19 @@ class SlashCommand extends Command {
 			fields: [
 				{ name: "Username", value: user.username, inline: false },
 				{
-					name: "Joined Discord",
+					name: await r(interaction, "generic:wlmenu_joined_discord"),
 					value: `<t:${Math.round(
 						user.createdAt.getTime() / 1000
 					)}:R>`,
 					inline: false,
 				},
 				{
-					name: "Is Whitelisted?",
-					value: `${(await IsWhitelisted(user.id)) ? "Yes" : "No"}`,
+					name: await r(interaction, "generic:wlmenu_is_wl"),
+					value: `${(await IsWhitelisted(user.id)) ? await r(interaction, "generic:yes") : await r(interaction, "generic:no")}`,
 				},
 				{
-					name: "Is AI Whitelisted?",
-					value: `${(await IsAIWhitelisted(user.id)) ? "Yes" : "No"}`,
+					name: await r(interaction, "generic:wlmenu_is_ai_wl"),
+					value: `${(await IsAIWhitelisted(user.id)) ? await r(interaction, "generic:yes") : await r(interaction, "generic:no")}`,
 				},
 			],
 			thumbnail: { url: user.displayAvatarURL() },
@@ -75,17 +76,17 @@ class SlashCommand extends Command {
 		};
 
 		const addWhitelistButton = new ButtonBuilder()
-			.setLabel("Whitelist")
+			.setLabel(await r(interaction, "generic:button_whitelist"))
 			.setCustomId(`112-add-wl-${user.id}`)
 			.setStyle(ButtonStyle.Primary);
 
 		const removeWhitelistButton = new ButtonBuilder()
-			.setLabel("Unwhitelist")
+			.setLabel(await r(interaction, "generic:button_unwhitelist"))
 			.setCustomId(`112-remove-wl-${user.id}`)
 			.setStyle(ButtonStyle.Danger);
 
 		const aiWhitelistButton = new ButtonBuilder()
-			.setLabel("AI")
+			.setLabel(await r(interaction, "generic:button_ai"))
 			.setCustomId(`112-show-ai-wl-${user.id}`)
 			.setStyle(ButtonStyle.Secondary);
 

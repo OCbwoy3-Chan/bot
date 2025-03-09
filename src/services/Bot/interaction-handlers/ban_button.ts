@@ -10,9 +10,9 @@ import {
 	ButtonStyle,
 } from "discord.js";
 import { GetUserDetails } from "../../../lib/roblox";
-import { general } from "../../../locale/commands";
 import { IsWhitelisted } from "../../Database/helpers/DiscordWhitelist";
 import { UnbanUser } from "../../Database/helpers/RobloxBan";
+import { r } from "112-l10n";
 
 export class MessageComponentHandler extends InteractionHandler {
 	public constructor(
@@ -55,7 +55,7 @@ export class MessageComponentHandler extends InteractionHandler {
 
 			if (!(await IsWhitelisted(interaction.user.id))) {
 				return await interaction.reply({
-					content: general.errors.missingPermission("WHITELIST"),
+					content: await r(interaction, "errors:missing_wl"),
 					ephemeral: true,
 				});
 			}
@@ -78,7 +78,7 @@ export class MessageComponentHandler extends InteractionHandler {
 		if (interaction.customId.startsWith("112-unban-")) {
 			if (!(await IsWhitelisted(interaction.user.id))) {
 				return await interaction.reply({
-					content: general.errors.missingPermission("WHITELIST"),
+					content: await r(interaction, "errors:missing_wl"),
 					ephemeral: true,
 				});
 			}
@@ -91,7 +91,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			const userid = interaction.customId.replace("112-unban-", "");
 
 			const stupidFuckingButton = new ButtonBuilder()
-				.setLabel("CONFIRM UNBAM")
+				.setLabel(await r(interaction, "generic:confirm_ban_button"))
 				.setCustomId(`112-confirm-unban-${userid}`)
 				.setStyle(ButtonStyle.Danger);
 
@@ -102,7 +102,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			const ru = await GetUserDetails(parseInt(userid));
 
 			return await interaction.followUp({
-				content: `> Are you sure you want to unban [${ru.displayName}](https://fxroblox.com/users/${userid})?`,
+				content: await r(interaction, "generic:prompt_unban_confirm", { user: `[${ru.displayName}](https://fxroblox.com/users/${userid})` }),
 				components: [row as any],
 				ephemeral: true,
 			});

@@ -4,7 +4,7 @@ import type {
 	ContextMenuCommandInteraction,
 	Message,
 } from "discord.js";
-import { general } from "../../../locale/commands";
+import { r } from "112-l10n";
 
 export class OwnerOnlyPrecondition extends Precondition {
 	public override async messageRun(message: Message) {
@@ -16,10 +16,10 @@ export class OwnerOnlyPrecondition extends Precondition {
 			return this.ok();
 		} else {
 			interaction.reply({
-				content: general.errors.notOwner(),
+				content: await r(interaction, "errors:not_bot_owner"),
 				ephemeral: true,
 			});
-			return this.error({ message: "MissingPermission: OWNER" });
+			return this.error({ message: await r(interaction, "errors:not_bot_owner") });
 		}
 	}
 

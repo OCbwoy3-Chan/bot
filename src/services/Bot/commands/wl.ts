@@ -6,6 +6,7 @@ import {
 } from "discord.js";
 import { GetUserDetails, GetUserIdFromName } from "../../../lib/roblox";
 import { addRobloxWhitelist, removeRobloxWhitelist } from "../../Database/helpers/RobloxWhitelist";
+import { r } from "112-l10n";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -90,7 +91,7 @@ class SlashCommand extends Subcommand {
 		const userId = await GetUserIdFromName(username);
 		if (!userId) {
 			return interaction.followUp({
-				content: `Failed to resolve username: ${username}`,
+				content: await r(interaction, "errors:username_resolve_no_arg"),
 				ephemeral: true,
 			});
 		}
@@ -100,7 +101,7 @@ class SlashCommand extends Subcommand {
 		try {
 			await addRobloxWhitelist(userId.toString(), user.id);
 			return interaction.followUp({
-				content: `Successfully whitelisted [${ud.displayName}](https://fxroblox.com/users/${userId}) to <@${user.id}>`,
+				content: await r(interaction, "generic:wl_success", { user: `[${ud.displayName}](https://fxroblox.com/users/${userId})`, discord: `<@${user.id}>` }),
 				ephemeral: false,
 			});
 		} catch (error) {
@@ -122,7 +123,7 @@ class SlashCommand extends Subcommand {
 		const userId = await GetUserIdFromName(username);
 		if (!userId) {
 			return interaction.followUp({
-				content: `Failed to resolve username: ${username}`,
+				content: await r(interaction, "errors:username_resolve_no_arg"),
 				ephemeral: true,
 			});
 		}
@@ -132,7 +133,7 @@ class SlashCommand extends Subcommand {
 		try {
 			await removeRobloxWhitelist(userId.toString());
 			return interaction.followUp({
-				content: `Successfully unwhitelisted [${ud.displayName}](https://fxroblox.com/users/${userId})`,
+				content: await r(interaction, "generic:unwl_success", { user: `[${ud.displayName}](https://fxroblox.com/users/${userId})` }),
 				ephemeral: true,
 			});
 		} catch (error) {
