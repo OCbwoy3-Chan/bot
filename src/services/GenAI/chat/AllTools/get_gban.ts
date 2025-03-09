@@ -153,7 +153,7 @@ async function func(args: any): Promise<any> {
 		bans: {
 			["112"]: banReasonS,
 			Nova: await getNovaReason(
-				"https://api.scriptlang.com/bans",
+				"https://nova.scriptlang.com/api/bans",
 				userid.toString()
 			),
 			Karma: await getNovaReason(
