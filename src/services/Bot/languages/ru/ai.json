@@ -1,0 +1,25 @@
+{
+	"missing_wl": "Вы не в белом списке ИИ!",
+	"get_memories_result": "Вот всё что я помню про тебя!",
+	"chat_clear": "Чат очистен.",
+	"char_update": "Промпт изменён, чат очистен.",
+	"char_update_select_template": "Выбери промпт!",
+	"char_update_select": "Выбери промпт!",
+	"not_enabled": "Функция \"Искуственный Интелект\" не включён.",
+	"eu_compliance": "Модерация через ИИ незаконна в Европейском Союзе.",
+	"ban_justification": "Я признал бан пользователя {{user}} {{justified, select, true {оправданным} false {неоправданным}}}.",
+	"ban_acted": "Успешно забанил пользователя {{user}} с причиной: {{reason}}",
+	"tools": {
+		"memory_update": "Память обновлена",
+		"atproto": "AT Protocol",
+		"duckduckgo": "DuckDuckGo",
+		"playwright": "Playwright",
+		"exaroton": "Exaroton",
+		"fandom": "Fandom"
+	},
+	"message_too_long": "Сообщение слишком длинное, отправляю как файл.",
+	"current_prompt_server": "Текущий промпт для этого сервера: {{prompt}}",
+	"current_prompt_channel": "Текущий промпт канала: {{prompt}}",
+	"no_prompt_set": "Промпт не выбран!",
+	"update_channel_prompt": "{{user}} обновил промпт канала на **{{char}}**"
+}
