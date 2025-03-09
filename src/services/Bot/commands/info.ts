@@ -41,7 +41,8 @@ class SlashCommand extends Command {
 		const ping = Math.round(this.container.client.ws.ping); // this shit always ends up being -1 for some stupid fucking reason, or not.
 		const mo = await infoCommand.genContent(
 			diff.toString(),
-			ping.toString()
+			ping.toString(),
+			interaction
 		);
 		return await interaction.followUp({
 			content: mo,

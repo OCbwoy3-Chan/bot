@@ -1,0 +1,20 @@
+{
+	"bot_info": {
+		"fork_warning": "\n> ***NEOFICIĀLA VERSIJA***"
+	},
+	"info_output": [
+		"> # [ocbwoy3.dev](<https://ocbwoy3.dev>) ({{distro}}){{warning}}",
+		"> -# **Discord gateway pings:** {{gatewayLatency}}ms",
+		"> -# **Tīkla pings:** {{networkLatency}}ms",
+		"> -# **CPU latentums:** {{cpuLatency}}μs",
+		"> -# **Darbības laiks:** {{uptime}}",
+		"> -# **Atmiņa:** {{devMemUsed}}/{{devMemMax}} GB",
+		"> -# **Banotie lietotāji:** {{numBannedSkids}}"
+	],
+	"wl": {
+		"ai_a": "{{user}} tika pievienots MI baltajam sarakstam.",
+		"ai_r": "{{user}} tika noņemts no MI baltā saraksta.",
+		"a": "{{user}} tika pievienots baltajam sarakstam.",
+		"r": "{{user}} tika noņemts no baltā saraksta."
+	}
+}

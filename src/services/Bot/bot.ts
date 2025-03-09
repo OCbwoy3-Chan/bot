@@ -12,7 +12,7 @@ import { setPresence } from "services/Server/router/stats";
 import { InternationalizationContext } from "@sapphire/plugin-i18next";
 import { prisma } from "@db/db";
 import { join } from "path";
-import { readdirSync, readFileSync } from "fs";
+import { existsSync, readdirSync, readFileSync } from "fs";
 import { ALL_LANGUAGES } from "112-l10n";
 
 const logger = require("pino")({
@@ -50,7 +50,12 @@ function loadTranslations() {
 			}
 		}
 
-		resources[lang].ai.help_msg = readFileSync(join(langDir,"ai_help_msg.txt"),'utf-8')
+		const aiHelpMsgPath = join(langDir,"ai_help_msg.txt");
+		if (existsSync(aiHelpMsgPath)) {
+			const content = readFileSync(aiHelpMsgPath, 'utf-8');
+			resources[lang].ai.help_msg = content.replace(/ \/\/\*.*$/im,"");
+			// console.log(content.replace(/ \/\/\*.*$/im,""));
+		}
 	}
 
 	return resources;
@@ -104,9 +109,11 @@ export const client = new SapphireClient({
 		],
 	},
 	i18n: {
+		defaultName: "en",
 		i18next: {
 			fallbackLang: "en",
-			// debug: true,
+			debug: hostname() === "ocbwoy3-pc" ? true : false,
+			returnObjects: true,
 			resources: loadTranslations(),
 			preload: ALL_LANGUAGES.map(a=>a.id)
 		},
@@ -122,7 +129,7 @@ export const client = new SapphireClient({
 					}
 				});
 				cachedGuildLanguages[context.guild.id] = guildSettings?.language || "en-US";
-				return guildSettings?.language || "en-US";
+				return guildSettings?.language || "en";
 			}
 			return cachedGuildLanguages[context.guild.id]
 		},
@@ -168,4 +175,3 @@ client.on("error", (err) => {
 		captureSentryException(err)
 	}
 });
-

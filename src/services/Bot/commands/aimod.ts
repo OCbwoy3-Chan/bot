@@ -12,6 +12,7 @@ import { GetUserIdFromName, GetUserDetails } from "../../../lib/roblox";
 import { isEuropean } from "@112/Utility";
 import { r } from "112-l10n";
 import { IsWhitelisted } from "@db/helpers/DiscordWhitelist";
+import { prisma } from "@db/db";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -108,10 +109,21 @@ class SlashCommand extends Subcommand {
 			});
 		}
 
-		const userDetails = await GetUserDetails(userId);
-		const banReason = await generateBanReason(userId.toString());
+		let lang = "en-US";
 
-		const vibe_check = await r(interaction, "ai:ban_justification", { user: `[${userDetails.displayName}](https://fxroblox.com/users/${userId})`, justified: banReason.justified })
+		if (interaction.guild) {
+			const guildSettings = await prisma.guildSetting.findFirst({
+				where: {
+					id: interaction.guild?.id
+				}
+			});
+			lang = guildSettings?.language || "en-US";
+		}
+
+		const userDetails = await GetUserDetails(userId);
+		const banReason = await generateBanReason(userId.toString(), lang);
+
+		const vibe_check = await r(interaction, `ai:ban_justification.${banReason.justified ? "fair" : "unfair"}`, { user: `[${userDetails.displayName}](https://fxroblox.com/users/${userId})` })
 
 		return interaction.followUp({
 			content: `${vibe_check}
@@ -155,7 +167,18 @@ ${banReason.explanation}
 			});
 		}
 
-		const banReason = await generateBanReason(userId.toString());
+		let lang = "en-US";
+
+		if (interaction.guild) {
+			const guildSettings = await prisma.guildSetting.findFirst({
+				where: {
+					id: interaction.guild?.id
+				}
+			});
+			lang = guildSettings?.language || "en-US";
+		}
+
+		const banReason = await generateBanReason(userId.toString(), lang);
 
 		const userDetails = await GetUserDetails(userId);
 

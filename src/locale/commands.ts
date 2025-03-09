@@ -5,11 +5,13 @@ import { getDistroNameSync, isFork, measureCPULatency } from "../lib/Utility";
 import { GetBanData } from "../services/Database/helpers/RobloxBan";
 import { prisma } from "@db/db";
 import { freemem, totalmem, uptime } from "os";
+import { Interaction } from "discord.js";
+import { r } from "112-l10n";
 
 const distro = getDistroNameSync()
 
 export const infoCommand = {
-	genContent: async (roundTrip: string, gatewayPing: string) => {
+	genContent: async (roundTrip: string, gatewayPing: string, i: Interaction) => {
 		const upd = uptime();
 		const days = Math.floor(upd / 86400);
 		const hours = Math.floor((upd % 86400) / 3600);
@@ -20,16 +22,19 @@ export const infoCommand = {
 		const totalMemoryGB = Math.round(totalmem() / 1024 / 1024 / 1024 * 100) / 100;
 		const usedMemoryGB = Math.round(freemem() / 1024 / 1024 / 1024 * 100) / 100;
 
-		return [
-			// :flag_${getCurrentCountryCode().toLowerCase()}:
-			`> # [ocbwoy3.dev](<https://ocbwoy3.dev>) (${distro}) ${isFork() ? `\n> ***FORKED VERSION OF 112***` : ""}`,
-			`> -# **Gateway Lat:** ${gatewayPing}ms`,
-			`> -# **Network Lat:** ${roundTrip}ms`,
-			`> -# **CPU Lat:** ${measureCPULatency()}μs`,
-			`> -# **Uptime:** ${uptimeStr}`,
-			`> -# **Memory:** ${usedMemoryGB}/${totalMemoryGB} GB`,
-			`> -# **Banned Users:** ${(await prisma.robloxUserBan.findMany()).length}`,
-		].join("\n");
+		const m = await r(i, "etc:info_output", {
+			warning: isFork() ? await r(i, "etc:bot_info.fork_warning") : "",
+			distro,
+			gatewayLatency: gatewayPing,
+			networkLatency: roundTrip,
+			cpuLatency: measureCPULatency(),
+			uptime: uptimeStr,
+			devMemUsed: usedMemoryGB,
+			devMemMax: totalMemoryGB,
+			numBannedSkids: (await prisma.robloxUserBan.findMany()).length
+		}) as any as string[];
+
+		return m.join("\n");
 	},
 };
 
@@ -87,25 +92,21 @@ export const banningCommands = {
 	success: {
 		userBanSuccessMessage: (name: string) => `${name} has been banned!`,
 		userUnbanSuccessMessage: (name: string) => `${name} has been unbanned!`,
-		lookupResultMessage: async (d: PlayerInfo, i: number) => {
+		lookupResultMessage: async (d: PlayerInfo, i: number, interaction: Interaction) => {
 			let ap = "";
 			const bd: RobloxUserBan | null = await GetBanData(i.toString());
 			if (bd) {
-				ap = `
-
-> **Moderator:** <@${bd.moderatorId}>
-> **Reason:** ${bd.reason}
-> **Unbanned:** ${bd.bannedUntil === "-1"
-						? "never"
-						: `<t:${parseInt(bd.bannedUntil)}>`
-					}`;
+				ap = (await r(interaction, "mod:lookup_ban_result", {
+					moderator: `<@${bd.moderatorId}>`,
+					reason: bd.reason,
+					unban_date: (bd.bannedUntil === "-1")
+						? await r(interaction, "mod:unbanned_never")
+						: `<t:${bd.bannedUntil.toString()}>`
+				}) as any as string[]).map(a=>`> ${a}`).join("\n")
 			}
 			return `> # [${d.displayName} (@${d.username
 				})](https://fxroblox.com/users/${i})
-> ${d.isBanned
-					? "**Account Deleted**"
-					: "**Roblox Account**"
-				}${ap}`;
+> **${await r(interaction, `mod:account_status.${d.isBanned ? "account_deleted" : "default"}`)}**${ap !== "" ? `\n\n${ap}` : ""}`;
 		},
 	},
 	lookups: {

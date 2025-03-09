@@ -56,8 +56,8 @@ export class MessageComponentHandler extends InteractionHandler {
 			}
 
 			await interaction.reply({
-				content: `> ${userid} has been AI whitelisted.`,
-				ephemeral: false,
+				content: await r(interaction, "etc:wl.ai_a", { user: `<@${userid}>` }),
+				ephemeral: true,
 			});
 			return;
 		}
@@ -85,9 +85,10 @@ export class MessageComponentHandler extends InteractionHandler {
 			}
 
 			await interaction.reply({
-				content: `> ${userid} has been AI unwhitelisted.`,
-				ephemeral: false,
+				content: await r(interaction, "etc:wl.ai_r", { user: `<@${userid}>` }),
+				ephemeral: true,
 			});
+
 			return;
 		}
 	}

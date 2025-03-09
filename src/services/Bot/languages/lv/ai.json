@@ -1,5 +1,5 @@
 {
-	"missing_wl": "Jūs neesat AI baltajā sarakstā!",
+	"missing_wl": "Jūs neesat MI baltajā sarakstā!",
 	"get_memories_result": "Šeit ir viss, ko es zinu par jums!",
 	"chat_clear": "Čats iztīrīts.",
 	"char_update": "Raksturs mainīts, tērzēšana iztīrīta.",
@@ -7,7 +7,10 @@
 	"char_update_select": "Izvēlieties raksturu!",
 	"not_enabled": "Ģeneratīvā MI funkcijas nav iespējotas.",
 	"eu_compliance": "MI moderācija Eiropas Savienībā ir nelegāla.",
-	"ban_justification": "Es uzskatu, ka {{user}} aizliegums ir {{justified, select, true {pamatojams} false {nepamatojams}}}.",
+	"ban_justification": {
+		"fair": "Es uzskatu, ka {{user}} aizliegums ir godīgs.",
+		"unfair": "Es uzskatu, ka {{user}} aizliegums ir negodīgs."
+	},
 	"ban_acted": "Veiksmīgi aizliegts {{user}} ar iemeslu: {{reason}}",
 	"tools": {
 		"memory_update": "Atmiņa atjaunota",
@@ -17,9 +20,9 @@
 		"exaroton": "Exaroton",
 		"fandom": "Fandom"
 	},
-	"message_too_long": "Ziņojums par garu, sūtu kā failu.",
-	"current_prompt_server": "Pašreizējais servera noklusējuma raksturs: {{prompt}}",
-	"current_prompt_channel": "Pašreizējais kanāla raksturs: {{prompt}}",
-	"no_prompt_set": "Raksturs nav iestatīts!",
+	"message_too_long": "Mans ziņojums ir parāk garš, sūtu kā failu.",
+	"current_prompt_server": "Pašreizējais servera noklusējuma tēls: {{prompt}}",
+	"current_prompt_channel": "Pašreizējais kanāla tēls: {{prompt}}",
+	"no_prompt_set": "Tēls nav iestatīts!",
 	"update_channel_prompt": "{{user}} atjaunināja kanāla raksturu uz **{{char}}**"
 }

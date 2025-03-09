@@ -7,7 +7,10 @@
 	"char_update_select": "Select a character!",
 	"not_enabled": "Generative AI features are not enabled.",
 	"eu_compliance": "AI moderation is illegal in the European Union.",
-	"ban_justification": "I've deemed {{user}}'s ban to be {{justified, select, true {justified} false {unjust}}}.",
+	"ban_justification": {
+		"fair": "I've deemed {{user}}'s ban to be fair.",
+		"unfair": "I've deemed {{user}}'s ban to be unfair."
+	},
 	"ban_acted": "Successfully banned {{user}} with reason: {{reason}}",
 	"tools": {
 		"memory_update": "Memory updated",
@@ -17,7 +20,7 @@
 		"exaroton": "Exaroton",
 		"fandom": "Fandom"
 	},
-	"message_too_long": "Message too long, sending as a file.",
+	"message_too_long": "My message is too long, sending as a file.",
 	"current_prompt_server": "Current server default character: {{prompt}}",
 	"current_prompt_channel": "Current channel character: {{prompt}}",
 	"no_prompt_set": "No character set!",

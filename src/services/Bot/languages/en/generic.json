@@ -22,5 +22,6 @@
 	"wl_success": "Successfully whitelisted {{user}} to {{discord}}!",
 	"unwl_success": "Successfully whitelisted {{user}}!",
 	"confirm_unban_button": "CONFIRM UNBAN",
-	"prompt_unban_confirm": "Are you sure you want to unban {{user}}?"
+	"prompt_unban_confirm": "Are you sure you want to unban {{user}}?",
+	"unban_success": "{{user}} has been unbanned."
 }

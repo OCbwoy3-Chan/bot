@@ -10,6 +10,7 @@ import {
 	ButtonStyle,
 } from "discord.js";
 import { general } from "../../../locale/commands";
+import { r } from "112-l10n";
 
 export class MessageComponentHandler extends InteractionHandler {
 	public constructor(
@@ -47,13 +48,14 @@ export class MessageComponentHandler extends InteractionHandler {
 
 			const userid = interaction.customId.replace("112-show-ai-wl-", "");
 
+
 			const addWhitelistButton = new ButtonBuilder()
-				.setLabel("Whitelist")
+				.setLabel(await r(interaction, "generic:button_whitelist"))
 				.setCustomId(`112-add-ai-wl-${userid}`)
 				.setStyle(ButtonStyle.Primary);
 
 			const removeWhitelistButton = new ButtonBuilder()
-				.setLabel("Unwhitelist")
+				.setLabel(await r(interaction, "generic:button_unwhitelist"))
 				.setCustomId(`112-remove-ai-wl-${userid}`)
 				.setStyle(ButtonStyle.Danger);
 
@@ -63,7 +65,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			);
 
 			await interaction.reply({
-				content: "Choose AI actions",
+				// content: "Choose AI actions",
 				components: [row as any],
 				ephemeral: true,
 			});

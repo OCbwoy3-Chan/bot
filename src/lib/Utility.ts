@@ -64,7 +64,9 @@ _determineEuropeanness().catch(a => { })
 
 export function measureCPULatency(): string {
 	const start = performance.now();
-	const comparison = 9 + 10 === 21;
+	// for (let i = 0; i < 20; i++) {
+		const _uselessComparison = 9 + 10 === 21;
+	// }
 	const end = performance.now();
 	// latency in microseconds
 	const latency = end - start;

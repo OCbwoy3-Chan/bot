@@ -1,0 +1,20 @@
+{
+	"bot_info": {
+		"fork_warning": "\n> ***UNOFFICIAL VERSION***"
+	},
+	"bot_info_output": [
+		"> # [ocbwoy3.dev](<https://ocbwoy3.dev>) ({{distro}}){{warning}}",
+		"> -# **Discord gateway ping:** {{gatewayLatency}}ms",
+		"> -# **Network ping:** {{networkLatency}}ms",
+		"> -# **CPU latency:** {{cpuLatency}}μs",
+		"> -# **Uptime:** {{uptime}}",
+		"> -# **Memory:** {{devMemUsed}}/{{devMemMax}} GB",
+		"> -# **Banned users:** {{numBannedSkids}}"
+	],
+	"wl": {
+		"ai_a": "{{user}} has been added to the AI whitelist.",
+		"ai_r": "{{user}} has been removed from the AI whitelist.",
+		"a": "{{user}} has been added to the whitelist.",
+		"r": "{{user}} has been removed from the whitelist."
+	}
+}

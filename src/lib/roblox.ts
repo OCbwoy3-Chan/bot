@@ -43,6 +43,7 @@ export async function GetUserIdFromName(
 	}
 	try {
 		const userid = await getIdFromUsername(username.toLowerCase().trim());
+		if (!userid) return null;
 		usernameIdCache[username.toLowerCase().trim()] = userid;
 		return userid;
 	} catch {}

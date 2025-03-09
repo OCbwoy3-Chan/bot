@@ -1,0 +1,15 @@
+{
+	"unban_success": "{{user}} tika unbanots.",
+	"unban_whitelist_error": "Šis lietotājs ir baltajā sarakstā.",
+	"not_banned": "Šis lietotājs nav banots.",
+	"account_status": {
+		"default": "Roblox Konts",
+		"account_deleted": "Dzēsts Konts"
+	},
+	"unbanned_never": "Nekad",
+	"lookup_ban_result": [
+		"**Moderators:** {{moderator}}",
+		"**Paskaidrojums:** {{reason}}",
+		"**Unbanots:** {{unban_date}}"
+	]
+}

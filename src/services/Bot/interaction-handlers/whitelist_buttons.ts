@@ -55,9 +55,10 @@ export class MessageComponentHandler extends InteractionHandler {
 			}
 
 			await interaction.reply({
-				content: `> ${userid} has been whitelisted.`,
-				ephemeral: false,
+				content: await r(interaction, "etc:wl.a", { user: `<@${userid}>` }),
+				ephemeral: true,
 			});
+
 			return;
 		}
 
@@ -81,9 +82,10 @@ export class MessageComponentHandler extends InteractionHandler {
 			}
 
 			await interaction.reply({
-				content: `> ${userid} has been unwhitelisted.`,
-				ephemeral: false,
+				content: await r(interaction, "etc:wl.r", { user: `<@${userid}>` }),
+				ephemeral: true,
 			});
+
 			return;
 		}
 	}

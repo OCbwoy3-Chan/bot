@@ -155,7 +155,7 @@ class SlashCommand extends Subcommand {
 			(interaction.options.get("user")?.value as string).trim()
 		);
 		if (!userid) {
-			return await interaction.reply({
+			return await interaction.followUp({
 				content: await r(interaction, "errors:username_resolve_no_arg"),
 				ephemeral: true,
 			});
@@ -179,7 +179,8 @@ class SlashCommand extends Subcommand {
 
 		const wtf = await banningCommands.success.lookupResultMessage(
 			ud,
-			userid
+			userid,
+			interaction
 		);
 		return await interaction.followUp({
 			content: wtf,

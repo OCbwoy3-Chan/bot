@@ -6,7 +6,7 @@ OCbwoy3-Chan will become more helpful as you chat, picking up on details and pre
 
 **To understand what OCbwoy3-Chan remembers or teach it something new, just ask it:**
 - “Remember that I like concise responses.”
-- “My favourite song is Staircase Hell!”
+- “My favourite song is Next Floor It!” //* @ocbwoy3: replace song in the target language (this comment is not shown in the final output)
 - “What do you remember about me?”
 - “What's my favourite song?”
 

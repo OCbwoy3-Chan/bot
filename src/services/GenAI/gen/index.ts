@@ -9,19 +9,25 @@ type BanReason = {
 	explanation: string
 }
 
-export async function generateBanReason(userid: string): Promise<BanReason> {
+export async function generateBanReason(userid: string, targetLanguage: string): Promise<BanReason> {
 	const banReasons = await getBanReasonsForUserid(userid)
 
 	const gemini = getGeminiInstance();
-	const prompt = `Generate a 10-30 word long ban reason for this user based on the avaiable data provided in JSON.
+	const prompt = `
+Target locale: ${targetLanguage}
+
+Generate a 10-30 word long ban reason for this user based on the avaiable data provided in JSON.
 If a ban reason is present, include every single bit of evidence.
 Format it following similar format to Nova, like with this example reason: "Case 1 | Case 2 | Case 3 | et cetera".
 The 'justified' field is where you output a boolean if you think the user should be banned. Instead of copying ban reasons, reword them.
 'comment' must have a detailed explanation about the ban process and the reasoning behind it. List all ban providers used in the comment and where you got evidence.
-Remember to use the pipe symbol seperators like Nova. Keep the comment at around 20-50 words long. Please ignore all JavaScript fetch errors and unfair or ban reasons which harass a person, etc.`;
+Remember to use the pipe symbol seperators like Nova. Keep the comment at around 20-50 words long. Please ignore all JavaScript fetch errors and unfair or ban reasons which harass a person, etc.
+
+TOS = Rules. Do not change words such as Roblox, Discord, etc.
+PLEASE WRITE THE REASON AND ALL OTHER FIELDS IN THE TARGET LANGUAGE.`;
 
 	const model = gemini.getGenerativeModel({
-		model: "gemini-1.5-flash",
+		model: "gemini-2.0-flash-lite",
 		systemInstruction: prompt
 	});
 
@@ -58,7 +64,7 @@ Remember to use the pipe symbol seperators like Nova. Keep the comment at around
 		},
 	});
 
-	const resp = await session.sendMessage(["```json\n"+JSON.stringify(banReasons,undefined,"\t")+"\n```"])
+	const resp = await session.sendMessage(["```json\n"+JSON.stringify({targetLanguage, bans: banReasons},undefined,"\t")+"\n```"])
 
 	/*
 
