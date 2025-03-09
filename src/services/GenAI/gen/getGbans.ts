@@ -78,7 +78,6 @@ export async function getBanReasonsForUserid(userid: string): Promise<Object> {
 		}),
 		Nova: await getNovaReason("https://nova.scriptlang.com/api/bans", userid.toString()),
 		Karma: await getNovaReason("https://karma.ocbwoy3.dev/bans", userid.toString()),
-		SleepCore: await getNovaReason("https://skidgod.vercel.app/SleepCore/bans.json", userid.toString()),
-		AParam: await getAParamReason("https://zv7i.dev/static/aparambans.json", userid.toString()),
+		SleepCore: await getNovaReason("https://skidgod.vercel.app/SleepCore/bans.json", userid.toString())
 	};
 }

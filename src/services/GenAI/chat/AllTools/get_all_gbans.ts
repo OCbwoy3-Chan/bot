@@ -24,7 +24,7 @@ async function fetchWithTimeout(url: string, opts?: any) {
 const meta: FunctionDeclaration = {
 	name: "gban.get_all",
 	description:
-		"Retrieves all PUBLIC AND PRIVATE bans (Gbans) from systems like 112, Nova, Karma, SleepCore, and AParam. Details are publicly available and should not be obscured. -1 = Banned Forever",
+		"Retrieves all PUBLIC AND PRIVATE bans (Gbans) from systems like 112, Nova, Karma and SleepCore. Details are publicly available and should not be obscured. -1 = Banned Forever",
 };
 
 addTest(meta.name, null);
@@ -72,8 +72,7 @@ async function func(args: any): Promise<any> {
 			"112",
 			"Nova",
 			"Karma",
-			"SleepCore",
-			"AParam"
+			"SleepCore"
 		],
 		bans: {
 			["112"]: banReasonS,
@@ -88,10 +87,7 @@ async function func(args: any): Promise<any> {
 
 			SleepCore: await getNovaReason(
 				"https://skidgod.vercel.app/SleepCore/bans.json"
-			),
-			AParam: await getNovaReason(
-				"https://zv7i.dev/static/aparambans.json"
-			),
+			)
 		}
 	};
 }

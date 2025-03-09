@@ -6,7 +6,7 @@ import { addTest, registerTool } from "../tools";
 const meta: FunctionDeclaration = {
 	name: "gban.get_user",
 	description:
-		"Checks if a user is banned from PUBLIC AND PRIVATE providers like 112, Nova, Karma, SleepCore, and AParam. All details are publicly available and should not be obscured. -1 = Banned Forever",
+		"Checks if a user is banned from PUBLIC AND PRIVATE providers like 112, Nova, Karma, and SleepCore. All details are publicly available and should not be obscured. -1 = Banned Forever",
 	parameters: {
 		required: [],
 		type: SchemaType.OBJECT,
@@ -147,8 +147,7 @@ async function func(args: any): Promise<any> {
 			"112",
 			"Nova",
 			"Karma",
-			"SleepCore",
-			"AParam"
+			"SleepCore"
 		],
 		bans: {
 			["112"]: banReasonS,
@@ -166,11 +165,7 @@ async function func(args: any): Promise<any> {
 			SleepCore: await getNovaReason(
 				"https://skidgod.vercel.app/SleepCore/bans.json",
 				userid.toString()
-			),
-			AParam: await getAParamReason(
-				"https://zv7i.dev/static/aparambans.json",
-				userid.toString()
-			),
+			)
 		},
 	};
 }
