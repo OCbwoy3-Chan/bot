@@ -37,8 +37,8 @@ if (opts.update) {
 		await $`cd ${PATH} && bun build --compile --minify --outfile dist/ocbwoy3chanctl bin/ocbwoy3chanctl.ts`.nothrow();
 
 		console.log(chalk.cyanBright("Copying ocbwoy3chanctl to usr bin"))
-		await $`echo ${PASSWORD} | -S rm /usr/bin/ocbwoy3chanctl`.nothrow().quiet();
-		await $`echo ${PASSWORD} | -S --chdir=${PATH} cp dist/ocbwoy3chanctl /usr/bin/`.nothrow().quiet();
+		await $`echo ${PASSWORD} | -S rm /usr/bin/ocbwoy3chanctl`.nothrow();
+		await $`echo ${PASSWORD} | -S --chdir=${PATH} cp dist/ocbwoy3chanctl /usr/bin/`.nothrow();
 
 
 		console.log(chalk.cyanBright("Migrating db"))
