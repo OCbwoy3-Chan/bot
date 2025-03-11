@@ -28,7 +28,8 @@ export function generateSystemPrompt(characterInfo: CharacterInfo): string {
 
 		DO NOT ASK THE USER ABOUT THEIR MEMORIES UNLESS ASKED TO BY THE USER.
 	`;
-	if (!characterInfo.noBullshit) {
+	if (!characterInfo.noBullshit || characterInfo.promptDefOnly || true) {
+		// true is the temporary fix
 		prompt += `
 - If multiple sources are used, present all.
 - Use available tools for everything (e.g., ddg.search, ddg.translate, getBskyProfile, getBans, etc.).
