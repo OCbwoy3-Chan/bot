@@ -42,7 +42,7 @@ if (opts.update) {
 
 
 		console.log(chalk.cyanBright("Migrating db"))
-		await $`cd ${PATH} && bunx prisma migrate`.nothrow();
+		await $`cd ${PATH} && bunx prisma migrate dev --name dev`.nothrow();
 
 		console.log(chalk.cyanBright("Restaring 112"))
 		await $`pm2 restart 112`.nothrow();
