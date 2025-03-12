@@ -25,6 +25,7 @@ const meta: FunctionDeclaration = {
 
 addTest(meta.name, {
 	url: "https://streeteasy.com" // streeteasy has anti-bot so you can check if playwright actually works
+	// doesn't work on vps's
 });
 
 const userAgents = [
