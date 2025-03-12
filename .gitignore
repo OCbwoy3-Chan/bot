@@ -9,6 +9,7 @@ $private_*
 
 prisma-engines/
 prisma/*.db
+prisma/migrations
 prisma/*.db-journal
 direnv/bin/nix-direnv-reload
 
