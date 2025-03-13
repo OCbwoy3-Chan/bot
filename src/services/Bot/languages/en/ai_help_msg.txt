@@ -10,13 +10,13 @@ OCbwoy3-Chan will become more helpful as you chat, picking up on details and pre
 - “What do you remember about me?”
 - “What's my favourite song?”
 
-Sometimes OCbwoy3-Chan would forget to save something, so asking it to do so would most likely work. If the AI updates it's memories, you would see a reaction with the :notebook: emoji.
+Sometimes OCbwoy3-Chan would not save something, so asking it to do so would most likely work. If the AI updates it's memories, you would see a reaction with the :notebook: emoji.
 
 **OCbwoy3-Chan can also use a variety of tools, such as**
 - Searching [DuckDuckGo](<https://duckduckgo.com>),
 - Querying data from Bluesky with the [AT Protocol](<https://atproto.com>),
 - Utilizing Roblox's APIs,
-- Fetching GBans,
+- Fetching GBans (global bans),
 - Looking up pages on [Fandom](<https://fandom.com>),
 - Scraping websites with [Playwright](<https://playwright.dev>),
 - and much more..

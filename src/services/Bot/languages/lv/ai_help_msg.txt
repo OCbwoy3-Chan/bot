@@ -2,7 +2,7 @@
 **Šis ir eksperimentāls MI čatbots, kas ir paredzēts Discord lietotājiem.**
 Es esmu balstīts uz Google Gemini API un varu ģenerēt saturu no teksta, audio, video un koda.
 
-OCbwoy3-Chan kļūs noderīgāks, jo vairāk tērzēsiet, uztverot detaļas un preferences, lai pielāgotu atbildes jūsu vajadzībām un izvēlētajam raksturam, līdzīgi kā ChatGPT.
+OCbwoy3-Chan kļūs noderīgāks, jo vairāk tērzēsiet, uztverot detaļas un preferences, lai pielāgotu atbildes jūsu vajadzībām un izvēlētajam raksturam, līdzīgi ChatGPT.
 
 **Lai saprastu, ko OCbwoy3-Chan atceras vai iemācītu tam kaut ko jaunu, vienkārši jautājiet:**
 - “Atceries, ka man patīk īsas atbildes.”
@@ -10,15 +10,15 @@ OCbwoy3-Chan kļūs noderīgāks, jo vairāk tērzēsiet, uztverot detaļas un p
 - “Ko tu atceries par mani?”
 - “Kāda ir mana mīļākā dziesma?”
 
-Dažreiz OCbwoy3-Chan var aizmirst kaut ko saglabāt, tāpēc lūgums to darīt, visticamāk, darbosies. Ja MI atjaunina atmiņas, redzēsiet reakciju ar :notebook: emocijzīmi.
+Dažreiz OCbwoy3-Chan var kaut ko nesaglabāt, tāpēc lūgums to darīt visticamāk darbosies. Ja MI atjaunina atmiņas, redzēsiet reakciju ar :notebook: emocijzīmi.
 
 **OCbwoy3-Chan var izmantot dažādus rīkus, piemēram,**
-- Meklēšanu [DuckDuckGo](<https://duckduckgo.com>),
-- Datu iegūšanu no Bluesky ar [AT Protokolu](<https://atproto.com>),
-- Roblox API izmantošanu,
-- GBanu iegūšanu,
-- Lapu meklēšanu [Fandom](<https://fandom.com>),
-- Vietņu skrāpēšanu ar [Playwright](<https://playwright.dev>),
+- Meklēt [DuckDuckGo](<https://duckduckgo.com>),
+- Iegūt datus no Bluesky ar [AT Protokolu](<https://atproto.com>),
+- Izmantot Roblox API,
+- Iegūt GBanus (globālos banus),
+- Iegūt [Fandom](<https://fandom.com>) lapu saturu,
+- Skrāpēt vietnes ar [Playwright](<https://playwright.dev>),
 - un daudz ko citu..
 
 OCbwoy3-Chan var arī atveidot noteiktus iepriekš iestatītus raksturus, izmantojot komandu `/ai set_character`.

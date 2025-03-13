@@ -34,7 +34,7 @@ export class MessageComponentHandler extends InteractionHandler {
 		if (!interaction.isButton()) return;
 
 		await interaction.reply({
-			content: (await r(interaction, "ai:help_msg") as any as string[]).join("\n"),
+			content: await r(interaction, "ai:help_msg"),
 			ephemeral: true,
 		});
 
