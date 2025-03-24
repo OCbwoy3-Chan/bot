@@ -6,16 +6,15 @@ import {
 	TransformedGbanSchema
 } from "@db/GBanProvider";
 
-interface KarmaBan {
-	plr: string;
+interface The112x4Ban {
 	reason: string;
-	nova?: boolean;
-	oneonetwo?: boolean;
+	moderator: string;
+	robloxUsername: string;
 }
 
-class Karma extends GbanProvider {
+class The112x4 extends GbanProvider {
 	public async getBans(): Promise<TransformedGbanSchema> {
-		const data = await fetchWithTimeout("https://karma.ocbwoy3.dev/bans", {
+		const data = await fetchWithTimeout("https://father-skidgod.onrender.com/bans", {
 			headers: {
 				"Content-Type": "application/json",
 				Accept: "application/json",
@@ -24,19 +23,12 @@ class Karma extends GbanProvider {
 					"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)"
 			}
 		});
-		const bans: { [id: string]: KarmaBan } = await data.json();
+		const bans: { [id: string]: The112x4Ban } = await data.json();
 		let transformedBans: TransformedGbanSchema = {};
 		Object.entries(bans).forEach(([v, d]) => {
 			transformedBans[v.toString()] = {
 				reason: d.reason,
-				propogatedFromGbanProvider:
-					d.nova || d.oneonetwo
-						? d.nova
-							? "112"
-							: d.oneonetwo
-							? "112"
-							: undefined
-						: undefined
+				moderator: d.moderator
 			};
 		});
 		return transformedBans;
@@ -48,4 +40,4 @@ class Karma extends GbanProvider {
 	}
 }
 
-registerGbanProvider(new Karma("Karma"));
+registerGbanProvider(new The112x4("112x4"));

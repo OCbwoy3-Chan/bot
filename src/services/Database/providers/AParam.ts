@@ -6,16 +6,11 @@ import {
 	TransformedGbanSchema
 } from "@db/GBanProvider";
 
-interface KarmaBan {
-	plr: string;
-	reason: string;
-	nova?: boolean;
-	oneonetwo?: boolean;
-}
+type AParamBan = string
 
-class Karma extends GbanProvider {
+class AParam extends GbanProvider {
 	public async getBans(): Promise<TransformedGbanSchema> {
-		const data = await fetchWithTimeout("https://karma.ocbwoy3.dev/bans", {
+		const data = await fetchWithTimeout("https://zv7i.dev/static/aparambans.json", {
 			headers: {
 				"Content-Type": "application/json",
 				Accept: "application/json",
@@ -24,19 +19,11 @@ class Karma extends GbanProvider {
 					"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)"
 			}
 		});
-		const bans: { [id: string]: KarmaBan } = await data.json();
+		const bans: { [id: string]: AParamBan } = await data.json();
 		let transformedBans: TransformedGbanSchema = {};
 		Object.entries(bans).forEach(([v, d]) => {
 			transformedBans[v.toString()] = {
-				reason: d.reason,
-				propogatedFromGbanProvider:
-					d.nova || d.oneonetwo
-						? d.nova
-							? "112"
-							: d.oneonetwo
-							? "112"
-							: undefined
-						: undefined
+				reason: d,
 			};
 		});
 		return transformedBans;
@@ -48,4 +35,4 @@ class Karma extends GbanProvider {
 	}
 }
 
-registerGbanProvider(new Karma("Karma"));
+registerGbanProvider(new AParam("AParam"));

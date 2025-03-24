@@ -98,3 +98,19 @@ export async function loadAllInstances() {
 		}
 	});
 }
+
+export async function loadAllGbanProviders() {
+	const instancesPath = path.join(__dirname, "providers");
+
+	fs.readdirSync(instancesPath).forEach((file) => {
+		if (file.endsWith(".ts")) {
+			logger.info(
+				`Registering GBan provider: providers/${file}`
+			);
+			try {
+				require(path.join(instancesPath, file));
+			} catch {}
+		}
+	});
+}
+

@@ -1,6 +1,6 @@
-import { getBanReasonsForUserid } from "./getGbans";
 import { getGeminiInstance } from "@ocbwoy3chanai/gemini";
 import { SchemaType } from "@google/generative-ai";
+import { getUserBanStatus } from "@db/GBanProvider";
 
 type BanReason = {
 	ban_reason: string;
@@ -13,7 +13,7 @@ export async function generateBanReason(
 	userid: string,
 	targetLanguage: string
 ): Promise<BanReason> {
-	const banReasons = await getBanReasonsForUserid(userid);
+	const banReasons = await getUserBanStatus(userid);
 
 	const gemini = getGeminiInstance();
 	const prompt = `
