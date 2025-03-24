@@ -2,7 +2,7 @@
 	"bot_info": {
 		"fork_warning": "\n> ***NEOFICIĀLA VERSIJA***"
 	},
-	"info_output": [
+	"bot_info_output": [
 		"> # [ocbwoy3.dev](<https://ocbwoy3.dev>) ({{distro}}){{warning}}",
 		"> -# **Discord gateway pings:** {{gatewayLatency}}ms",
 		"> -# **Tīkla pings:** {{networkLatency}}ms",

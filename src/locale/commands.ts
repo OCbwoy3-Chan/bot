@@ -22,7 +22,7 @@ export const infoCommand = {
 		const totalMemoryGB = Math.round(totalmem() / 1024 / 1024 / 1024 * 100) / 100;
 		const usedMemoryGB = Math.round(freemem() / 1024 / 1024 / 1024 * 100) / 100;
 
-		const m = await r(i, "etc:info_output", {
+		const m = await r(i, "etc:bot_info_output", {
 			warning: isFork() ? await r(i, "etc:bot_info.fork_warning") : "",
 			distro,
 			gatewayLatency: gatewayPing,

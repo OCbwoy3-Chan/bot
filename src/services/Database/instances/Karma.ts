@@ -1,6 +1,7 @@
 import { fetchWithTimeout, logger } from "@112/Utility";
 import { FederatedInstance } from "../FederatedInstance";
 import { registerFederatedInstance } from "../federation";
+import { GetUserDetails } from "@112/roblox";
 
 class Karma extends FederatedInstance {
 	constructor() {
@@ -19,11 +20,18 @@ class Karma extends FederatedInstance {
 
 	public async banUser(id: string, reason: string): Promise<void> {
 		if ((await this.getBanReason(id)) === `(112) ${reason}`) return;
+		const ud = await (async()=>{
+			try {
+				return (await GetUserDetails(id)).username
+			} catch {
+				return `roblox_user_${id}`
+			}
+		})()
 		const res = await fetchWithTimeout(`${this.rootUrl}/banplayer`, {
 			method: "POST",
 			body: JSON.stringify({
 				UserId: Number(id),
-				Username: `BannedWith112_${id}`,
+				Username: (await GetUserDetails(id)).username,
 				Reason: reason,
 				Key: process.env.KARMA_KEY!,
 			}),
