@@ -28,12 +28,13 @@ export async function fetchModNickname(id: string): Promise<string> {
 
 class Local extends GbanProvider {
 	public async getBans(): Promise<TransformedGbanSchema> {
-		const data = await prisma.robloxUserBan.findMany()
+		const data = await prisma.robloxUserBan.findMany();
 		let transformedBans: TransformedGbanSchema = {};
-		data.forEach(async(b) => {
+		data.forEach(async (b) => {
 			transformedBans[b.userId] = {
 				reason: b.reason,
-				moderator: b.moderatorName || await fetchModNickname(b.moderatorId),
+				moderator:
+					b.moderatorName || (await fetchModNickname(b.moderatorId)),
 				verified: true,
 				isLocal: !!b.noFederate,
 				otherMetadata: {

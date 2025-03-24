@@ -35,15 +35,18 @@ export async function fetchModNickname(id: string): Promise<string> {
 
 class Nova extends GbanProvider {
 	public async getBans(): Promise<TransformedGbanSchema> {
-		const data = await fetchWithTimeout("https://nova.ocbwoy3.dev/api/bans", {
-			headers: {
-				"Content-Type": "application/json",
-				Accept: "application/json",
-				"SEC-CH-UA-PLATFORM": "Linux",
-				"User-Agent":
-					"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)"
+		const data = await fetchWithTimeout(
+			"https://nova.ocbwoy3.dev/api/bans",
+			{
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "application/json",
+					"SEC-CH-UA-PLATFORM": "Linux",
+					"User-Agent":
+						"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)"
+				}
 			}
-		});
+		);
 		const bans: { [id: string]: NovaBan } = await data.json();
 		let transformedBans: TransformedGbanSchema = {};
 		Object.entries(bans).forEach(async ([v, d]) => {

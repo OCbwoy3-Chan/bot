@@ -104,13 +104,10 @@ export async function loadAllGbanProviders() {
 
 	fs.readdirSync(instancesPath).forEach((file) => {
 		if (file.endsWith(".ts")) {
-			logger.info(
-				`Registering GBan provider: providers/${file}`
-			);
+			logger.info(`Registering GBan provider: providers/${file}`);
 			try {
 				require(path.join(instancesPath, file));
 			} catch {}
 		}
 	});
 }
-

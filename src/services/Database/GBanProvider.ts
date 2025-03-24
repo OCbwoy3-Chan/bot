@@ -51,14 +51,19 @@ export function registerGbanProvider(p: GbanProvider) {
 }
 
 // Gets a user's ban status across all providers.
-export async function getUserBanStatus(userId: string): Promise<{[provider: string]: TransformedGban | null}> {
-	const userBanStatus: {[provider: string]: TransformedGban | null} = {};
-	const banPromises = allGbanProviders.map(async provider => {
+export async function getUserBanStatus(
+	userId: string
+): Promise<{ [provider: string]: TransformedGban | null }> {
+	const userBanStatus: { [provider: string]: TransformedGban | null } = {};
+	const banPromises = allGbanProviders.map(async (provider) => {
 		try {
 			const ban = await provider.getBan(userId);
 			userBanStatus[provider.name] = ban;
 		} catch (error) {
-			console.error(`Error fetching ban for user ${userId} from provider ${provider.name}:`, error);
+			console.error(
+				`Error fetching ban for user ${userId} from provider ${provider.name}:`,
+				error
+			);
 			userBanStatus[provider.name] = null;
 		}
 	});
@@ -67,14 +72,20 @@ export async function getUserBanStatus(userId: string): Promise<{[provider: stri
 }
 
 // Gets all bans across all providers.
-export async function getAllBans(): Promise<{[provider: string]: TransformedGbanSchema | null}> {
-	const userBanStatus: {[provider: string]: TransformedGbanSchema | null} = {};
-	const banPromises = allGbanProviders.map(async provider => {
+export async function getAllBans(): Promise<{
+	[provider: string]: TransformedGbanSchema | null;
+}> {
+	const userBanStatus: { [provider: string]: TransformedGbanSchema | null } =
+		{};
+	const banPromises = allGbanProviders.map(async (provider) => {
 		try {
 			const ban = await provider.getBans();
 			userBanStatus[provider.name] = ban;
 		} catch (error) {
-			console.error(`Error fetching bans from provider ${provider.name}:`, error);
+			console.error(
+				`Error fetching bans from provider ${provider.name}:`,
+				error
+			);
 			userBanStatus[provider.name] = null;
 		}
 	});

@@ -30,7 +30,6 @@ const meta: FunctionDeclaration = {
 addTest(meta.name, null);
 
 async function func(args: any): Promise<any> {
-
 	const gb = await getAllBans();
 
 	return {

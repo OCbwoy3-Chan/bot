@@ -34,8 +34,8 @@ class Karma extends GbanProvider {
 						? d.nova
 							? "112"
 							: d.oneonetwo
-							? "112"
-							: undefined
+								? "112"
+								: undefined
 						: undefined
 			};
 		});
