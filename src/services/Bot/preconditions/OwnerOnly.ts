@@ -2,7 +2,7 @@ import { Precondition } from "@sapphire/framework";
 import type {
 	CommandInteraction,
 	ContextMenuCommandInteraction,
-	Message,
+	Message
 } from "discord.js";
 import { r } from "112-l10n";
 
@@ -17,9 +17,11 @@ export class OwnerOnlyPrecondition extends Precondition {
 		} else {
 			interaction.reply({
 				content: await r(interaction, "errors:not_bot_owner"),
-				ephemeral: true,
+				ephemeral: true
 			});
-			return this.error({ message: await r(interaction, "errors:not_bot_owner") });
+			return this.error({
+				message: await r(interaction, "errors:not_bot_owner")
+			});
 		}
 	}
 

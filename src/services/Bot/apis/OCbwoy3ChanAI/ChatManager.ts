@@ -34,13 +34,12 @@ class ChatManager {
 		const now = Date.now();
 		for (const [channelId, chatData] of this.chats.entries()) {
 			if (now - chatData.lastUsed > this.timeout) {
-				logger.info(`[ChatManager] cleanup ${channelId}`)
+				logger.info(`[ChatManager] cleanup ${channelId}`);
 				this.chats.delete(channelId);
 			}
 		}
 	}
 }
-
 
 export const chatManager = new ChatManager();
 setInterval(() => chatManager.cleanup(), 5000);

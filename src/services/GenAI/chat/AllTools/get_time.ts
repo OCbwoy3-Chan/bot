@@ -3,16 +3,15 @@ import { addTest, registerTool } from "../tools";
 
 const meta: FunctionDeclaration = {
 	name: "time_now",
-	description:
-		"Fetches the current date and time.",
+	description: "Fetches the current date and time."
 };
 
-addTest(meta.name,null);
+addTest(meta.name, null);
 
 async function func(args: any): Promise<any> {
 	return {
 		unixMillis: Date.now(),
-		isoString: new Date().toString(),
+		isoString: new Date().toString()
 	};
 }
 

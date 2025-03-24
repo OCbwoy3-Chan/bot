@@ -4,24 +4,24 @@ import { prisma } from "../../../Database/db";
 
 const meta: FunctionDeclaration = {
 	name: "memory.update",
-	description: "Updated a specific memory about the currently asking user from CurrentContext via a entry ID.",
+	description:
+		"Updated a specific memory about the currently asking user from CurrentContext via a entry ID.",
 	parameters: {
-			required: ["id", "memory"],
-			type: SchemaType.OBJECT,
-			description: "memory.update parameters",
-			properties: {
-				id: {
-					description:
-						"The ID of the memory to update.",
-					type: SchemaType.STRING,
-				},
-				memory: {
-					description:
-						"The updated memory to save (e.g. Likes Concise Responses, etc.).",
-					type: SchemaType.STRING,
-				}
+		required: ["id", "memory"],
+		type: SchemaType.OBJECT,
+		description: "memory.update parameters",
+		properties: {
+			id: {
+				description: "The ID of the memory to update.",
+				type: SchemaType.STRING
 			},
-		},
+			memory: {
+				description:
+					"The updated memory to save (e.g. Likes Concise Responses, etc.).",
+				type: SchemaType.STRING
+			}
+		}
+	}
 };
 
 addTest(meta.name, null);
@@ -61,7 +61,7 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 		memory_updated: {
 			entry_id: newMemory.id
 		}
-	}
+	};
 }
 
 registerTool(func, meta);

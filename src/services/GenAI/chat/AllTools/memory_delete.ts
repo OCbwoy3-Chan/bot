@@ -4,19 +4,19 @@ import { prisma } from "../../../Database/db";
 
 const meta: FunctionDeclaration = {
 	name: "memory.delete",
-	description: "Deletes a memory about the currently asking user from CurrentContext using an entry ID.",
+	description:
+		"Deletes a memory about the currently asking user from CurrentContext using an entry ID.",
 	parameters: {
-			required: ["id"],
-			type: SchemaType.OBJECT,
-			description: "memory.delete parameters",
-			properties: {
-				id: {
-					description:
-						"The ID of the memory to delete.",
-					type: SchemaType.STRING,
-				}
-			},
-		},
+		required: ["id"],
+		type: SchemaType.OBJECT,
+		description: "memory.delete parameters",
+		properties: {
+			id: {
+				description: "The ID of the memory to delete.",
+				type: SchemaType.STRING
+			}
+		}
+	}
 };
 
 addTest(meta.name, null);
@@ -42,7 +42,7 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 	if (memories.length >= 30) {
 		return {
 			error: "You can have a maximum of 30 memories per user"
-		}
+		};
 	}
 
 	const newMemory = await prisma.oCbwoy3ChanAI_UserMemory.delete({
@@ -59,7 +59,7 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 		memory_deleted: {
 			entry_id: args.memory
 		}
-	}
+	};
 }
 
 registerTool(func, meta);

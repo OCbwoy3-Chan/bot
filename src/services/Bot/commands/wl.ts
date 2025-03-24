@@ -1,11 +1,11 @@
 import { Command, PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import {
-	ApplicationIntegrationType,
-	InteractionContextType
-} from "discord.js";
+import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
 import { GetUserDetails, GetUserIdFromName } from "../../../lib/roblox";
-import { addRobloxWhitelist, removeRobloxWhitelist } from "../../Database/helpers/RobloxWhitelist";
+import {
+	addRobloxWhitelist,
+	removeRobloxWhitelist
+} from "../../Database/helpers/RobloxWhitelist";
 import { r } from "112-l10n";
 
 class SlashCommand extends Subcommand {
@@ -17,18 +17,18 @@ class SlashCommand extends Subcommand {
 			...options,
 			description: "Commands to manage 112's Roblox whitelists.",
 			preconditions: (<unknown>[
-				"OwnerOnly",
+				"OwnerOnly"
 			]) as PreconditionEntryResolvable[],
 			subcommands: [
 				{
 					name: "add",
-					chatInputRun: "chatInputAdd",
+					chatInputRun: "chatInputAdd"
 				},
 				{
 					name: "remove",
-					chatInputRun: "chatInputRemove",
+					chatInputRun: "chatInputRemove"
 				}
-			],
+			]
 		});
 	}
 
@@ -50,28 +50,38 @@ class SlashCommand extends Subcommand {
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("add")
-							.setDescription("Add a user to the Roblox whitelist")
+							.setDescription(
+								"Add a user to the Roblox whitelist"
+							)
 							.addStringOption((option) =>
 								option
 									.setName("username")
-									.setDescription("The Roblox username to whitelist")
+									.setDescription(
+										"The Roblox username to whitelist"
+									)
 									.setRequired(true)
 							)
 							.addUserOption((option) =>
 								option
 									.setName("user")
-									.setDescription("The Discord ID to associate with the Roblox user")
+									.setDescription(
+										"The Discord ID to associate with the Roblox user"
+									)
 									.setRequired(true)
 							)
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("remove")
-							.setDescription("Remove a user from the Roblox whitelist")
+							.setDescription(
+								"Remove a user from the Roblox whitelist"
+							)
 							.addStringOption((option) =>
 								option
 									.setName("username")
-									.setDescription("The Roblox username to remove from the whitelist")
+									.setDescription(
+										"The Roblox username to remove from the whitelist"
+									)
 									.setRequired(true)
 							)
 					)
@@ -79,7 +89,9 @@ class SlashCommand extends Subcommand {
 		);
 	}
 
-	public async chatInputAdd(interaction: Command.ChatInputCommandInteraction) {
+	public async chatInputAdd(
+		interaction: Command.ChatInputCommandInteraction
+	) {
 		const username = interaction.options.getString("username", true);
 		const user = interaction.options.getUser("user", true);
 
@@ -92,27 +104,32 @@ class SlashCommand extends Subcommand {
 		if (!userId) {
 			return interaction.followUp({
 				content: await r(interaction, "errors:username_resolve_no_arg"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 
-		const ud = await GetUserDetails(userId)
+		const ud = await GetUserDetails(userId);
 
 		try {
 			await addRobloxWhitelist(userId.toString(), user.id);
 			return interaction.followUp({
-				content: await r(interaction, "generic:wl_success", { user: `[${ud.displayName}](https://fxroblox.com/users/${userId})`, discord: `<@${user.id}>` }),
-				ephemeral: false,
+				content: await r(interaction, "generic:wl_success", {
+					user: `[${ud.displayName}](https://fxroblox.com/users/${userId})`,
+					discord: `<@${user.id}>`
+				}),
+				ephemeral: false
 			});
 		} catch (error) {
 			return interaction.followUp({
 				content: `${error}`,
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 	}
 
-	public async chatInputRemove(interaction: Command.ChatInputCommandInteraction) {
+	public async chatInputRemove(
+		interaction: Command.ChatInputCommandInteraction
+	) {
 		const username = interaction.options.getString("username", true);
 
 		await interaction.deferReply({
@@ -124,7 +141,7 @@ class SlashCommand extends Subcommand {
 		if (!userId) {
 			return interaction.followUp({
 				content: await r(interaction, "errors:username_resolve_no_arg"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 
@@ -133,13 +150,15 @@ class SlashCommand extends Subcommand {
 		try {
 			await removeRobloxWhitelist(userId.toString());
 			return interaction.followUp({
-				content: await r(interaction, "generic:unwl_success", { user: `[${ud.displayName}](https://fxroblox.com/users/${userId})` }),
-				ephemeral: true,
+				content: await r(interaction, "generic:unwl_success", {
+					user: `[${ud.displayName}](https://fxroblox.com/users/${userId})`
+				}),
+				ephemeral: true
 			});
 		} catch (error) {
 			return interaction.followUp({
 				content: `${error}`,
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 	}

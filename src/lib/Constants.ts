@@ -4,7 +4,7 @@ export type BanlandScope = "SB" | "OCbwoy3sMultiverse" | "All";
 export const AllBanlandScopes = ["SB", "OCbwoy3sMultiverse", "All"];
 
 export const RobloxHostASNWhitelist: string[] = [
-	"AS22697", // Roblox
+	"AS22697" // Roblox
 ];
 export const RobloxUserAgentWhitelist: string[] = ["Roblox/Linux"];
 
@@ -19,7 +19,7 @@ export const AllBanDurations: [string, number][] = [
 	["1 year", 60 * 60 * 24 * 365],
 	["2 years", 60 * 60 * 24 * 365 * 20],
 	["5 years", 60 * 60 * 24 * 365 * 5],
-	["10 years", 60 * 60 * 24 * 365 * 10],
+	["10 years", 60 * 60 * 24 * 365 * 10]
 ];
 
 export const ServerPort: number = 8080;

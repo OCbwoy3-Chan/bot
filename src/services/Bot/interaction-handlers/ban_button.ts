@@ -1,13 +1,13 @@
 import {
 	InteractionHandler,
-	InteractionHandlerTypes,
+	InteractionHandlerTypes
 } from "@sapphire/framework";
 import {
 	type ButtonInteraction,
 	type StringSelectMenuInteraction,
 	ActionRowBuilder,
 	ButtonBuilder,
-	ButtonStyle,
+	ButtonStyle
 } from "discord.js";
 import { GetUserDetails } from "../../../lib/roblox";
 import { IsWhitelisted } from "../../Database/helpers/DiscordWhitelist";
@@ -21,7 +21,7 @@ export class MessageComponentHandler extends InteractionHandler {
 	) {
 		super(ctx, {
 			...options,
-			interactionHandlerType: InteractionHandlerTypes.MessageComponent,
+			interactionHandlerType: InteractionHandlerTypes.MessageComponent
 		});
 	}
 
@@ -56,7 +56,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			if (!(await IsWhitelisted(interaction.user.id))) {
 				return await interaction.reply({
 					content: await r(interaction, "errors:missing_wl"),
-					ephemeral: true,
+					ephemeral: true
 				});
 			}
 
@@ -65,13 +65,15 @@ export class MessageComponentHandler extends InteractionHandler {
 			} catch (e_) {
 				return await interaction.followUp({
 					content: `> ${e_}`,
-					ephemeral: true,
+					ephemeral: true
 				});
 			}
 
 			return await interaction.followUp({
-				content: await r(interaction, "mod:unban_success", { user: `[${ru.displayName}](https://fxroblox.com/users/${userid})` }),
-				ephemeral: false,
+				content: await r(interaction, "mod:unban_success", {
+					user: `[${ru.displayName}](https://fxroblox.com/users/${userid})`
+				}),
+				ephemeral: false
 			});
 		}
 
@@ -79,7 +81,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			if (!(await IsWhitelisted(interaction.user.id))) {
 				return await interaction.reply({
 					content: await r(interaction, "errors:missing_wl"),
-					ephemeral: true,
+					ephemeral: true
 				});
 			}
 
@@ -94,7 +96,7 @@ export class MessageComponentHandler extends InteractionHandler {
 				return await interaction.followUp({
 					content: await r(interaction, "mod:not_banned"),
 					ephemeral: true
-				})
+				});
 			}
 
 			const stupidFuckingButton = new ButtonBuilder()
@@ -109,9 +111,11 @@ export class MessageComponentHandler extends InteractionHandler {
 			const ru = await GetUserDetails(parseInt(userid));
 
 			return await interaction.followUp({
-				content: await r(interaction, "generic:prompt_unban_confirm", { user: `[${ru.displayName}](https://fxroblox.com/users/${userid})` }),
+				content: await r(interaction, "generic:prompt_unban_confirm", {
+					user: `[${ru.displayName}](https://fxroblox.com/users/${userid})`
+				}),
 				components: [row as any],
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 	}

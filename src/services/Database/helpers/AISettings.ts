@@ -6,14 +6,19 @@ import { prisma } from "../db";
  * @param channelId The Discord Channel ID
  * @param prompt The prompt to set
  */
-export async function SetChannelPrompt(channelId: string, prompt: string): Promise<void> {
+export async function SetChannelPrompt(
+	channelId: string,
+	prompt: string
+): Promise<void> {
 	await prisma.oCbwoy3ChanAI_ChannelSettings.upsert({
 		where: { id: channelId },
 
 		update: { forcedPrompt: prompt },
-		create: { id: channelId, forcedPrompt: prompt },
+		create: { id: channelId, forcedPrompt: prompt }
 	});
-	logger.info(`[CHANNEL PROMPT SET] Channel ID: ${channelId}, Prompt: ${prompt}`);
+	logger.info(
+		`[CHANNEL PROMPT SET] Channel ID: ${channelId}, Prompt: ${prompt}`
+	);
 }
 
 /**
@@ -22,7 +27,7 @@ export async function SetChannelPrompt(channelId: string, prompt: string): Promi
  */
 export async function ClearChannelPrompt(channelId: string): Promise<void> {
 	await prisma.oCbwoy3ChanAI_ChannelSettings.delete({
-		where: { id: channelId },
+		where: { id: channelId }
 	});
 	logger.info(`[CHANNEL PROMPT CLEARED] Channel ID: ${channelId}`);
 }
@@ -32,11 +37,14 @@ export async function ClearChannelPrompt(channelId: string): Promise<void> {
  * @param guildId The Discord Guild ID
  * @param prompt The prompt to set
  */
-export async function SetGuildPrompt(guildId: string, prompt: string): Promise<void> {
+export async function SetGuildPrompt(
+	guildId: string,
+	prompt: string
+): Promise<void> {
 	await prisma.oCbwoy3ChanAI_GuildSettings.upsert({
 		where: { id: guildId },
 		update: { forcedPrompt: prompt },
-		create: { id: guildId, forcedPrompt: prompt },
+		create: { id: guildId, forcedPrompt: prompt }
 	});
 	logger.info(`[GUILD PROMPT SET] Guild ID: ${guildId}, Prompt: ${prompt}`);
 }
@@ -47,7 +55,7 @@ export async function SetGuildPrompt(guildId: string, prompt: string): Promise<v
  */
 export async function ClearGuildPrompt(guildId: string): Promise<void> {
 	await prisma.oCbwoy3ChanAI_GuildSettings.delete({
-		where: { id: guildId },
+		where: { id: guildId }
 	});
 	logger.info(`[GUILD PROMPT CLEARED] Guild ID: ${guildId}`);
 }
@@ -57,9 +65,11 @@ export async function ClearGuildPrompt(guildId: string): Promise<void> {
  * @param channelId The Discord Channel ID
  * @returns The forced prompt or null if not set
  */
-export async function GetChannelPrompt(channelId: string): Promise<string | null> {
+export async function GetChannelPrompt(
+	channelId: string
+): Promise<string | null> {
 	const settings = await prisma.oCbwoy3ChanAI_ChannelSettings.findFirst({
-		where: { id: channelId },
+		where: { id: channelId }
 	});
 	return settings ? settings.forcedPrompt : null;
 }
@@ -71,7 +81,7 @@ export async function GetChannelPrompt(channelId: string): Promise<string | null
  */
 export async function GetGuildPrompt(guildId: string): Promise<string | null> {
 	const settings = await prisma.oCbwoy3ChanAI_GuildSettings.findFirst({
-		where: { id: guildId },
+		where: { id: guildId }
 	});
 	return settings ? settings.forcedPrompt : null;
 }

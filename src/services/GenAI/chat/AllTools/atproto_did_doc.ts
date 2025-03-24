@@ -24,7 +24,7 @@ async function fetchWithTimeout(url: string, opts?: any) {
 const meta: FunctionDeclaration = {
 	name: "atproto.did_doc",
 	description:
-		'Resolves a handle or DID into the user\'s DID, signing keys, and service endpoints for Bluesky (PDS) or other services hosted on the AT Protocol such as labelers.',
+		"Resolves a handle or DID into the user's DID, signing keys, and service endpoints for Bluesky (PDS) or other services hosted on the AT Protocol such as labelers.",
 	parameters: {
 		required: ["didOrHandle"],
 		type: SchemaType.OBJECT,
@@ -32,13 +32,13 @@ const meta: FunctionDeclaration = {
 		properties: {
 			didOrHandle: {
 				description: "The user's DID or handle",
-				type: SchemaType.STRING,
-			},
-		},
-	},
+				type: SchemaType.STRING
+			}
+		}
+	}
 };
 
-addTest(meta.name,{
+addTest(meta.name, {
 	didOrHandle: "labeler.ocbwoy3.dev"
 });
 

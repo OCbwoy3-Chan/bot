@@ -2,7 +2,7 @@ import { Precondition } from "@sapphire/framework";
 import type {
 	CommandInteraction,
 	ContextMenuCommandInteraction,
-	Message,
+	Message
 } from "discord.js";
 import { general } from "../../../locale/commands";
 import { IsWhitelisted } from "../../Database/helpers/DiscordWhitelist";
@@ -20,7 +20,7 @@ export class BanAccessPrecondition extends Precondition {
 				content:
 					general.errors.missingPermission("WHITELIST") +
 					"\n> If you are looking up an user and are not a 112 moderator, please use [ocbwoy3.dev](<https://ocbwoy3.dev/lookup>) instead.",
-				ephemeral: true,
+				ephemeral: true
 			});
 			return this.error({ message: "Disallowed" });
 		}

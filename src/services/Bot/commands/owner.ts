@@ -5,7 +5,7 @@ import {
 	ApplicationIntegrationType,
 	InteractionContextType,
 	StringSelectMenuBuilder,
-	StringSelectMenuOptionBuilder,
+	StringSelectMenuOptionBuilder
 } from "discord.js";
 import { general } from "../../../locale/commands";
 import { prisma } from "../../Database/db";
@@ -23,38 +23,38 @@ class SlashCommand extends Subcommand {
 			...options,
 			description: "Commands to manage 112.",
 			preconditions: (<unknown>[
-				"OwnerOnly",
+				"OwnerOnly"
 			]) as PreconditionEntryResolvable[],
 			subcommands: [
 				{
 					name: "listwl",
-					chatInputRun: "chatInputListWhitelist",
+					chatInputRun: "chatInputListWhitelist"
 				},
 				{
 					name: "listwl_ai",
-					chatInputRun: "chatInputListAIWhitelist",
+					chatInputRun: "chatInputListAIWhitelist"
 				},
 				{
 					name: "set_model",
-					chatInputRun: "chatInputSelectModel",
+					chatInputRun: "chatInputSelectModel"
 				},
 				{
 					name: "kill",
-					chatInputRun: "chatInputKill",
+					chatInputRun: "chatInputKill"
 				},
 				{
 					name: "apikey",
-					chatInputRun: "chatInputApiKey",
+					chatInputRun: "chatInputApiKey"
 				},
 				{
 					name: "reset_ai",
-					chatInputRun: "chatInputKillAI",
+					chatInputRun: "chatInputKillAI"
 				},
 				{
 					name: "sentry_error",
-					chatInputRun: "chatInputSentryError",
-				},
-			],
+					chatInputRun: "chatInputSentryError"
+				}
+			]
 		});
 	}
 
@@ -91,12 +91,16 @@ class SlashCommand extends Subcommand {
 					.addSubcommand((command) =>
 						command
 							.setName("apikey")
-							.setDescription("Generates a single-use API Key for OCbwoy3-Chan AI")
+							.setDescription(
+								"Generates a single-use API Key for OCbwoy3-Chan AI"
+							)
 					)
 					.addSubcommand((command) =>
 						command
 							.setName("reset_ai")
-							.setDescription("Resets AI preferences of ALL channels/guilds")
+							.setDescription(
+								"Resets AI preferences of ALL channels/guilds"
+							)
 					)
 					.addSubcommand((command) =>
 						command
@@ -106,7 +110,9 @@ class SlashCommand extends Subcommand {
 					.addSubcommand((command) =>
 						command
 							.setName("sentry_error")
-							.setDescription("Triggers a command error and reports it to Sentry (if DSN is specified)")
+							.setDescription(
+								"Triggers a command error and reports it to Sentry (if DSN is specified)"
+							)
 					)
 			// .addStringOption(x=>x.setName("user").setDescription("The Username of the user to ban").setRequired(true))
 		);
@@ -121,7 +127,7 @@ class SlashCommand extends Subcommand {
 			content: `> **${wl.length} users whitelisted**${wl.map(
 				(a) => `\n> <@${a.id}>`
 			)}`,
-			ephemeral: true,
+			ephemeral: true
 		});
 	}
 
@@ -134,7 +140,7 @@ class SlashCommand extends Subcommand {
 			content: `> **${wl.length} users genai whitelisted**${wl.map(
 				(a) => `\n> <@${a.id}>`
 			)}`,
-			ephemeral: true,
+			ephemeral: true
 		});
 	}
 
@@ -145,7 +151,7 @@ class SlashCommand extends Subcommand {
 
 		return interaction.reply({
 			content: `\`\`\`${resetOCbwoy3ChansAPIKey()}\`\`\``,
-			ephemeral: true,
+			ephemeral: true
 		});
 	}
 
@@ -172,7 +178,7 @@ class SlashCommand extends Subcommand {
 
 		await interaction.reply({
 			content: "Choose a model!",
-			components: [row as any],
+			components: [row as any]
 		});
 	}
 
@@ -181,7 +187,7 @@ class SlashCommand extends Subcommand {
 	) {
 		await interaction.reply({
 			content: `> Killing Process (Will restart if using PM2/Docker)\n> PID: ${process.pid}, Parent PID: ${process.ppid}`,
-			ephemeral: true,
+			ephemeral: true
 		});
 		process.kill(process.pid, "SIGTERM");
 		// love this, absolutely amazing
@@ -192,14 +198,14 @@ class SlashCommand extends Subcommand {
 	) {
 		await interaction.reply({
 			content: `> Wiping ALL AI preferences from every guild and channel.`,
-			ephemeral: true,
+			ephemeral: true
 		});
 		await prisma.oCbwoy3ChanAI_ChannelSettings.deleteMany({});
 		await prisma.oCbwoy3ChanAI_GuildSettings.deleteMany({});
 		await interaction.followUp({
 			content: "> Done",
 			ephemeral: true
-		})
+		});
 	}
 
 	public async chatInputSentryError(
@@ -209,11 +215,11 @@ class SlashCommand extends Subcommand {
 		await interaction.reply({
 			content: tf("generic:ok"),
 			ephemeral: true
-		})
+		});
 		try {
 			throw "hi sentry!";
-		} catch(e) {
-			captureSentryException(e)
+		} catch (e) {
+			captureSentryException(e);
 		}
 	}
 }

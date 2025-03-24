@@ -49,8 +49,13 @@ export type GenerationConfig = {
 export class Chat {
 	chatSession: ChatSession | null = null;
 	callHistory: { [hash: string]: any } = {}; // Store previous calls
-	usersInChat: string[] = []
-	messageQueue: Array<{ question: string | Array<string | Part>, ctx?: AIContext, resolve: Function, reject: Function }> = [];
+	usersInChat: string[] = [];
+	messageQueue: Array<{
+		question: string | Array<string | Part>;
+		ctx?: AIContext;
+		resolve: Function;
+		reject: Function;
+	}> = [];
 	isProcessingQueue: boolean = false;
 
 	constructor(
@@ -64,28 +69,28 @@ export class Chat {
 			model: chatModel,
 			tools: [
 				{
-					functionDeclarations: toolMetas,
-				},
+					functionDeclarations: toolMetas
+				}
 			],
 			safetySettings: [
 				{
 					category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-					threshold: HarmBlockThreshold.BLOCK_NONE,
+					threshold: HarmBlockThreshold.BLOCK_NONE
 				},
 				{
 					category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-					threshold: HarmBlockThreshold.BLOCK_NONE,
+					threshold: HarmBlockThreshold.BLOCK_NONE
 				},
 				{
 					category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-					threshold: HarmBlockThreshold.BLOCK_NONE,
+					threshold: HarmBlockThreshold.BLOCK_NONE
 				},
 				{
 					category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-					threshold: HarmBlockThreshold.BLOCK_NONE,
-				},
+					threshold: HarmBlockThreshold.BLOCK_NONE
+				}
 			],
-			systemInstruction: getPrompt(prompt),
+			systemInstruction: getPrompt(prompt)
 		});
 
 		const generationConfig = {
@@ -93,15 +98,15 @@ export class Chat {
 			topP: cfg.topP || 0.95,
 			topK: cfg.topK || 40,
 			maxOutputTokens: 8192,
-			responseMimeType: "text/plain",
+			responseMimeType: "text/plain"
 		};
 
 		const chatSession = this.chatSession
 			? this.chatSession
 			: model.startChat({
-				generationConfig,
-				history: [],
-			});
+					generationConfig,
+					history: []
+				});
 
 		this.chatSession = chatSession;
 	}
@@ -150,9 +155,9 @@ export class Chat {
 
 		result = await this.chatSession.sendMessage([
 			{
-				text: "CurrentContext: " + JSON.stringify(ctx),
+				text: "CurrentContext: " + JSON.stringify(ctx)
 			},
-			...question,
+			...question
 		]);
 		while (loopCount < 4) {
 			try {
@@ -186,12 +191,13 @@ export class Chat {
 						return {
 							functionResponse: {
 								name: funcCall.name,
-								response: this.callHistory[callHash],
-							},
+								response: this.callHistory[callHash]
+							}
 						};
 					}
 					logger.info(
-						`Cached ${funcCall.name
+						`Cached ${
+							funcCall.name
 						} for this gen - ${callHash.slice(0, 7)}...`
 					);
 
@@ -212,7 +218,7 @@ export class Chat {
 						res = {
 							"*comment":
 								"TELL THE USER ABOUT THIS JAVASCRIPT ERROR WHILE RUNNING TOOL",
-							error: `${e_}`,
+							error: `${e_}`
 						};
 						this.callHistory[callHash] = res; // Store the error as well
 					}
@@ -220,8 +226,8 @@ export class Chat {
 					return {
 						functionResponse: {
 							name: funcCall.name,
-							response: res,
-						},
+							response: res
+						}
 					};
 				})
 			);
@@ -251,7 +257,7 @@ export class Chat {
 
 		return [
 			(result as GenerateContentResult).response.text().trim(),
-			toolsUsed,
+			toolsUsed
 		];
 	}
 

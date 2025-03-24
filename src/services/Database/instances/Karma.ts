@@ -10,9 +10,9 @@ class Karma extends FederatedInstance {
 
 	public async getBanReason(id: string): Promise<string | null> {
 		try {
-			const bans = await fetchWithTimeout(`${this.rootUrl}/bans`)
-			const banData = await bans.json()
-			return banData[id] ? banData[id].reason : null
+			const bans = await fetchWithTimeout(`${this.rootUrl}/bans`);
+			const banData = await bans.json();
+			return banData[id] ? banData[id].reason : null;
 		} catch {
 			return null;
 		}
@@ -20,24 +20,24 @@ class Karma extends FederatedInstance {
 
 	public async banUser(id: string, reason: string): Promise<void> {
 		if ((await this.getBanReason(id)) === `(112) ${reason}`) return;
-		const ud = await (async()=>{
+		const ud = await (async () => {
 			try {
-				return (await GetUserDetails(id)).username
+				return (await GetUserDetails(id)).username;
 			} catch {
-				return `roblox_user_${id}`
+				return `roblox_user_${id}`;
 			}
-		})()
+		})();
 		const res = await fetchWithTimeout(`${this.rootUrl}/banplayer`, {
 			method: "POST",
 			body: JSON.stringify({
 				UserId: Number(id),
 				Username: (await GetUserDetails(id)).username,
 				Reason: reason,
-				Key: process.env.KARMA_KEY!,
+				Key: process.env.KARMA_KEY!
 			}),
 			headers: {
-				"Content-Type": "application/json",
-			},
+				"Content-Type": "application/json"
+			}
 		});
 		res.text().then(console.log);
 		logger.info(
@@ -50,16 +50,14 @@ class Karma extends FederatedInstance {
 			method: "POST",
 			body: JSON.stringify({
 				UserId: Number(id),
-				Key: process.env.KARMA_KEY!,
+				Key: process.env.KARMA_KEY!
 			}),
 			headers: {
-				"Content-Type": "application/json",
-			},
+				"Content-Type": "application/json"
+			}
 		});
 		res.text().then(console.log);
-		logger.info(
-			`[FEDERATION] Unbanned ${id} from ${this.name}`
-		);
+		logger.info(`[FEDERATION] Unbanned ${id} from ${this.name}`);
 	}
 }
 

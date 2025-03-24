@@ -1,6 +1,6 @@
 import {
 	InteractionHandler,
-	InteractionHandlerTypes,
+	InteractionHandlerTypes
 } from "@sapphire/framework";
 import type { AutocompleteInteraction } from "discord.js";
 import { AllBanDurations } from "../../../lib/Constants";
@@ -12,7 +12,7 @@ export class AutocompleteHandler extends InteractionHandler {
 	) {
 		super(ctx, {
 			...options,
-			interactionHandlerType: InteractionHandlerTypes.Autocomplete,
+			interactionHandlerType: InteractionHandlerTypes.Autocomplete
 		});
 	}
 
@@ -46,7 +46,7 @@ export class AutocompleteHandler extends InteractionHandler {
 
 				const srm = sr.map((match) => ({
 					name: match[0],
-					value: match[1],
+					value: match[1]
 				}));
 				return this.some(srm);
 			}

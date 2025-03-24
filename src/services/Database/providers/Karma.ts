@@ -2,7 +2,7 @@ import {
 	GbanProvider,
 	registerGbanProvider,
 	TransformedGban,
-	TransformedGbanSchema,
+	TransformedGbanSchema
 } from "@db/GBanProvider";
 
 interface KarmaBan {
@@ -20,8 +20,8 @@ class Karma extends GbanProvider {
 				Accept: "application/json",
 				"SEC-CH-UA-PLATFORM": "Linux",
 				"User-Agent":
-					"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)",
-			},
+					"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)"
+			}
 		});
 		const bans: { [id: string]: KarmaBan } = await data.json();
 		let transformedBans: TransformedGbanSchema = {};
@@ -34,9 +34,9 @@ class Karma extends GbanProvider {
 						? d.nova
 							? "112"
 							: d.oneonetwo
-							? "112"
-							: undefined
-						: undefined,
+								? "112"
+								: undefined
+						: undefined
 			};
 		});
 		return transformedBans;

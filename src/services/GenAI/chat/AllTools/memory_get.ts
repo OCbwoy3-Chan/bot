@@ -4,7 +4,8 @@ import { prisma } from "../../../Database/db";
 
 const meta: FunctionDeclaration = {
 	name: "memory.get",
-	description: "Retrieves stored memory about the currently asking user from CurrentContext.",
+	description:
+		"Retrieves stored memory about the currently asking user from CurrentContext."
 };
 
 addTest(meta.name, null);
@@ -29,13 +30,13 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 	});
 	return {
 		user: userId,
-		memories: memories.map(a => {
+		memories: memories.map((a) => {
 			return {
 				id: a.id,
 				data: a.memory
-			}
+			};
 		})
-	}
+	};
 }
 
 registerTool(func, meta);

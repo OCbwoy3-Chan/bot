@@ -1,11 +1,11 @@
 import { r } from "112-l10n";
 import {
 	InteractionHandler,
-	InteractionHandlerTypes,
+	InteractionHandlerTypes
 } from "@sapphire/framework";
 import {
 	type ButtonInteraction,
-	type StringSelectMenuInteraction,
+	type StringSelectMenuInteraction
 } from "discord.js";
 
 export class MessageComponentHandler extends InteractionHandler {
@@ -15,7 +15,7 @@ export class MessageComponentHandler extends InteractionHandler {
 	) {
 		super(ctx, {
 			...options,
-			interactionHandlerType: InteractionHandlerTypes.MessageComponent,
+			interactionHandlerType: InteractionHandlerTypes.MessageComponent
 		});
 	}
 
@@ -35,8 +35,7 @@ export class MessageComponentHandler extends InteractionHandler {
 
 		await interaction.reply({
 			content: await r(interaction, "ai:help_msg"),
-			ephemeral: true,
+			ephemeral: true
 		});
-
 	}
 }

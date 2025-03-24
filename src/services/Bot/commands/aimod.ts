@@ -1,9 +1,6 @@
 import { PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import {
-	ApplicationIntegrationType,
-	InteractionContextType
-} from "discord.js";
+import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
 import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { generateBanReason } from "../../GenAI/gen";
@@ -26,13 +23,13 @@ class SlashCommand extends Subcommand {
 			subcommands: [
 				{
 					name: "generate_ban_reason",
-					chatInputRun: "chatInputGenerateBanReason",
+					chatInputRun: "chatInputGenerateBanReason"
 				},
 				{
 					name: "ban_user",
-					chatInputRun: "chatInputBanUser",
-				},
-			],
+					chatInputRun: "chatInputBanUser"
+				}
+			]
 		});
 	}
 
@@ -53,18 +50,24 @@ class SlashCommand extends Subcommand {
 				.addSubcommand((builder) =>
 					builder
 						.setName("generate_ban_reason")
-						.setDescription("Generates a ban reason for a user using AI")
+						.setDescription(
+							"Generates a ban reason for a user using AI"
+						)
 						.addStringOption((option) =>
 							option
 								.setName("username")
-								.setDescription("The Roblox username to generate a ban reason for")
+								.setDescription(
+									"The Roblox username to generate a ban reason for"
+								)
 								.setRequired(true)
 						)
 				)
 				.addSubcommand((builder) =>
 					builder
 						.setName("ban_user")
-						.setDescription("Bans a user from 112 using AI-generated ban reason")
+						.setDescription(
+							"Bans a user from 112 using AI-generated ban reason"
+						)
 						.addStringOption((option) =>
 							option
 								.setName("username")
@@ -81,22 +84,25 @@ class SlashCommand extends Subcommand {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 		if (!(await IsWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "errors:missing_wl"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
-			return await interaction.reply(await r(interaction, "ai:not_enabled"));
+			return await interaction.reply(
+				await r(interaction, "ai:not_enabled")
+			);
 		}
 		if (isEuropean()) {
-			return await interaction.reply(await r(interaction, "ai:eu_compliance"));
+			return await interaction.reply(
+				await r(interaction, "ai:eu_compliance")
+			);
 		}
-
 
 		await interaction.deferReply({ ephemeral: false });
 
@@ -104,8 +110,10 @@ class SlashCommand extends Subcommand {
 		const userId = await GetUserIdFromName(username);
 		if (!userId) {
 			return interaction.followUp({
-				content: await r(interaction, "errors:username_resolve", { user: username }),
-				ephemeral: true,
+				content: await r(interaction, "errors:username_resolve", {
+					user: username
+				}),
+				ephemeral: true
 			});
 		}
 
@@ -123,14 +131,20 @@ class SlashCommand extends Subcommand {
 		const userDetails = await GetUserDetails(userId);
 		const banReason = await generateBanReason(userId.toString(), lang);
 
-		const vibe_check = await r(interaction, `ai:ban_justification.${banReason.justified ? "fair" : "unfair"}`, { user: `[${userDetails.displayName}](https://fxroblox.com/users/${userId})` })
+		const vibe_check = await r(
+			interaction,
+			`ai:ban_justification.${banReason.justified ? "fair" : "unfair"}`,
+			{
+				user: `[${userDetails.displayName}](https://fxroblox.com/users/${userId})`
+			}
+		);
 
 		return interaction.followUp({
 			content: `${vibe_check}
 \`\`\`${banReason.ban_reason}\`\`\`\n
 ${banReason.explanation}
 -# ${banReason.comment}`,
-			ephemeral: false,
+			ephemeral: false
 		});
 	}
 
@@ -140,20 +154,24 @@ ${banReason.explanation}
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 		if (!(await IsWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "errors:missing_wl"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
-			return await interaction.reply(await r(interaction, "ai:not_enabled"));
+			return await interaction.reply(
+				await r(interaction, "ai:not_enabled")
+			);
 		}
 		if (isEuropean()) {
-			return await interaction.reply(await r(interaction, "ai:eu_compliance"));
+			return await interaction.reply(
+				await r(interaction, "ai:eu_compliance")
+			);
 		}
 
 		await interaction.deferReply({ ephemeral: false });
@@ -162,8 +180,10 @@ ${banReason.explanation}
 		const userId = await GetUserIdFromName(username);
 		if (!userId) {
 			return interaction.followUp({
-				content: await r(interaction, "errors:username_resolve", { user: username }),
-				ephemeral: true,
+				content: await r(interaction, "errors:username_resolve", {
+					user: username
+				}),
+				ephemeral: true
 			});
 		}
 
@@ -196,7 +216,7 @@ ${banReason.explanation}
 					noFederate: true
 				});
 			} catch (e_) {
-				if (`${e_}`.includes('User is already banned')) {
+				if (`${e_}`.includes("User is already banned")) {
 					await UpdateUserBan({
 						UserID: userId.toString(),
 						ModeratorId: interaction.user.id,
@@ -211,13 +231,16 @@ ${banReason.explanation}
 				}
 			}
 			return interaction.followUp({
-				content: await r(interaction, "ai:ban_acted", { user: `[${userDetails.displayName}](https://fxroblox.com/users/${userId})`, reason: `\`\`\`${banReason.ban_reason}\`\`\`` }),
-				ephemeral: false,
+				content: await r(interaction, "ai:ban_acted", {
+					user: `[${userDetails.displayName}](https://fxroblox.com/users/${userId})`,
+					reason: `\`\`\`${banReason.ban_reason}\`\`\``
+				}),
+				ephemeral: false
 			});
 		} catch (error) {
 			return interaction.followUp({
 				content: `Failed to ban user: ${error}`,
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 	}

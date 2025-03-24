@@ -9,8 +9,8 @@ import { prisma } from "../db";
 export async function AddWhitelist(userId: string): Promise<void> {
 	const existingWhitelist = await prisma.whitelist.findFirst({
 		where: {
-			id: userId,
-		},
+			id: userId
+		}
 	});
 	if (existingWhitelist) {
 		throw "User is already whitelisted";
@@ -18,8 +18,8 @@ export async function AddWhitelist(userId: string): Promise<void> {
 	logger.info(`[WHITELIST ADD] ${userId}`);
 	await prisma.whitelist.create({
 		data: {
-			id: userId,
-		},
+			id: userId
+		}
 	});
 }
 /**
@@ -30,8 +30,8 @@ export async function AddWhitelist(userId: string): Promise<void> {
 export async function RemoveWhitelist(userId: string): Promise<void> {
 	const existingWhitelist = await prisma.whitelist.findFirst({
 		where: {
-			id: userId,
-		},
+			id: userId
+		}
 	});
 	if (!existingWhitelist) {
 		throw "User is not whitelisted";
@@ -39,8 +39,8 @@ export async function RemoveWhitelist(userId: string): Promise<void> {
 	logger.info(`[WHITELIST REMOVE] ${userId}`);
 	await prisma.whitelist.delete({
 		where: {
-			id: userId,
-		},
+			id: userId
+		}
 	});
 }
 /**
@@ -53,8 +53,8 @@ export async function IsWhitelisted(userId: string): Promise<boolean> {
 	if (userId === process.env.OWNER_ID!) return true;
 	const existingWhitelist = await prisma.whitelist.findFirst({
 		where: {
-			id: userId,
-		},
+			id: userId
+		}
 	});
 	return existingWhitelist !== null;
 }

@@ -9,12 +9,16 @@ export type CharacterInfo = {
 	personalityTraits?: string[];
 	promptDefOnly?: boolean;
 	noBullshit?: boolean;
-	hidden?: boolean
+	hidden?: boolean;
 };
 
 // read all files from sys/ directory ending with .txt
-const sysFiles = readdirSync(join(__dirname, "sys")).filter((file) => file.endsWith(".txt"));
-const contents: string[] = sysFiles.map((file) => readFileSync(join(__dirname, "sys", file), "utf-8"));
+const sysFiles = readdirSync(join(__dirname, "sys")).filter((file) =>
+	file.endsWith(".txt")
+);
+const contents: string[] = sysFiles.map((file) =>
+	readFileSync(join(__dirname, "sys", file), "utf-8")
+);
 
 export function generateSystemPrompt(characterInfo: CharacterInfo): string {
 	let prompt = `
@@ -22,9 +26,11 @@ export function generateSystemPrompt(characterInfo: CharacterInfo): string {
 	  ${characterInfo.promptDefOnly ? "" : `Description: ${characterInfo.description}`}
 	  ${characterInfo.definition ? `\n${characterInfo.definition}` : ""}
 
-	  ${characterInfo.personalityTraits
-			? `Personality Traits:\n${characterInfo.personalityTraits.map((trait) => `   - ${trait}`).join("\n")}`
-			: ""}
+	  ${
+			characterInfo.personalityTraits
+				? `Personality Traits:\n${characterInfo.personalityTraits.map((trait) => `   - ${trait}`).join("\n")}`
+				: ""
+		}
 	`;
 	if (true) {
 		prompt += `
@@ -59,10 +65,9 @@ Discord-Specific Behavior:
 - Reword copied text.
 - Utilize fandom and playwright tools.
 `;
-
 	}
 
-	prompt += contents.join("\n\n") /* OCbwoy3-Chan's World View */
+	prompt += contents.join("\n\n"); /* OCbwoy3-Chan's World View */
 
 	// todo: get rid of nobullshit
 	if (true || characterInfo.noBullshit) {
@@ -71,7 +76,6 @@ Discord-Specific Behavior:
 
 	return prompt;
 }
-
 
 const promptCache: Record<string, string> = {};
 const promptChList: CharacterInfo[] = [];

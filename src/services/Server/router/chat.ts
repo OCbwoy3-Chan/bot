@@ -3,7 +3,7 @@ import {
 	createForm,
 	getForm,
 	submitFormResponse,
-	getFormResponses,
+	getFormResponses
 } from "../../Database/helpers/FormHelpers";
 import { execSync } from "child_process";
 import { getDistroNameSync } from "@112/Utility";
@@ -31,7 +31,7 @@ let API_KEY = randomString();
 
 export function resetOCbwoy3ChansAPIKey(): string {
 	API_KEY = randomString();
-	return API_KEY
+	return API_KEY;
 }
 
 router.get("/ocbwoy3chan", async (req: Request, res: Response) => {
@@ -55,7 +55,7 @@ router.get("/ocbwoy3chan", async (req: Request, res: Response) => {
 		branch,
 		distro: getDistroNameSync(),
 		version,
-		commit,
+		commit
 	});
 });
 
@@ -72,49 +72,56 @@ router.post("/ocbwoy3chan/queue_job", async (req: Request, res: Response) => {
 
 	let jobid = randomUUID();
 
-	const { msg: message, ctx: context } = req.body
+	const { msg: message, ctx: context } = req.body;
 	let ct: AIContext = context;
 
 	queuedJobs.push(jobid);
 
-	let chat = chatManager.getChat(ct.currentChannel, ct.currentAiModel, "ocbwoy3_chan");
+	let chat = chatManager.getChat(
+		ct.currentChannel,
+		ct.currentAiModel,
+		"ocbwoy3_chan"
+	);
 
 	(async () => {
 		try {
 			const [resp, tools] = await chat.generateResponse(message, ct);
 			jobResults[jobid] = { resp, tools };
-		} catch { }
+		} catch {}
 		const index = queuedJobs.indexOf(jobid);
 		if (index > -1) {
 			queuedJobs.splice(index, 1);
 		}
-	})()
+	})();
 
 	return res.status(200).json({
 		jobid
 	});
 });
 
-router.post("/ocbwoy3chan/get_response", async (req: Request, res: Response) => {
-	const authHeader = req.headers.authorization;
-	if (!authHeader || authHeader !== `${API_KEY}`) {
-		return res.status(403).json({ error: "Forbidden" });
+router.post(
+	"/ocbwoy3chan/get_response",
+	async (req: Request, res: Response) => {
+		const authHeader = req.headers.authorization;
+		if (!authHeader || authHeader !== `${API_KEY}`) {
+			return res.status(403).json({ error: "Forbidden" });
+		}
+
+		const { id: jobid } = req.body;
+
+		if (queuedJobs.includes(jobid)) {
+			return res.status(200).json({ wait: true });
+		}
+
+		if (!jobid || !jobResults[jobid]) {
+			return res.status(404).json({ error: "Job not found" });
+		}
+
+		const result = jobResults[jobid];
+		delete jobResults[jobid];
+
+		return res.status(200).json(result);
 	}
-
-	const { id: jobid } = req.body;
-
-	if (queuedJobs.includes(jobid)) {
-		return res.status(200).json({ wait: true });
-	}
-
-	if (!jobid || !jobResults[jobid]) {
-		return res.status(404).json({ error: "Job not found" });
-	}
-
-	const result = jobResults[jobid];
-	delete jobResults[jobid];
-
-	return res.status(200).json(result);
-});
+);
 
 export const aiRouter = router;

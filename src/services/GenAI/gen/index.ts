@@ -3,14 +3,17 @@ import { getGeminiInstance } from "@ocbwoy3chanai/gemini";
 import { SchemaType } from "@google/generative-ai";
 
 type BanReason = {
-	ban_reason: string,
-	justified: boolean,
-	comment: string,
-	explanation: string
-}
+	ban_reason: string;
+	justified: boolean;
+	comment: string;
+	explanation: string;
+};
 
-export async function generateBanReason(userid: string, targetLanguage: string): Promise<BanReason> {
-	const banReasons = await getBanReasonsForUserid(userid)
+export async function generateBanReason(
+	userid: string,
+	targetLanguage: string
+): Promise<BanReason> {
+	const banReasons = await getBanReasonsForUserid(userid);
 
 	const gemini = getGeminiInstance();
 	const prompt = `
@@ -54,17 +57,20 @@ PLEASE WRITE THE REASON AND ALL OTHER FIELDS IN THE TARGET LANGUAGE.`;
 						type: SchemaType.STRING
 					}
 				},
-				required: [
-					"ban_reason",
-					"justified",
-					"comment",
-					"explanation"
-				]
-			},
-		},
+				required: ["ban_reason", "justified", "comment", "explanation"]
+			}
+		}
 	});
 
-	const resp = await session.sendMessage(["```json\n"+JSON.stringify({targetLanguage, bans: banReasons},undefined,"\t")+"\n```"])
+	const resp = await session.sendMessage([
+		"```json\n" +
+			JSON.stringify(
+				{ targetLanguage, bans: banReasons },
+				undefined,
+				"\t"
+			) +
+			"\n```"
+	]);
 
 	/*
 

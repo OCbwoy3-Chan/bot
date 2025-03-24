@@ -1,6 +1,6 @@
 import {
 	InteractionHandler,
-	InteractionHandlerTypes,
+	InteractionHandlerTypes
 } from "@sapphire/framework";
 import type { AutocompleteInteraction } from "discord.js";
 import { getCachedPromptsJ } from "../../GenAI/prompt/GeneratePrompt";
@@ -12,7 +12,7 @@ export class AutocompleteHandler extends InteractionHandler {
 	) {
 		super(ctx, {
 			...options,
-			interactionHandlerType: InteractionHandlerTypes.Autocomplete,
+			interactionHandlerType: InteractionHandlerTypes.Autocomplete
 		});
 	}
 
@@ -31,22 +31,30 @@ export class AutocompleteHandler extends InteractionHandler {
 		switch (focusedOption.name) {
 			case "prompt": {
 				let sr: [string, string][] = [];
-				getCachedPromptsJ().filter(a=>(interaction.user.id === "486147449703104523" ? true : !a.hidden)).forEach((v) => {
-					if (
-						`${v.name}\0${v.filename}\0${v.description}`
-							.toUpperCase()
-							.trim()
-							.includes(focusedOption.value.toUpperCase().trim())
-					) {
-						sr.push([v.name, v.filename]);
-					}
-				});
+				getCachedPromptsJ()
+					.filter((a) =>
+						interaction.user.id === "486147449703104523"
+							? true
+							: !a.hidden
+					)
+					.forEach((v) => {
+						if (
+							`${v.name}\0${v.filename}\0${v.description}`
+								.toUpperCase()
+								.trim()
+								.includes(
+									focusedOption.value.toUpperCase().trim()
+								)
+						) {
+							sr.push([v.name, v.filename]);
+						}
+					});
 
 				sr.splice(20, 420); // 20 maximum enforced by discord
 
 				const srm = sr.map((match) => ({
 					name: match[0],
-					value: match[1],
+					value: match[1]
 				}));
 				return this.some(srm);
 			}

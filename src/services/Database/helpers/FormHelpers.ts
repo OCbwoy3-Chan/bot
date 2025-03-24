@@ -1,16 +1,26 @@
 import { prisma } from "../db";
-import { FormQuestion, FormQuestionType } from "../../../services/Server/api/FormsHelper";
+import {
+	FormQuestion,
+	FormQuestionType
+} from "../../../services/Server/api/FormsHelper";
 
-export async function createForm(authorId: string, questions: FormQuestion[]): Promise<void> {
+export async function createForm(
+	authorId: string,
+	questions: FormQuestion[]
+): Promise<void> {
 	await prisma.form.create({
 		data: {
 			authorId,
-			questions: JSON.stringify(questions),
-		},
+			questions: JSON.stringify(questions)
+		}
 	});
 }
 
-export async function updateForm(id: string, authorId: string, questions: FormQuestion[]): Promise<void> {
+export async function updateForm(
+	id: string,
+	authorId: string,
+	questions: FormQuestion[]
+): Promise<void> {
 	await prisma.form.upsert({
 		where: { id },
 		update: {
@@ -28,24 +38,29 @@ export async function updateForm(id: string, authorId: string, questions: FormQu
 export async function getForm(formId: string) {
 	// console.log(formId)
 	const f = await prisma.form.findFirst({
-		where: { id: { equals: formId } },
+		where: { id: { equals: formId } }
 	});
-	return f
+	return f;
 }
 
-export async function submitFormResponse(formId: string, respondentId: string, ip: string, responses: Object): Promise<void> {
+export async function submitFormResponse(
+	formId: string,
+	respondentId: string,
+	ip: string,
+	responses: Object
+): Promise<void> {
 	await prisma.formResponse.create({
 		data: {
 			formId,
 			respondentId,
 			ipAddress: ip,
-			answers: JSON.stringify(responses),
-		},
+			answers: JSON.stringify(responses)
+		}
 	});
 }
 
 export async function getFormResponses(formId: string) {
 	return await prisma.formResponse.findMany({
-		where: { formId },
+		where: { formId }
 	});
 }

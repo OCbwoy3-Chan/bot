@@ -10,7 +10,6 @@ const logger: Logger = require("pino")({
 	}
 });
 
-
 const SERVICE_LOAD_ORDER = ["Database", "Server", "GenAI", "Bot"];
 
 exec("clear");

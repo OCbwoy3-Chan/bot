@@ -9,7 +9,7 @@ class SlashCommand extends Command {
 	) {
 		super(context, {
 			...options,
-			description: "Get the bot's information.",
+			description: "Get the bot's information."
 		});
 	}
 

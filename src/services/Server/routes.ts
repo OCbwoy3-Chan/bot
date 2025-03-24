@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import {
 	AddToBanlandCacheManager,
-	BanlandCacheHelper,
+	BanlandCacheHelper
 } from "../../lib/BanlandCacheHelper";
 import { router, setNumBans } from "./router/stats";
 import { formRouter } from "./router/forms";
@@ -29,7 +29,6 @@ app.get("/", async (req: Request, res: Response) => {
 });
 
 app.use(router);
-
 
 const AllBanlandCacheHelper = new BanlandCacheHelper("All");
 AllBanlandCacheHelper._updateBanCountFunc = setNumBans;

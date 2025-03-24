@@ -13,13 +13,13 @@ const meta: FunctionDeclaration = {
 		properties: {
 			username: {
 				description: "The Roblox user's username",
-				type: SchemaType.STRING,
-			},
-		},
-	},
+				type: SchemaType.STRING
+			}
+		}
+	}
 };
 
-addTest(meta.name,{
+addTest(meta.name, {
 	username: "OCboy3"
 });
 
@@ -31,7 +31,7 @@ async function func(args: any): Promise<any> {
 
 	return {
 		userid: userid,
-		...userinfo,
+		...userinfo
 	};
 }
 

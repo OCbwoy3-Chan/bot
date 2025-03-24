@@ -22,13 +22,16 @@ type RobloxAPIResponse = {
 async function getRawAccountDetails(
 	userid: string
 ): Promise<RobloxAPIResponse> {
-	const d = await fetchWithTimeout(`https://users.roblox.com/v1/users/${userid}`, {
-		headers: {
-			"SEC-CH-UA-PLATFORM": "Linux",
-			"User-Agent":
-				"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)",
-		},
-	});
+	const d = await fetchWithTimeout(
+		`https://users.roblox.com/v1/users/${userid}`,
+		{
+			headers: {
+				"SEC-CH-UA-PLATFORM": "Linux",
+				"User-Agent":
+					"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)"
+			}
+		}
+	);
 	const j = (await d.json()) as RobloxAPIResponse;
 	return j;
 }
@@ -63,7 +66,7 @@ export async function GetUserDetails(
 			username: d.name,
 			displayName: d.displayName,
 			isBanned: d.isBanned,
-			joinDate: new Date(0),
+			joinDate: new Date(0)
 		};
 		playerInfoCache[userid.toString()] = ad;
 		return ad;

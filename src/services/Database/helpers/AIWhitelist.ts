@@ -9,8 +9,8 @@ import { prisma } from "../db";
 export async function AddAIWhitelist(userId: string): Promise<void> {
 	const existingWhitelist = await prisma.whitelist_OCbwoy3ChanAI.findFirst({
 		where: {
-			id: userId,
-		},
+			id: userId
+		}
 	});
 	if (existingWhitelist) {
 		throw "User is already whitelisted";
@@ -18,8 +18,8 @@ export async function AddAIWhitelist(userId: string): Promise<void> {
 	logger.info(`[AI WHITELIST ADD] ${userId}`);
 	await prisma.whitelist_OCbwoy3ChanAI.create({
 		data: {
-			id: userId,
-		},
+			id: userId
+		}
 	});
 }
 /**
@@ -30,8 +30,8 @@ export async function AddAIWhitelist(userId: string): Promise<void> {
 export async function RemoveAIWhitelist(userId: string): Promise<void> {
 	const existingWhitelist = await prisma.whitelist_OCbwoy3ChanAI.findFirst({
 		where: {
-			id: userId,
-		},
+			id: userId
+		}
 	});
 	if (!existingWhitelist) {
 		throw "User is not whitelisted";
@@ -39,8 +39,8 @@ export async function RemoveAIWhitelist(userId: string): Promise<void> {
 	logger.info(`[AI WHITELIST REMOVE] ${userId}`);
 	await prisma.whitelist_OCbwoy3ChanAI.delete({
 		where: {
-			id: userId,
-		},
+			id: userId
+		}
 	});
 }
 
@@ -54,8 +54,8 @@ export async function IsAIWhitelisted(userId: string): Promise<boolean> {
 	if (userId === process.env.OWNER_ID!) return true;
 	const existingWhitelist = await prisma.whitelist_OCbwoy3ChanAI.findFirst({
 		where: {
-			id: userId,
-		},
+			id: userId
+		}
 	});
 	return existingWhitelist !== null;
 }

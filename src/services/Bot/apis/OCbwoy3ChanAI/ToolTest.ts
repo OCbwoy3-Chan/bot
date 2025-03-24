@@ -5,14 +5,17 @@ import { getDistroNameSync, logger } from "@112/Utility";
 
 const staticAIContext = {
 	currentDistro: getDistroNameSync(),
-	currentWorkingDir: process.cwd(),
+	currentWorkingDir: process.cwd()
 };
 
-export async function testAllTools(m: Message): Promise<{ func: string, args: any, isError: boolean, result: any }[]> {
+export async function testAllTools(
+	m: Message
+): Promise<{ func: string; args: any; isError: boolean; result: any }[]> {
 	const tools = getTools();
 	const tests = getTests();
 
-	let results: { func: string, args: any, isError: boolean, result: any }[] = []
+	let results: { func: string; args: any; isError: boolean; result: any }[] =
+		[];
 
 	const params: AIContext = {
 		askingUserId: m.author.id,
@@ -24,14 +27,14 @@ export async function testAllTools(m: Message): Promise<{ func: string, args: an
 			: "avaiable only in servers",
 		currentServer: m.guild
 			? {
-				name: m.guild.name,
-				id: m.guild.id,
-			}
+					name: m.guild.name,
+					id: m.guild.id
+				}
 			: null,
 		currentChannelM: {
-			name: m.channel.isDMBased() ? null : m.channel.name,
+			name: m.channel.isDMBased() ? null : m.channel.name
 		},
-		...staticAIContext,
+		...staticAIContext
 	};
 
 	for (const test of tests) {
@@ -41,16 +44,27 @@ export async function testAllTools(m: Message): Promise<{ func: string, args: an
 			continue;
 		}
 
-		logger.info(`OCbwoy3ChanAI - testing ${test.tool}`)
+		logger.info(`OCbwoy3ChanAI - testing ${test.tool}`);
 		try {
-
 			const result = await tool(test.args);
-			logger.info(`OCbwoy3ChanAI - testing ${test.tool} success`)
-			results.push({ func: test.tool, args: test.args, isError: false, result: result });
+			logger.info(`OCbwoy3ChanAI - testing ${test.tool} success`);
+			results.push({
+				func: test.tool,
+				args: test.args,
+				isError: false,
+				result: result
+			});
 		} catch (error) {
-			logger.info(`OCbwoy3ChanAI - testing ${test.tool} fail - ${error}`)
-			await m.reply(`[@ocbwoy3chanai/ToolTest] ${test.tool} exe fail - ${error}`);
-			results.push({ func: test.tool, args: test.args, isError: true, result: `${error}` });
+			logger.info(`OCbwoy3ChanAI - testing ${test.tool} fail - ${error}`);
+			await m.reply(
+				`[@ocbwoy3chanai/ToolTest] ${test.tool} exe fail - ${error}`
+			);
+			results.push({
+				func: test.tool,
+				args: test.args,
+				isError: true,
+				result: `${error}`
+			});
 		}
 	}
 

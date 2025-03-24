@@ -21,16 +21,14 @@ let presence: Presence | null = {
 			assets: {},
 			flags: 0,
 			emoji: null,
-			buttons: [
-				"TEST"
-			],
+			buttons: ["TEST"],
 			createdTimestamp: 1741353638376
 		}
 	] as any as Activity[],
 	clientStatus: {
 		embedded: "dnd"
 	} as any
-} as any
+} as any;
 
 export function setPresence(p: any | null) {
 	presence = p;
@@ -48,7 +46,7 @@ export function setNumBans(p: number) {
 
 router.get("/stats.json", (req, res) => {
 	res.json({
-		numBans,
+		numBans
 	});
 });
 

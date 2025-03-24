@@ -17,31 +17,42 @@ const meta: FunctionDeclaration = {
 		properties: {
 			id: {
 				description: "The Discord User's ID.",
-				type: SchemaType.STRING,
-			},
-		},
-	},
+				type: SchemaType.STRING
+			}
+		}
+	}
 };
 
-addTest(meta.name,{
+addTest(meta.name, {
 	id: "486147449703104523"
 });
 
 async function funcGetMusic(args: any): Promise<any> {
-	const players = (await $`playerctl -l`.text()).split("\n")
+	const players = (await $`playerctl -l`.text()).split("\n");
 	try {
-		players.pop()
+		players.pop();
 	} catch {}
 	return {
 		players,
-		title: (await $`playerctl metadata xesam:title`.text()).replace("\n",""),
-		artist: (await $`playerctl metadata xesam:artist`.text()).replace("\n","")
+		title: (await $`playerctl metadata xesam:title`.text()).replace(
+			"\n",
+			""
+		),
+		artist: (await $`playerctl metadata xesam:artist`.text())
+			.replace("\n", "")
 			.split(", ")
 			.map((a) => a.split(" & "))
 			.flatMap((a) => a),
-		genre: (await $`playerctl metadata xesam:genre`.text()).replace("\n",""),
-		album: await (await $`playerctl metadata xesam:album`.text()).replace("\n",""),
-		mprisTrackId: await (await $`playerctl metadata mpris:trackid`.text()).replace("\n",""),
+		genre: (await $`playerctl metadata xesam:genre`.text()).replace(
+			"\n",
+			""
+		),
+		album: await (
+			await $`playerctl metadata xesam:album`.text()
+		).replace("\n", ""),
+		mprisTrackId: await (
+			await $`playerctl metadata mpris:trackid`.text()
+		).replace("\n", "")
 		// genre: await $`playerctl metadata xesam:genre`.text(),
 	};
 }
@@ -78,7 +89,7 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 		...y,
 		name: u.displayName,
 		id: u.id,
-		discordStatus: status,
+		discordStatus: status
 	};
 }
 

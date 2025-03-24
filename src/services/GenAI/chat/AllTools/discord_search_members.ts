@@ -13,11 +13,12 @@ const meta: FunctionDeclaration = {
 		description: "getDiscordUser parameters",
 		properties: {
 			name: {
-				description: "The User's name or username (case-insensitive, can match partial, 30 max)",
-				type: SchemaType.STRING,
-			},
-		},
-	},
+				description:
+					"The User's name or username (case-insensitive, can match partial, 30 max)",
+				type: SchemaType.STRING
+			}
+		}
+	}
 };
 
 addTest(meta.name, {
@@ -29,16 +30,16 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 	if (!ctx.currentChannel) {
 		return {
 			error: "This feature cannot be used in DMs."
-		}
+		};
 	}
 	let ch: Channel | null = client.channels.resolve(ctx.currentChannelM);
 	if (!ch) {
-		ch = await client.channels.fetch(ctx.currentChannel)
+		ch = await client.channels.fetch(ctx.currentChannel);
 	}
 	if (!ch || ch.isDMBased()) {
 		return {
 			error: "This feature cannot be used in DMs."
-		}
+		};
 	}
 
 	const members = await ch.guild.members.search({
@@ -47,7 +48,7 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 	});
 
 	return {
-		members: members.map(a => {
+		members: members.map((a) => {
 			// console.log(a.roles.cache.map(b => ({ name: b.name, color: b.hexColor, id: b.id })))
 			return {
 				username: a.user.username,
@@ -59,8 +60,12 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 				hasDiscordNitroSince: a.premiumSinceTimestamp,
 				joinedAt: a.joinedTimestamp,
 				nameColorHex: a.displayHexColor,
-				roles: a.roles.cache.map(b => ({ name: b.name, color: b.hexColor, id: b.id }))
-			}
+				roles: a.roles.cache.map((b) => ({
+					name: b.name,
+					color: b.hexColor,
+					id: b.id
+				}))
+			};
 		})
 	};
 }

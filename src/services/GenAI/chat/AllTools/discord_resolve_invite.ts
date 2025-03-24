@@ -4,7 +4,6 @@ import { addTest, registerTool } from "../tools";
 import { client } from "services/Bot/bot";
 import { GuildNSFWLevel } from "discord.js";
 
-
 const meta: FunctionDeclaration = {
 	name: "discord.resolve_invite",
 	description:
@@ -15,12 +14,11 @@ const meta: FunctionDeclaration = {
 		description: "resolveDiscordInvite parameters",
 		properties: {
 			code: {
-				description:
-					"The invite code.",
-				type: SchemaType.STRING,
+				description: "The invite code.",
+				type: SchemaType.STRING
 			}
-		},
-	},
+		}
+	}
 };
 
 addTest(meta.name, {
@@ -28,28 +26,40 @@ addTest(meta.name, {
 });
 
 async function func(args: any): Promise<any> {
-
-	const i = await client.fetchInvite(args.code as string)
+	const i = await client.fetchInvite(args.code as string);
 
 	return {
-		guild: i.guild ? {
-			name: i.guild.name,
-			id: i.guild.id,
-			features: i.guild.features,
-			nsfwLevel: i.guild.nsfwLevel === GuildNSFWLevel.Default ? null : i.guild.nsfwLevel === GuildNSFWLevel.Safe ? "safe" : i.guild.nsfwLevel === GuildNSFWLevel.Explicit ? "explicit" : i.guild.nsfwLevel === GuildNSFWLevel.AgeRestricted ? "safe" : "unknown",
-			numNitroBoosters: i.guild.premiumSubscriptionCount,
-			vanityInviteCode: i.guild.vanityURLCode,
-			description: i.guild.description
-		} : null,
+		guild: i.guild
+			? {
+					name: i.guild.name,
+					id: i.guild.id,
+					features: i.guild.features,
+					nsfwLevel:
+						i.guild.nsfwLevel === GuildNSFWLevel.Default
+							? null
+							: i.guild.nsfwLevel === GuildNSFWLevel.Safe
+								? "safe"
+								: i.guild.nsfwLevel === GuildNSFWLevel.Explicit
+									? "explicit"
+									: i.guild.nsfwLevel ===
+										  GuildNSFWLevel.AgeRestricted
+										? "safe"
+										: "unknown",
+					numNitroBoosters: i.guild.premiumSubscriptionCount,
+					vanityInviteCode: i.guild.vanityURLCode,
+					description: i.guild.description
+				}
+			: null,
 		members: i.memberCount,
-		invitedBy: i.inviter ? {
-			name: i.inviter.displayName,
-			username: i.inviter.username,
-			id: i.inviter.id
-		} : null,
+		invitedBy: i.inviter
+			? {
+					name: i.inviter.displayName,
+					username: i.inviter.username,
+					id: i.inviter.id
+				}
+			: null,
 		json: i.toJSON()
-	}
-
+	};
 }
 
 if (process.env.CHROMIUM_PATH) {

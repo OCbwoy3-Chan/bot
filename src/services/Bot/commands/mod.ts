@@ -5,12 +5,16 @@ import {
 	ApplicationIntegrationType,
 	ButtonBuilder,
 	ButtonStyle,
-	InteractionContextType,
+	InteractionContextType
 } from "discord.js";
 import { BanlandScope } from "../../../lib/Constants";
 import { GetUserDetails, GetUserIdFromName } from "../../../lib/roblox";
 import { banningCommands } from "../../../locale/commands";
-import { BanUser, GetBanData, UpdateUserBan } from "../../Database/helpers/RobloxBan";
+import {
+	BanUser,
+	GetBanData,
+	UpdateUserBan
+} from "../../Database/helpers/RobloxBan";
 import { r } from "112-l10n";
 import { IsWhitelisted } from "@db/helpers/DiscordWhitelist";
 
@@ -26,17 +30,17 @@ class SlashCommand extends Subcommand {
 			subcommands: [
 				{
 					name: "lookup",
-					chatInputRun: "chatInputLookup",
+					chatInputRun: "chatInputLookup"
 				},
 				{
 					name: "ban",
-					chatInputRun: "chatInputBan",
+					chatInputRun: "chatInputBan"
 				},
 				{
 					name: "change",
-					chatInputRun: "chatInputUpdate",
-				},
-			],
+					chatInputRun: "chatInputUpdate"
+				}
+			]
 		});
 	}
 
@@ -92,7 +96,9 @@ class SlashCommand extends Subcommand {
 							.addBooleanOption((option) =>
 								option
 									.setName("local")
-									.setDescription("If the ban is not propogated to other services")
+									.setDescription(
+										"If the ban is not propogated to other services"
+									)
 									.setRequired(false)
 							)
 					)
@@ -128,7 +134,9 @@ class SlashCommand extends Subcommand {
 							.addBooleanOption((option) =>
 								option
 									.setName("local")
-									.setDescription("If the ban is not propogated to other services")
+									.setDescription(
+										"If the ban is not propogated to other services"
+									)
 									.setRequired(false)
 							)
 					)
@@ -142,7 +150,7 @@ class SlashCommand extends Subcommand {
 		if (!interaction.options.get("user")?.value) {
 			return await interaction.reply({
 				content: ":skull:",
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 
@@ -157,7 +165,7 @@ class SlashCommand extends Subcommand {
 		if (!userid) {
 			return await interaction.followUp({
 				content: await r(interaction, "errors:username_resolve_no_arg"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 		const ud = await GetUserDetails(userid);
@@ -184,7 +192,7 @@ class SlashCommand extends Subcommand {
 		);
 		return await interaction.followUp({
 			content: wtf,
-			components: [(<unknown>row) as any],
+			components: [(<unknown>row) as any]
 		});
 	}
 
@@ -194,7 +202,7 @@ class SlashCommand extends Subcommand {
 		if (!(await IsWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "errors:missing_wl"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 
@@ -210,11 +218,9 @@ class SlashCommand extends Subcommand {
 
 		const reason =
 			interaction.options.getString("reason") ||
-			await r(interaction, "generic:ban_reason_unspecified");
-		const duration =
-			interaction.options.getNumber("duration") || -1;
-		const nofed =
-			interaction.options.getBoolean("local") || false;
+			(await r(interaction, "generic:ban_reason_unspecified"));
+		const duration = interaction.options.getNumber("duration") || -1;
+		const nofed = interaction.options.getBoolean("local") || false;
 		const scope = "All"; // ! DEPRECATED
 
 		let isHackban = false;
@@ -233,7 +239,7 @@ class SlashCommand extends Subcommand {
 		if (!userid) {
 			return await interaction.followUp({
 				content: await r(interaction, "errors:username_resolve_no_arg"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 		const ud = await GetUserDetails(userid);
@@ -250,7 +256,10 @@ class SlashCommand extends Subcommand {
 				noFederate: nofed
 			});
 		} catch (e_) {
-			return interaction.followUp({ content: `> ${e_}`, ephemeral: true });
+			return interaction.followUp({
+				content: `> ${e_}`,
+				ephemeral: true
+			});
 		}
 
 		const stupidFuckingButton = new ButtonBuilder()
@@ -261,8 +270,10 @@ class SlashCommand extends Subcommand {
 		const row = new ActionRowBuilder().addComponents(stupidFuckingButton);
 
 		return await interaction.followUp({
-			content: await r(interaction, "generic:ban_success", { user: `[${ud.displayName}](https://fxroblox.com/users/${userid})` }),
-			components: [(<unknown>row) as any],
+			content: await r(interaction, "generic:ban_success", {
+				user: `[${ud.displayName}](https://fxroblox.com/users/${userid})`
+			}),
+			components: [(<unknown>row) as any]
 		});
 	}
 
@@ -272,7 +283,7 @@ class SlashCommand extends Subcommand {
 		if (!(await IsWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "errors:missing_wl"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 
@@ -293,7 +304,7 @@ class SlashCommand extends Subcommand {
 		if (!userid) {
 			return await interaction.followUp({
 				content: await r(interaction, "errors:username_resolve_no_arg"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 
@@ -301,20 +312,22 @@ class SlashCommand extends Subcommand {
 		if (!existingBan) {
 			return await interaction.followUp({
 				content: await r(interaction, "errors:user_not_banned"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 
 		const reason =
 			interaction.options.getString("reason") ||
 			existingBan.reason ||
-			await r(interaction, "generic:ban_reason_unspecified");
+			(await r(interaction, "generic:ban_reason_unspecified"));
 		const duration =
 			interaction.options.getNumber("duration") ||
 			parseInt(existingBan.bannedUntil) - Math.ceil(Date.now() / 1000) ||
 			-1;
 		const nofed =
-			interaction.options.getBoolean("local") || existingBan.noFederate || false;
+			interaction.options.getBoolean("local") ||
+			existingBan.noFederate ||
+			false;
 		const scope = "All"; // ! DEPRECATED
 
 		let isHackban = existingBan.hackBan;
@@ -339,7 +352,10 @@ class SlashCommand extends Subcommand {
 				noFederate: nofed
 			});
 		} catch (e_) {
-			return interaction.followUp({ content: `> ${e_}`, ephemeral: true });
+			return interaction.followUp({
+				content: `> ${e_}`,
+				ephemeral: true
+			});
 		}
 
 		const stupidFuckingButton = new ButtonBuilder()
@@ -350,8 +366,10 @@ class SlashCommand extends Subcommand {
 		const row = new ActionRowBuilder().addComponents(stupidFuckingButton);
 
 		return await interaction.followUp({
-			content: await r(interaction, "generic:ban_update_success", { user: `[${ud.displayName}](https://fxroblox.com/users/${userid})` }),
-			components: [(<unknown>row) as any],
+			content: await r(interaction, "generic:ban_update_success", {
+				user: `[${ud.displayName}](https://fxroblox.com/users/${userid})`
+			}),
+			components: [(<unknown>row) as any]
 		});
 	}
 }

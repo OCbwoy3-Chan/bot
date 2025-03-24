@@ -40,7 +40,33 @@ export function getCurrentCountryCode() {
 
 export async function _determineEuropeanness(): Promise<void> {
 	const EUROPEAN_COUNTRIES = [
-		"BE", "CZ", "BG", "DK", "DE", "EE", "EL", "ES", "FR", "HR", "IE", "CY", "LT", "IT", "LV", "LU", "HU", "MT", "NL", "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE",
+		"BE",
+		"CZ",
+		"BG",
+		"DK",
+		"DE",
+		"EE",
+		"EL",
+		"ES",
+		"FR",
+		"HR",
+		"IE",
+		"CY",
+		"LT",
+		"IT",
+		"LV",
+		"LU",
+		"HU",
+		"MT",
+		"NL",
+		"AT",
+		"PL",
+		"PT",
+		"RO",
+		"SI",
+		"SK",
+		"FI",
+		"SE"
 		// "UK" // brexit
 	];
 	try {
@@ -53,19 +79,24 @@ export async function _determineEuropeanness(): Promise<void> {
 			_setIsEuropean(data.continent_code === "EU" ? true : false);
 		}
 		_currentCountry = data.country_code;
-		logger.info(`${_currentCountry} - ${isEuropean() ? "" : "Not "}European!`);
+		logger.info(
+			`${_currentCountry} - ${isEuropean() ? "" : "Not "}European!`
+		);
 	} catch (error) {
-		logger.error("Failed to determine Europeanness, defaulting to true", error);
+		logger.error(
+			"Failed to determine Europeanness, defaulting to true",
+			error
+		);
 		_setIsEuropean(true);
 	}
 }
 
-_determineEuropeanness().catch(a => { })
+_determineEuropeanness().catch((a) => {});
 
 export function measureCPULatency(): string {
 	const start = performance.now();
 	// for (let i = 0; i < 20; i++) {
-		const _uselessComparison = 9 + 10 === 21;
+	const _uselessComparison = 9 + 10 === 21;
 	// }
 	const end = performance.now();
 	// latency in microseconds
@@ -76,7 +107,7 @@ export function measureCPULatency(): string {
 export async function getDistroName(): Promise<string> {
 	return await new Promise((resolve) => {
 		setTimeout(() => {
-			resolve(`getDistroName timeout - ${arch()}`)
+			resolve(`getDistroName timeout - ${arch()}`);
 		}, 500);
 		try {
 			const d = readFileSync("/etc/os-release").toString().split("\n");

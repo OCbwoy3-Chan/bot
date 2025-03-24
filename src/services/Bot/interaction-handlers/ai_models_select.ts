@@ -1,6 +1,6 @@
 import {
 	InteractionHandler,
-	InteractionHandlerTypes,
+	InteractionHandlerTypes
 } from "@sapphire/framework";
 import type { StringSelectMenuInteraction } from "discord.js";
 import { general } from "../../../locale/commands";
@@ -15,7 +15,7 @@ export class MenuHandler extends InteractionHandler {
 	) {
 		super(ctx, {
 			...options,
-			interactionHandlerType: InteractionHandlerTypes.SelectMenu,
+			interactionHandlerType: InteractionHandlerTypes.SelectMenu
 		});
 	}
 
@@ -30,7 +30,7 @@ export class MenuHandler extends InteractionHandler {
 		if (interaction.user.id !== process.env.OWNER_ID!) {
 			return await interaction.reply({
 				content: await r(interaction, "errors:generic_disallowed"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
@@ -44,7 +44,7 @@ export class MenuHandler extends InteractionHandler {
 		if (!model[0]) {
 			return await interaction.reply({
 				content: await r(interaction, "errors:generic"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 

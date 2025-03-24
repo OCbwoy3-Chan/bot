@@ -14,7 +14,10 @@ import { areGenAIFeaturesEnabled } from "@ocbwoy3chanai/gemini";
 import { getPrompt } from "@ocbwoy3chanai/prompt/GeneratePrompt";
 import { testAllTools } from "@ocbwoy3chanai/ToolTest";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
-import { GetChannelPrompt, GetGuildPrompt } from "../../Database/helpers/AISettings";
+import {
+	GetChannelPrompt,
+	GetGuildPrompt
+} from "../../Database/helpers/AISettings";
 import { getToolMetas } from "@ocbwoy3chanai/chat/tools";
 import { exec } from "child_process";
 import { r } from "112-l10n";
@@ -37,12 +40,12 @@ export function SetAIModel(p: string) {
 }
 
 export function GetAIModel() {
-	return AIModel
+	return AIModel;
 }
 
 const staticAIContext = {
 	currentDistro: getDistroNameSync(),
-	currentWorkingDir: process.cwd(),
+	currentWorkingDir: process.cwd()
 };
 
 export class OCbwoy3ChanAI extends Listener {
@@ -53,7 +56,7 @@ export class OCbwoy3ChanAI extends Listener {
 		super(context, {
 			...options,
 			once: true,
-			event: "ready",
+			event: "ready"
 		});
 	}
 
@@ -98,36 +101,38 @@ export class OCbwoy3ChanAI extends Listener {
 								}
 							)
 						]
-					})
+					});
 					return;
 				}
 				if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Tools")) {
 					const tools = await getToolMetas();
-					let tString = tools.map(a => {
-						let b: string[] = [];
-						if (a.parameters) {
-							b = [
-								(a.parameters.description || "No description provided"),
-								`Type: ${a.parameters.type}`,
-								`Required: ${a.parameters.required?.join(", ")}`,
-								Object.entries(a.parameters.properties).map(([name, data]) => {
-									return `Param: ${name} - ${JSON.stringify(data)}`
-								}).join("\n")
-							]
-						}
-						return `${a.name} - ${a.description}\n${b.join("\n")}`
-					}).join("\n\n")
+					let tString = tools
+						.map((a) => {
+							let b: string[] = [];
+							if (a.parameters) {
+								b = [
+									a.parameters.description ||
+										"No description provided",
+									`Type: ${a.parameters.type}`,
+									`Required: ${a.parameters.required?.join(", ")}`,
+									Object.entries(a.parameters.properties)
+										.map(([name, data]) => {
+											return `Param: ${name} - ${JSON.stringify(data)}`;
+										})
+										.join("\n")
+								];
+							}
+							return `${a.name} - ${a.description}\n${b.join("\n")}`;
+						})
+						.join("\n\n");
 					await m2.reply({
 						content: "ok",
 						files: [
-							new AttachmentBuilder(
-								Buffer.from(tString),
-								{
-									name: "tools.txt"
-								}
-							)
+							new AttachmentBuilder(Buffer.from(tString), {
+								name: "tools.txt"
+							})
 						]
-					})
+					});
 					return;
 				}
 				if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Prompt")) {
@@ -145,13 +150,15 @@ export class OCbwoy3ChanAI extends Listener {
 						content: `${m2.author.id} ${AIModel} ${ChatPrompt}`,
 						files: [
 							new AttachmentBuilder(
-								Buffer.from(getPrompt(prompt)?.toString() || ""),
+								Buffer.from(
+									getPrompt(prompt)?.toString() || ""
+								),
 								{
 									name: "system.txt"
 								}
 							)
 						]
-					})
+					});
 					return;
 				}
 			}
@@ -178,20 +185,20 @@ export class OCbwoy3ChanAI extends Listener {
 			const chat = chatManager.getChat(m2.channel.id, AIModel, prompt);
 
 			if (/https?:\/\//.test(m2.content)) {
-				void m2.react("⏱️").catch((a) => { });
+				void m2.react("⏱️").catch((a) => {});
 
 				await new Promise((a) => setTimeout((b) => a(1), 3000));
 			}
 
 			const m = await m2.fetch(true);
 
-			void m.react("💭").catch((a) => { });
+			void m.react("💭").catch((a) => {});
 
 			const parts: Array<string | Part> = [];
 			const filesToSend: RawFile[] = [];
 
 			for (const attachment of m.attachments.values()) {
-				void m.react("💾").catch((a) => { });
+				void m.react("💾").catch((a) => {});
 				try {
 					const response = await fetch(attachment.url);
 					const raw = await response.arrayBuffer();
@@ -209,8 +216,8 @@ export class OCbwoy3ChanAI extends Listener {
 							mimeType: mimeType.replace(
 								"application/octet-stream",
 								"text/plain"
-							),
-						},
+							)
+						}
 					});
 				} catch (e_) {
 					logger.warn(
@@ -238,7 +245,7 @@ export class OCbwoy3ChanAI extends Listener {
 				if (embed.data) {
 					try {
 						if (embed.data.thumbnail) {
-							void m.react("🖼️").catch(() => { });
+							void m.react("🖼️").catch(() => {});
 							const response = await fetch(
 								embed.data.thumbnail.proxy_url!
 							);
@@ -252,11 +259,11 @@ export class OCbwoy3ChanAI extends Listener {
 									mimeType: mimeType.replace(
 										"application/octet-stream",
 										"text/plain"
-									),
-								},
+									)
+								}
 							});
 						} else if (embed.image?.url) {
-							void m.react("🖼️").catch(() => { });
+							void m.react("🖼️").catch(() => {});
 							const response = await fetch(embed.image.proxyURL!);
 							const raw = await response.arrayBuffer();
 							const mimeType =
@@ -265,8 +272,8 @@ export class OCbwoy3ChanAI extends Listener {
 							parts.push({
 								inlineData: {
 									data: Buffer.from(raw).toString("base64"),
-									mimeType: mimeType,
-								},
+									mimeType: mimeType
+								}
 							});
 						}
 					} catch (e_) {
@@ -284,7 +291,7 @@ export class OCbwoy3ChanAI extends Listener {
 			}
 
 			if (m.channel.type === ChannelType.GuildText) {
-				void m.channel.sendTyping().catch(a => { });
+				void m.channel.sendTyping().catch((a) => {});
 			}
 
 			const params: AIContext = {
@@ -297,15 +304,15 @@ export class OCbwoy3ChanAI extends Listener {
 					: { error: "avaiable only in servers" },
 				currentServer: m.guild
 					? {
-						name: m.guild.name,
-						id: m.guild.id,
-					}
+							name: m.guild.name,
+							id: m.guild.id
+						}
 					: null,
 				currentChannelM: {
-					name: m.channel.isDMBased() ? null : m.channel.name,
+					name: m.channel.isDMBased() ? null : m.channel.name
 				},
-				embeds: m.embeds.map(a => a.toJSON()),
-				...staticAIContext,
+				embeds: m.embeds.map((a) => a.toJSON()),
+				...staticAIContext
 			};
 
 			let response = "";
@@ -317,17 +324,21 @@ export class OCbwoy3ChanAI extends Listener {
 					params
 				);
 				if (toolsUsed.length !== 0) {
-					void m.react("⚙️").catch(a => { })
+					void m.react("⚙️").catch((a) => {});
 				}
-				if (toolsUsed.includes("memory.add") || toolsUsed.includes("memory.delete") || toolsUsed.includes("memory.update")) {
-					void m.react("📓").catch(a => { })
+				if (
+					toolsUsed.includes("memory.add") ||
+					toolsUsed.includes("memory.delete") ||
+					toolsUsed.includes("memory.update")
+				) {
+					void m.react("📓").catch((a) => {});
 				}
 				if (response.length === 0) throw "Got empty message";
 				if (response.trim().replace(/ +/g, " ").length > 2000) {
 					filesToSend.push({
 						contentType: "text/plain",
 						name: "message.txt",
-						data: response,
+						data: response
 					});
 					response = await r(m2, "ai:message_too_long");
 				}
@@ -347,12 +358,12 @@ export class OCbwoy3ChanAI extends Listener {
 						return new AttachmentBuilder(
 							Buffer.from(a.data as string),
 							{
-								name: a.name,
+								name: a.name
 							}
 						);
-					}),
+					})
 				});
-			} catch { }
+			} catch {}
 		});
 	}
 }

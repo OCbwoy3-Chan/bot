@@ -14,10 +14,10 @@ const meta: FunctionDeclaration = {
 		properties: {
 			id: {
 				description: "The Discord User's ID.",
-				type: SchemaType.STRING,
-			},
-		},
-	},
+				type: SchemaType.STRING
+			}
+		}
+	}
 };
 
 addTest(meta.name, {
@@ -29,16 +29,15 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 
 	let ch: Channel | null = client.channels.resolve(ctx.currentChannelM);
 	if (!ch) {
-		ch = await client.channels.fetch(ctx.currentChannel)
+		ch = await client.channels.fetch(ctx.currentChannel);
 	}
 	if (!ch || ch.isDMBased()) {
-
 		const u = await client.users.fetch(id);
 
 		return {
 			name: u.displayName,
 			id: u.id,
-			userJson: u.toJSON(),
+			userJson: u.toJSON()
 		};
 	}
 
@@ -55,8 +54,12 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 		hasDiscordNitroSince: a.premiumSinceTimestamp,
 		joinedAt: a.joinedTimestamp,
 		nameColorHex: a.displayHexColor,
-		roles: a.roles.cache.map(b => ({ name: b.name, color: b.hexColor, id: b.id }))
-	}
+		roles: a.roles.cache.map((b) => ({
+			name: b.name,
+			color: b.hexColor,
+			id: b.id
+		}))
+	};
 }
 
 registerTool(func, meta);

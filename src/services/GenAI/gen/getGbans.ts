@@ -23,7 +23,9 @@ async function getNovaReason(
 	endpoint: string,
 	userid: string
 ): Promise<
-	{ reason: string; attributionRequired: true } | { javascriptFetchError: string } | null
+	| { reason: string; attributionRequired: true }
+	| { javascriptFetchError: string }
+	| null
 > {
 	try {
 		const bans = await (
@@ -31,7 +33,7 @@ async function getNovaReason(
 				headers: {
 					"SEC-CH-UA-PLATFORM": "Linux",
 					"User-Agent":
-						"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)",
+						"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)"
 				}
 			})
 		).json();
@@ -40,7 +42,8 @@ async function getNovaReason(
 			: null;
 	} catch (e_) {
 		let m = `${e_}`;
-		if (m.includes("AbortError")) m = "Request took too long to complete (>2500ms)"
+		if (m.includes("AbortError"))
+			m = "Request took too long to complete (>2500ms)";
 		return { javascriptFetchError: m };
 	}
 }
@@ -49,7 +52,9 @@ async function getAParamReason(
 	endpoint: string,
 	userid: string
 ): Promise<
-	{ reason: string; attributionRequired: true } | { javascriptFetchError: string } | null
+	| { reason: string; attributionRequired: true }
+	| { javascriptFetchError: string }
+	| null
 > {
 	try {
 		const bans = await (
@@ -57,7 +62,7 @@ async function getAParamReason(
 				headers: {
 					"SEC-CH-UA-PLATFORM": "Linux",
 					"User-Agent":
-						"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)",
+						"Mozilla/5.0 (X11; Linux x86_64) OCbwoy3ChanAI/1.0 (+https://ocbwoy3.dev)"
 				}
 			})
 		).json();
@@ -66,7 +71,8 @@ async function getAParamReason(
 			: null;
 	} catch (e_) {
 		let m = `${e_}`;
-		if (m.includes("AbortError")) m = "Request took too long to complete (>2500ms)"
+		if (m.includes("AbortError"))
+			m = "Request took too long to complete (>2500ms)";
 		return { javascriptFetchError: m };
 	}
 }
@@ -74,10 +80,19 @@ async function getAParamReason(
 export async function getBanReasonsForUserid(userid: string): Promise<Object> {
 	return {
 		["112"]: await prisma.robloxUserBan.findFirst({
-			where: { userId: userid.toString() },
+			where: { userId: userid.toString() }
 		}),
-		Nova: await getNovaReason("https://nova.scriptlang.com/api/bans", userid.toString()),
-		Karma: await getNovaReason("https://karma.ocbwoy3.dev/bans", userid.toString()),
-		SleepCore: await getNovaReason("https://skidgod.vercel.app/SleepCore/bans.json", userid.toString())
+		Nova: await getNovaReason(
+			"https://nova.scriptlang.com/api/bans",
+			userid.toString()
+		),
+		Karma: await getNovaReason(
+			"https://karma.ocbwoy3.dev/bans",
+			userid.toString()
+		),
+		SleepCore: await getNovaReason(
+			"https://skidgod.vercel.app/SleepCore/bans.json",
+			userid.toString()
+		)
 	};
 }

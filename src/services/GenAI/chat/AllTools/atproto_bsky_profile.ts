@@ -34,19 +34,19 @@ const meta: FunctionDeclaration = {
 		properties: {
 			didOrHandle: {
 				description: "The user's DID or handle",
-				type: SchemaType.STRING,
-			},
-		},
-	},
+				type: SchemaType.STRING
+			}
+		}
+	}
 };
 
-addTest(meta.name,{
+addTest(meta.name, {
 	didOrHandle: "ocbwoy3.dev"
 });
 
 const agent = new BskyAgent({
-	service: process.env.ATPROTO_PDS || "https://bsky.social",
-})
+	service: process.env.ATPROTO_PDS || "https://bsky.social"
+});
 
 const LABELER_DIDS = `did:plc:zkd45zaim752t2nhdp4hx3tl
 did:plc:w2zobotzori6wtdrdemjc4w6
@@ -104,15 +104,14 @@ did:plc:p6eqp5xkulucs6ebeoqtveze
 did:plc:w6yx4bltuzdmiolooi4kd6zt
 did:plc:r5zogjmxhhn6v23dv47li6pc
 did:plc:zxldzh7s6no6zikwqpasixrp
-did:plc:z3yk2cflhmn6vmzo3f5ixqh4`.split("\n")
-const LABELERS = LABELER_DIDS.join(", ")
+did:plc:z3yk2cflhmn6vmzo3f5ixqh4`.split("\n");
+const LABELERS = LABELER_DIDS.join(", ");
 
-let labels: {[a:string]: any} = {};
+let labels: { [a: string]: any } = {};
 
 /* stupid pds' appview ratelimits wtf */
 
 async function func(args: any): Promise<any> {
-
 	if (!agent.did) {
 		if (process.env.ATPROTO_DID && process.env.BSKY_PASSWORD) {
 			await agent.login({
@@ -124,16 +123,40 @@ async function func(args: any): Promise<any> {
 					dids: LABELER_DIDS,
 					detailed: true
 				});
-				labelers.data.views.forEach(v => {
+				labelers.data.views.forEach((v) => {
 					let p = v as LabelerViewDetailed;
-					(p.policies.labelValueDefinitions || []).forEach(l=>{
-						labels[`${p.creator.did}/${l.identifier}`] = {labeler_did: p.creator.did, labeler: p.creator.displayName, serverity: l.severity, name: l.locales[0].name, description: l.locales[0].description, id: l.identifier, blurs: l.blurs}
-					})
-					labels[`${p.creator.did}/!hide`] = {labeler_did: p.creator.did, labeler: p.creator.displayName, serverity: "hide", description: "This content has been hidden by the moderators. This content has been labeled with the !hide global label value defined by the AT Protocol. ", id: "!hide", blurs: false}
-					labels[`${p.creator.did}/!warn`] = {labeler_did: p.creator.did, labeler: p.creator.displayName, serverity: "warn", description: "This content has received a general warning from moderators. This content has been labeled with the !warn global label value defined by the AT Protocol. ", id: "!warn", blurs: false}
+					(p.policies.labelValueDefinitions || []).forEach((l) => {
+						labels[`${p.creator.did}/${l.identifier}`] = {
+							labeler_did: p.creator.did,
+							labeler: p.creator.displayName,
+							serverity: l.severity,
+							name: l.locales[0].name,
+							description: l.locales[0].description,
+							id: l.identifier,
+							blurs: l.blurs
+						};
+					});
+					labels[`${p.creator.did}/!hide`] = {
+						labeler_did: p.creator.did,
+						labeler: p.creator.displayName,
+						serverity: "hide",
+						description:
+							"This content has been hidden by the moderators. This content has been labeled with the !hide global label value defined by the AT Protocol. ",
+						id: "!hide",
+						blurs: false
+					};
+					labels[`${p.creator.did}/!warn`] = {
+						labeler_did: p.creator.did,
+						labeler: p.creator.displayName,
+						serverity: "warn",
+						description:
+							"This content has received a general warning from moderators. This content has been labeled with the !warn global label value defined by the AT Protocol. ",
+						id: "!warn",
+						blurs: false
+					};
 				});
-			} catch(e_) {
-				console.error(e_)
+			} catch (e_) {
+				console.error(e_);
 			}
 		}
 	}
@@ -145,29 +168,50 @@ async function func(args: any): Promise<any> {
 		did = (await hdlres.resolve(did)) || (args.didOrHandle as string);
 	}
 
-	let appview: any = {error:"Service owner did not provide ATProto credentials"};
+	let appview: any = {
+		error: "Service owner did not provide ATProto credentials"
+	};
 
 	if (agent.did) {
-		const d = await agent.app.bsky.actor.getProfile({
-			actor: did
-		},{
-			headers: {
-				'atproto-accept-labelers': LABELERS
+		const d = await agent.app.bsky.actor.getProfile(
+			{
+				actor: did
+			},
+			{
+				headers: {
+					"atproto-accept-labelers": LABELERS
+				}
 			}
-		})
-		let x = d.data
-		x.labels = (d.data.labels || []).map(a=>{
+		);
+		let x = d.data;
+		x.labels = (d.data.labels || []).map((a) => {
 			if (a.src == x.did && a.val == "!no-unauthenticated") {
-				return {labeler: (x.displayName || x.handle), serverity: "hide", description: "This profile is labeled with the !no-unauthenticaed label value defined by the AT Protocol and is hidden from all logged-out users in client apps which respect the label.", id: a.val, blurs: false}
+				return {
+					labeler: x.displayName || x.handle,
+					serverity: "hide",
+					description:
+						"This profile is labeled with the !no-unauthenticaed label value defined by the AT Protocol and is hidden from all logged-out users in client apps which respect the label.",
+					id: a.val,
+					blurs: false
+				};
 			}
-			return labels[`${a.src}/${a.val}`] || {labeler_did: a.src, labeler: a.src, serverity: "unknown", description: "Unknown", id: a.val, blurs: false}
-		})
+			return (
+				labels[`${a.src}/${a.val}`] || {
+					labeler_did: a.src,
+					labeler: a.src,
+					serverity: "unknown",
+					description: "Unknown",
+					id: a.val,
+					blurs: false
+				}
+			);
+		});
 		appview = x;
 	}
 
 	console.log(appview);
 
-	return appview
+	return appview;
 }
 
 registerTool(func, meta);

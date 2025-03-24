@@ -17,7 +17,7 @@ class SlashCommand extends Command {
 		options: Command.Options
 	) {
 		super(context, {
-			...options,
+			...options
 		});
 	}
 
@@ -58,15 +58,22 @@ class SlashCommand extends Command {
 					not: true
 				}
 			}
-		})
+		});
 
 		const embed: APIEmbed = {
 			title: `${user.displayName}`,
 			fields: [
-				{ name: await r(interaction, "generic:linked_accounts_embed_title"), value: `${linkedAccounts.length === 0 ? await r(interaction, "generic:none_zero_array") : linkedAccounts.length}`, inline: false }
+				{
+					name: await r(
+						interaction,
+						"generic:linked_accounts_embed_title"
+					),
+					value: `${linkedAccounts.length === 0 ? await r(interaction, "generic:none_zero_array") : linkedAccounts.length}`,
+					inline: false
+				}
 			],
 			thumbnail: { url: user.displayAvatarURL() },
-			color: 0x00ff00,
+			color: 0x00ff00
 		};
 
 		const filesToSend: RawFile[] = [];
@@ -75,10 +82,14 @@ class SlashCommand extends Command {
 			filesToSend.push({
 				contentType: "application/json",
 				name: "accounts.json",
-				data: JSON.stringify({
-					discord: user.id,
-					roblox: linkedAccounts.map(a=>a.robloxId)
-				},undefined,"\t"),
+				data: JSON.stringify(
+					{
+						discord: user.id,
+						roblox: linkedAccounts.map((a) => a.robloxId)
+					},
+					undefined,
+					"\t"
+				)
 			});
 		}
 
@@ -86,13 +97,10 @@ class SlashCommand extends Command {
 			embeds: [embed],
 			ephemeral: false,
 			files: filesToSend.map((a) => {
-				return new AttachmentBuilder(
-					Buffer.from(a.data as string),
-					{
-						name: a.name,
-					}
-				);
-			}),
+				return new AttachmentBuilder(Buffer.from(a.data as string), {
+					name: a.name
+				});
+			})
 		});
 	}
 }

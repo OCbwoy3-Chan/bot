@@ -3,7 +3,10 @@ import { Subcommand } from "@sapphire/plugin-subcommands";
 import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
-import { GetChannelPrompt, GetGuildPrompt } from "../../Database/helpers/AISettings";
+import {
+	GetChannelPrompt,
+	GetGuildPrompt
+} from "../../Database/helpers/AISettings";
 import { AIContext } from "@ocbwoy3chanai/chat/index";
 
 import {
@@ -29,7 +32,7 @@ class AskCommand extends Command {
 		super(context, {
 			...options,
 			description: "Asks OCbwoy3-Chan a question",
-			preconditions: (<unknown>[]) as PreconditionEntryResolvable[],
+			preconditions: (<unknown>[]) as PreconditionEntryResolvable[]
 		});
 	}
 
@@ -70,11 +73,13 @@ class AskCommand extends Command {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
-			return await interaction.reply(await r(interaction, "ai:not_enabled"));
+			return await interaction.reply(
+				await r(interaction, "ai:not_enabled")
+			);
 		}
 
 		await interaction.deferReply({
@@ -83,7 +88,9 @@ class AskCommand extends Command {
 		});
 
 		const message = interaction.options.getString("message", true);
-		const vision = interaction.options.getAttachment("vision", false) ? true : false;
+		const vision = interaction.options.getAttachment("vision", false)
+			? true
+			: false;
 
 		let prompt = "default";
 		const channelPrompt = await GetChannelPrompt(interaction.channelId);
@@ -96,20 +103,27 @@ class AskCommand extends Command {
 			}
 		}
 
-		const chat = chatManager.getChat(interaction.channelId, GetAIModel(), prompt);
+		const chat = chatManager.getChat(
+			interaction.channelId,
+			GetAIModel(),
+			prompt
+		);
 
 		const parts: Array<string | Part> = [message];
 		if (vision) {
-			for (const attachment of [interaction.options.getAttachment("vision", true)]) {
+			for (const attachment of [
+				interaction.options.getAttachment("vision", true)
+			]) {
 				try {
 					const response = await fetch(attachment.url);
 					const raw = await response.arrayBuffer();
-					const mimeType = response.headers.get("content-type") || "text/plain";
+					const mimeType =
+						response.headers.get("content-type") || "text/plain";
 					parts.push({
 						inlineData: {
 							data: Buffer.from(raw).toString("base64"),
-							mimeType: mimeType,
-						},
+							mimeType: mimeType
+						}
 					});
 				} catch (e_) {
 					console.warn(`Failed to download attachment: ${e_}`);
@@ -122,18 +136,22 @@ class AskCommand extends Command {
 			chatbotUserId: interaction.client.user!.id,
 			currentAiModel: chat.chatModel,
 			currentChannel: interaction.channelId,
-			currentUserStatusOrWhatTheUserIsDoingListeningToEtc: { error: "not usable with /ask command" },
+			currentUserStatusOrWhatTheUserIsDoingListeningToEtc: {
+				error: "not usable with /ask command"
+			},
 			currentServer: interaction.guild
 				? {
-					name: interaction.guild.name,
-					id: interaction.guild.id,
-				}
+						name: interaction.guild.name,
+						id: interaction.guild.id
+					}
 				: null,
 			currentChannelM: {
-				name: interaction.channel ? ((interaction.channel as GuildChannel).name || null) : null,
+				name: interaction.channel
+					? (interaction.channel as GuildChannel).name || null
+					: null
 			},
 			currentDistro: getDistroNameSync(),
-			currentWorkingDir: process.cwd(),
+			currentWorkingDir: process.cwd()
 		};
 
 		let response = "";
@@ -143,22 +161,34 @@ class AskCommand extends Command {
 		try {
 			[response, toolsUsed] = await chat.generateResponse(parts, params);
 
-			let t: { emoji: string, label: string, id: string }[] = [];
+			let t: { emoji: string; label: string; id: string }[] = [];
 
-			if (toolsUsed.includes("memory.add") || toolsUsed.includes("memory.delete") || toolsUsed.includes("memory.update")) {
+			if (
+				toolsUsed.includes("memory.add") ||
+				toolsUsed.includes("memory.delete") ||
+				toolsUsed.includes("memory.update")
+			) {
 				t.push({
 					emoji: "📓",
 					label: await r(interaction, "ai:tools.memory_update"),
 					id: "ocbwoy3chan_tool_noop_mem"
-				})
+				});
 			}
 
-			if (toolsUsed.includes("atproto.get_posts") || toolsUsed.includes("atproto.profile") || toolsUsed.includes("atproto.did_doc") || toolsUsed.includes("atproto.get_record")) {
+			if (
+				toolsUsed.includes("atproto.get_posts") ||
+				toolsUsed.includes("atproto.profile") ||
+				toolsUsed.includes("atproto.did_doc") ||
+				toolsUsed.includes("atproto.get_record")
+			) {
 				t.push({
-					emoji: client.user!.id === "1271869353389723738" ? "<:bsky:1329812129288552458>" : "🦋",
+					emoji:
+						client.user!.id === "1271869353389723738"
+							? "<:bsky:1329812129288552458>"
+							: "🦋",
 					label: await r(interaction, "ai:tools.atproto"),
 					id: "ocbwoy3chan_tool_noop_atproto"
-				})
+				});
 			}
 
 			if (toolsUsed.includes("ddg.search")) {
@@ -166,7 +196,7 @@ class AskCommand extends Command {
 					emoji: "🪿",
 					label: await r(interaction, "ai:tools.duckduckgo"),
 					id: "ocbwoy3chan_tool_noop_ddg"
-				})
+				});
 			}
 
 			if (toolsUsed.includes("get_website_content")) {
@@ -174,15 +204,21 @@ class AskCommand extends Command {
 					emoji: "🎭",
 					label: await r(interaction, "ai:tools.playwright"),
 					id: "ocbwoy3chan_tool_noop_playwright"
-				})
+				});
 			}
 
-			if (toolsUsed.includes("mc.status") || toolsUsed.includes("exaroton.credits")) {
+			if (
+				toolsUsed.includes("mc.status") ||
+				toolsUsed.includes("exaroton.credits")
+			) {
 				t.push({
-					emoji: client.user!.id === "1271869353389723738" ? "<:exaroton:1344571414958702654>" : "⛏️",
+					emoji:
+						client.user!.id === "1271869353389723738"
+							? "<:exaroton:1344571414958702654>"
+							: "⛏️",
 					label: await r(interaction, "ai:tools.exaroton"),
 					id: "ocbwoy3chan_tool_noop_exaroton"
-				})
+				});
 			}
 
 			if (toolsUsed.includes("fandom")) {
@@ -190,9 +226,8 @@ class AskCommand extends Command {
 					emoji: "🔬",
 					label: await r(interaction, "ai:tools.fandom"),
 					id: "ocbwoy3chan_tool_noop_fandom"
-				})
+				});
 			}
-
 
 			const buttons: ButtonBuilder[] = t.map((tool) =>
 				new ButtonBuilder()
@@ -215,11 +250,11 @@ class AskCommand extends Command {
 					content: await r(interaction, "ai:mesage_too_long"),
 					files: [
 						new AttachmentBuilder(Buffer.from(response), {
-							name: "message.txt",
-						}),
+							name: "message.txt"
+						})
 					],
 					components: rows as any,
-					ephemeral: true,
+					ephemeral: true
 				});
 			}
 		} catch (e_) {
@@ -230,7 +265,7 @@ class AskCommand extends Command {
 		if (err !== false) {
 			return await interaction.followUp({
 				content: `> ${err}`,
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 

@@ -7,7 +7,7 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	InteractionContextType,
-	UserContextMenuCommandInteraction,
+	UserContextMenuCommandInteraction
 } from "discord.js";
 import { IsWhitelisted } from "../../Database/helpers/DiscordWhitelist";
 import { IsAIWhitelisted } from "@db/helpers/AIWhitelist";
@@ -19,7 +19,7 @@ class SlashCommand extends Command {
 		options: Command.Options
 	) {
 		super(context, {
-			...options,
+			...options
 		});
 	}
 
@@ -60,19 +60,19 @@ class SlashCommand extends Command {
 					value: `<t:${Math.round(
 						user.createdAt.getTime() / 1000
 					)}:R>`,
-					inline: false,
+					inline: false
 				},
 				{
 					name: await r(interaction, "generic:wlmenu_is_wl"),
-					value: `${(await IsWhitelisted(user.id)) ? await r(interaction, "generic:yes") : await r(interaction, "generic:no")}`,
+					value: `${(await IsWhitelisted(user.id)) ? await r(interaction, "generic:yes") : await r(interaction, "generic:no")}`
 				},
 				{
 					name: await r(interaction, "generic:wlmenu_is_ai_wl"),
-					value: `${(await IsAIWhitelisted(user.id)) ? await r(interaction, "generic:yes") : await r(interaction, "generic:no")}`,
-				},
+					value: `${(await IsAIWhitelisted(user.id)) ? await r(interaction, "generic:yes") : await r(interaction, "generic:no")}`
+				}
 			],
 			thumbnail: { url: user.displayAvatarURL() },
-			color: 0x00ff00,
+			color: 0x00ff00
 		};
 
 		const addWhitelistButton = new ButtonBuilder()
@@ -99,7 +99,7 @@ class SlashCommand extends Command {
 		await interaction.followUp({
 			embeds: [embed],
 			components: [row as any],
-			ephemeral: false,
+			ephemeral: false
 		});
 	}
 }

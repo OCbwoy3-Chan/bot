@@ -1,13 +1,13 @@
 import {
 	InteractionHandler,
-	InteractionHandlerTypes,
+	InteractionHandlerTypes
 } from "@sapphire/framework";
 import {
 	type ButtonInteraction,
 	type StringSelectMenuInteraction,
 	ActionRowBuilder,
 	ButtonBuilder,
-	ButtonStyle,
+	ButtonStyle
 } from "discord.js";
 import { general } from "../../../locale/commands";
 import { r } from "112-l10n";
@@ -19,7 +19,7 @@ export class MessageComponentHandler extends InteractionHandler {
 	) {
 		super(ctx, {
 			...options,
-			interactionHandlerType: InteractionHandlerTypes.MessageComponent,
+			interactionHandlerType: InteractionHandlerTypes.MessageComponent
 		});
 	}
 
@@ -42,12 +42,11 @@ export class MessageComponentHandler extends InteractionHandler {
 			if (interaction.user.id !== process.env.OWNER_ID) {
 				return await interaction.reply({
 					content: general.errors.notOwner(),
-					ephemeral: true,
+					ephemeral: true
 				});
 			}
 
 			const userid = interaction.customId.replace("112-show-ai-wl-", "");
-
 
 			const addWhitelistButton = new ButtonBuilder()
 				.setLabel(await r(interaction, "generic:button_whitelist"))
@@ -67,7 +66,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			await interaction.reply({
 				// content: "Choose AI actions",
 				components: [row as any],
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 	}

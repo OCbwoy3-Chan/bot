@@ -4,7 +4,10 @@ import { AllBanlandScopes } from "../../../lib/Constants";
 import { BanParams, UpdateBanParams } from "../../../lib/Types";
 import { logger } from "../../../lib/Utility";
 import { prisma } from "../db";
-import { banUserAcrossFederations, unbanUserAcrossFederations } from "../federation";
+import {
+	banUserAcrossFederations,
+	unbanUserAcrossFederations
+} from "../federation";
 import { IsRobloxWhitelisted } from "./RobloxWhitelist";
 
 function IsValidBanningScope(scope: string): boolean {
@@ -41,8 +44,8 @@ export async function GetBanData(
 ): Promise<RobloxUserBan | null> {
 	return await prisma.robloxUserBan.findFirst({
 		where: {
-			userId: userId,
-		},
+			userId: userId
+		}
 	});
 }
 /**
@@ -58,10 +61,10 @@ export async function BanUser(params: BanParams): Promise<void> {
 		throw `Invalid banning scope \`${params.BannedFrom}\``;
 	const user = await IsRobloxWhitelisted(params.UserID);
 	if (user) {
-		throw `<@${user}> is whitelisted and cannot be banned.`
+		throw `<@${user}> is whitelisted and cannot be banned.`;
 	}
 	logger.info(
-		`[NEW BAN] ${params.hackBan ? "HACKBAN " :""}${params.UserID} by ${params.ModeratorName}, ${new Date(
+		`[NEW BAN] ${params.hackBan ? "HACKBAN " : ""}${params.UserID} by ${params.ModeratorName}, ${new Date(
 			parseInt(params.BannedUntil) * 1000
 		).toISOString()} (${params.Reason})`
 	);
@@ -70,7 +73,7 @@ export async function BanUser(params: BanParams): Promise<void> {
 		banUserAcrossFederations(
 			params.UserID,
 			params.Reason || "Unspecified reason"
-		).catch(() => { });
+		).catch(() => {});
 	}
 	await prisma.robloxUserBan.create({
 		data: {
@@ -83,7 +86,7 @@ export async function BanUser(params: BanParams): Promise<void> {
 			bannedFrom: params.BannedFrom,
 			hackBan: params.hackBan,
 			noFederate: params.noFederate
-		},
+		}
 	});
 	await RefreshAllBanlands();
 }
@@ -93,14 +96,14 @@ export async function BanUser(params: BanParams): Promise<void> {
  */
 
 export async function UpdateUserBan(params: UpdateBanParams): Promise<void> {
-	const oldBan = await GetBanData(params.UserID)
+	const oldBan = await GetBanData(params.UserID);
 	if (!oldBan) {
 		throw "User not banned";
 	}
 	if (!IsValidBanningScope(params.BannedFrom))
 		throw `Invalid banning scope \`${params.BannedFrom}\``;
 	logger.info(
-		`[UPDATE BAN] ${params.hackBan ? "HACKBAN " :""}${params.UserID} by ${params.ModeratorName}, ${new Date(
+		`[UPDATE BAN] ${params.hackBan ? "HACKBAN " : ""}${params.UserID} by ${params.ModeratorName}, ${new Date(
 			parseInt(params.BannedUntil) * 1000
 		).toISOString()} (${params.Reason})`
 	);
@@ -108,11 +111,11 @@ export async function UpdateUserBan(params: UpdateBanParams): Promise<void> {
 		banUserAcrossFederations(
 			params.UserID,
 			params.Reason || "Unspecified reason"
-		).catch(() => { });
+		).catch(() => {});
 	}
 	await prisma.robloxUserBan.update({
 		where: {
-			userId: params.UserID,
+			userId: params.UserID
 		},
 		data: {
 			userId: params.UserID,
@@ -124,7 +127,7 @@ export async function UpdateUserBan(params: UpdateBanParams): Promise<void> {
 			bannedFrom: params.BannedFrom,
 			hackBan: params.hackBan,
 			noFederate: params.noFederate
-		},
+		}
 	});
 	await RefreshAllBanlands();
 }
@@ -134,19 +137,19 @@ export async function UpdateUserBan(params: UpdateBanParams): Promise<void> {
  */
 
 export async function UnbanUser(userid: string): Promise<void> {
-	const oldBan = await GetBanData(userid)
+	const oldBan = await GetBanData(userid);
 	if (!oldBan) {
 		throw "User is not banned";
 	}
 	logger.info(`[UNBAN] ${userid}`);
 	if ((oldBan.noFederate || false) === false) {
 		await new Promise((resolve) => setTimeout(resolve, 3000)); // hardcoded
-		unbanUserAcrossFederations(userid).catch(() => { });
+		unbanUserAcrossFederations(userid).catch(() => {});
 	}
 	await prisma.robloxUserBan.delete({
 		where: {
-			userId: userid,
-		},
+			userId: userid
+		}
 	});
 	await RefreshAllBanlands();
 }

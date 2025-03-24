@@ -19,9 +19,9 @@ class SlashCommand extends Subcommand {
 			subcommands: [
 				{
 					name: "language",
-					chatInputRun: "chatInputSetLocale",
-				},
-			],
+					chatInputRun: "chatInputSetLocale"
+				}
+			]
 		});
 	}
 
@@ -33,7 +33,9 @@ class SlashCommand extends Subcommand {
 				.addSubcommand((builder) =>
 					builder
 						.setName("language")
-						.setDescription("Sets OCbwoy3-Chan's language for the current guild")
+						.setDescription(
+							"Sets OCbwoy3-Chan's language for the current guild"
+						)
 						.addStringOption((option) =>
 							option
 								.setName("language")
@@ -51,9 +53,9 @@ class SlashCommand extends Subcommand {
 		if (!interaction.guild) return;
 		await interaction.deferReply({
 			fetchReply: true
-		})
+		});
 
-		const lang = interaction.options.getString("language")
+		const lang = interaction.options.getString("language");
 		if (!lang) return;
 		await prisma.guildSetting.upsert({
 			create: {
@@ -72,9 +74,8 @@ class SlashCommand extends Subcommand {
 
 		return await interaction.followUp({
 			content: await r(interaction, "settings:update_language_success"),
-			ephemeral: false,
+			ephemeral: false
 		});
-
 	}
 }
 

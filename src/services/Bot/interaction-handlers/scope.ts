@@ -1,6 +1,6 @@
 import {
 	InteractionHandler,
-	InteractionHandlerTypes,
+	InteractionHandlerTypes
 } from "@sapphire/framework";
 import type { AutocompleteInteraction } from "discord.js";
 import { AllBanlandScopes } from "../../../lib/Constants";
@@ -12,7 +12,7 @@ export class AutocompleteHandler extends InteractionHandler {
 	) {
 		super(ctx, {
 			...options,
-			interactionHandlerType: InteractionHandlerTypes.Autocomplete,
+			interactionHandlerType: InteractionHandlerTypes.Autocomplete
 		});
 	}
 

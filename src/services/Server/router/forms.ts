@@ -1,5 +1,10 @@
 import express, { Request, Response } from "express";
-import { createForm, getForm, submitFormResponse, getFormResponses } from "../../Database/helpers/FormHelpers";
+import {
+	createForm,
+	getForm,
+	submitFormResponse,
+	getFormResponses
+} from "../../Database/helpers/FormHelpers";
 
 const router = express.Router();
 
@@ -32,8 +37,15 @@ router.post("/form/:id/submit", async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const { respondentId, responses } = req.body;
 	try {
-		await submitFormResponse(id, respondentId, req.socket.remoteAddress || "unknown_ip_addr", responses);
-		res.status(201).json({ message: "Form response submitted successfully" });
+		await submitFormResponse(
+			id,
+			respondentId,
+			req.socket.remoteAddress || "unknown_ip_addr",
+			responses
+		);
+		res.status(201).json({
+			message: "Form response submitted successfully"
+		});
 	} catch (error) {
 		res.status(500).json({ error: "Failed to submit form response" });
 	}

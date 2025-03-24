@@ -1,6 +1,6 @@
 import {
 	InteractionHandler,
-	InteractionHandlerTypes,
+	InteractionHandlerTypes
 } from "@sapphire/framework";
 import type { StringSelectMenuInteraction } from "discord.js";
 import { general } from "../../../locale/commands";
@@ -8,7 +8,7 @@ import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
 import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
 import {
 	CharacterInfo,
-	getCachedPromptsJ,
+	getCachedPromptsJ
 } from "../../GenAI/prompt/GeneratePrompt";
 import { SetChannelPrompt } from "@db/helpers/AISettings";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
@@ -21,7 +21,7 @@ export class MenuHandler extends InteractionHandler {
 	) {
 		super(ctx, {
 			...options,
-			interactionHandlerType: InteractionHandlerTypes.SelectMenu,
+			interactionHandlerType: InteractionHandlerTypes.SelectMenu
 		});
 	}
 
@@ -36,7 +36,7 @@ export class MenuHandler extends InteractionHandler {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: general.errors.missingPermission("GENERATIVE_AI"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
@@ -50,13 +50,15 @@ export class MenuHandler extends InteractionHandler {
 		if (!prompt[0]) {
 			return await interaction.reply({
 				content: await r(interaction, "errors:generic"),
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 
 		await SetChannelPrompt(interaction.channelId, interaction.values[0]);
 
-		try { chatManager.clearChat(interaction.channelId); } catch { };
+		try {
+			chatManager.clearChat(interaction.channelId);
+		} catch {}
 		await interaction.reply(
 			await r(interaction, "ai:update_channel_prompt", {
 				user: `<@${interaction.user.id}>`,

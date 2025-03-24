@@ -13,13 +13,13 @@ const meta: FunctionDeclaration = {
 		properties: {
 			query: {
 				description: "The word or slang to search for.",
-				type: SchemaType.STRING,
-			},
-		},
-	},
+				type: SchemaType.STRING
+			}
+		}
+	}
 };
 
-addTest(meta.name,{
+addTest(meta.name, {
 	query: "skid"
 });
 

@@ -1,6 +1,7 @@
 import "@sapphire/plugin-i18next/register";
 import {
-	ApplicationCommandRegistries, RegisterBehavior,
+	ApplicationCommandRegistries,
+	RegisterBehavior,
 	SapphireClient
 } from "@sapphire/framework";
 import { PinoLogger } from "@stegripe/pino-logger";
@@ -26,34 +27,34 @@ ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(
 	RegisterBehavior.BulkOverwrite
 );
 
-let cachedGuildLanguages: {[guild: string]: string} = {};
+let cachedGuildLanguages: { [guild: string]: string } = {};
 
 export function _clearCachedGuildLang(id: string) {
-	delete cachedGuildLanguages[id]
+	delete cachedGuildLanguages[id];
 }
 
 function loadTranslations() {
-	const languages = ALL_LANGUAGES.map(a=>a.id);
+	const languages = ALL_LANGUAGES.map((a) => a.id);
 	const resources: Record<string, any> = {};
 
 	for (const lang of languages) {
 		const langDir = join(__dirname, `languages/${lang}`);
 		const files = readdirSync(langDir);
-		resources[lang] = { };
+		resources[lang] = {};
 
 		for (const file of files) {
 			const filePath = join(langDir, file);
-			if (file.endsWith('.json')) {
-				const fileContents = readFileSync(filePath, 'utf8');
-				const fileName = file.replace('.json', '');
+			if (file.endsWith(".json")) {
+				const fileContents = readFileSync(filePath, "utf8");
+				const fileName = file.replace(".json", "");
 				resources[lang][fileName] = JSON.parse(fileContents);
 			}
 		}
 
-		const aiHelpMsgPath = join(langDir,"ai_help_msg.txt");
+		const aiHelpMsgPath = join(langDir, "ai_help_msg.txt");
 		if (existsSync(aiHelpMsgPath)) {
-			const content = readFileSync(aiHelpMsgPath, 'utf-8');
-			resources[lang].ai.help_msg = content.replace(/ \/\/\*.*$/im,"");
+			const content = readFileSync(aiHelpMsgPath, "utf-8");
+			resources[lang].ai.help_msg = content.replace(/ \/\/\*.*$/im, "");
 			// console.log(content.replace(/ \/\/\*.*$/im,""));
 		}
 	}
@@ -68,7 +69,7 @@ export const client = new SapphireClient({
 		GatewayIntentBits.DirectMessages,
 		GatewayIntentBits.GuildMembers,
 		GatewayIntentBits.GuildPresences,
-		GatewayIntentBits.Guilds,
+		GatewayIntentBits.Guilds
 	],
 	partials: [
 		Partials.Channel,
@@ -87,9 +88,9 @@ export const client = new SapphireClient({
 		instance: new PinoLogger({
 			name: "bot",
 			formatters: {
-				bindings: () => ({ pid: `bot` }),
-			},
-		}),
+				bindings: () => ({ pid: `bot` })
+			}
+		})
 	},
 	presence: {
 		status: "dnd",
@@ -106,7 +107,7 @@ export const client = new SapphireClient({
 				state: "w server",
 				type: ActivityType.Listening
 			}
-		],
+		]
 	},
 	i18n: {
 		defaultName: "en",
@@ -115,12 +116,13 @@ export const client = new SapphireClient({
 			debug: hostname() === "ocbwoy3-pc" ? true : false,
 			returnObjects: true,
 			resources: loadTranslations(),
-			preload: ALL_LANGUAGES.map(a=>a.id)
+			preload: ALL_LANGUAGES.map((a) => a.id)
 		},
 		fetchLanguage: async (context: InternationalizationContext) => {
 			if (!context.guild) {
-				if (context.user && context.user.id === "1271869353389723738") return "lv";
-				return 'en';
+				if (context.user && context.user.id === "1271869353389723738")
+					return "lv";
+				return "en";
 			}
 
 			if (!cachedGuildLanguages[context.guild.id]) {
@@ -129,10 +131,11 @@ export const client = new SapphireClient({
 						id: context.guild.id
 					}
 				});
-				cachedGuildLanguages[context.guild.id] = guildSettings?.language || "en";
+				cachedGuildLanguages[context.guild.id] =
+					guildSettings?.language || "en";
 				return guildSettings?.language || "en";
 			}
-			return cachedGuildLanguages[context.guild.id]
+			return cachedGuildLanguages[context.guild.id];
 		},
 		defaultMissingKey: "generic:i18n_missing_key"
 	} as any
@@ -159,7 +162,7 @@ setInterval(async () => {
 				return;
 			}
 		}
-	} catch { }
+	} catch {}
 	try {
 		if (!g) return;
 		const m = g.members.resolve(process.env.OWNER_ID!);
@@ -168,11 +171,11 @@ setInterval(async () => {
 			return;
 		}
 		setPresence(m.presence?.toJSON() || null);
-	} catch { }
+	} catch {}
 }, 100);
 
 client.on("error", (err) => {
 	if (err.message && !err.message.includes("webhook")) {
-		captureSentryException(err)
+		captureSentryException(err);
 	}
 });

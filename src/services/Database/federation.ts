@@ -94,8 +94,7 @@ export async function loadAllInstances() {
 			);
 			try {
 				require(path.join(instancesPath, file));
-			} catch { }
+			} catch {}
 		}
 	});
-
 }

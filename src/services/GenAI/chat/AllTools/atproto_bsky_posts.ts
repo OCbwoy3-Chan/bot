@@ -24,8 +24,7 @@ async function fetchWithTimeout(url: string, opts?: any) {
 
 const meta: FunctionDeclaration = {
 	name: "atproto.get_posts",
-	description:
-		"Retrieves posts from Bluesky using a DID or handle.",
+	description: "Retrieves posts from Bluesky using a DID or handle.",
 	parameters: {
 		required: ["didOrHandle"],
 		type: SchemaType.OBJECT,
@@ -33,18 +32,18 @@ const meta: FunctionDeclaration = {
 		properties: {
 			didOrHandle: {
 				description: "The user's DID or handle",
-				type: SchemaType.STRING,
-			},
-		},
-	},
+				type: SchemaType.STRING
+			}
+		}
+	}
 };
 
-addTest(meta.name,{
+addTest(meta.name, {
 	didOrHandle: "ocbwoy3.dev"
 });
 
 const agent = new BskyAgent({
-	service: "https://public.api.bsky.app",
+	service: "https://public.api.bsky.app"
 });
 
 async function func(args: any): Promise<any> {
@@ -71,14 +70,14 @@ async function func(args: any): Promise<any> {
 	const serviceEndpoint = service.serviceEndpoint;
 
 	const {
-		data: { feed: posts },
+		data: { feed: posts }
 	} = await agent.getAuthorFeed({
 		actor: did,
-		limit: 25,
+		limit: 25
 	});
 
 	const { data: user } = await agent.app.bsky.actor.getProfile({
-		actor: did,
+		actor: did
 	});
 
 	return {
@@ -88,7 +87,7 @@ async function func(args: any): Promise<any> {
 			joinDate: user.indexedAt,
 			displayName: user.displayName,
 			handle: user.handle,
-			description: user.description,
+			description: user.description
 		},
 		posts: posts.map((a) => {
 			const blobs: { type: string; alt?: string; url: string }[] = [];
@@ -107,7 +106,7 @@ async function func(args: any): Promise<any> {
 						blobs.push({
 							type: "image",
 							alt: blob.alt,
-							url: `${serviceEndpoint}/xrpc/com.atproto.sync.getBlob?did=${did}&cid=${blob.image.ref}`,
+							url: `${serviceEndpoint}/xrpc/com.atproto.sync.getBlob?did=${did}&cid=${blob.image.ref}`
 						});
 					});
 				}
@@ -123,7 +122,7 @@ async function func(args: any): Promise<any> {
 					};
 					blobs.push({
 						type: "video",
-						url: `${serviceEndpoint}/xrpc/com.atproto.sync.getBlob?did=${did}&cid=${vid.video.ref}`,
+						url: `${serviceEndpoint}/xrpc/com.atproto.sync.getBlob?did=${did}&cid=${vid.video.ref}`
 					});
 				}
 			}
@@ -134,9 +133,9 @@ async function func(args: any): Promise<any> {
 				replies: a.post.replyCount,
 				likes: a.post.likeCount,
 				reposts: a.post.repostCount,
-				quotes: a.post.quoteCount,
+				quotes: a.post.quoteCount
 			};
-		}),
+		})
 	};
 	/*
 	x.posts.forEach(a=>{

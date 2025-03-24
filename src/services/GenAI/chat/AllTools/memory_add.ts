@@ -4,19 +4,20 @@ import { prisma } from "../../../Database/db";
 
 const meta: FunctionDeclaration = {
 	name: "memory.add",
-	description: "Adds a memory about the currently asking user from CurrentContext.",
+	description:
+		"Adds a memory about the currently asking user from CurrentContext.",
 	parameters: {
-			required: ["memory"],
-			type: SchemaType.OBJECT,
-			description: "memory.add parameters",
-			properties: {
-				memory: {
-					description:
-						"The memory to save (e.g. Likes Concise Responses, etc.).",
-					type: SchemaType.STRING,
-				}
-			},
-		},
+		required: ["memory"],
+		type: SchemaType.OBJECT,
+		description: "memory.add parameters",
+		properties: {
+			memory: {
+				description:
+					"The memory to save (e.g. Likes Concise Responses, etc.).",
+				type: SchemaType.STRING
+			}
+		}
+	}
 };
 
 addTest(meta.name, null);
@@ -42,7 +43,7 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 	if (memories.length >= 40) {
 		return {
 			error: "You can have a maximum of 40 memories per user."
-		}
+		};
 	}
 
 	const newMemory = await prisma.oCbwoy3ChanAI_UserMemory.create({
@@ -57,7 +58,7 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 		memory_added: {
 			new_entry_id: newMemory.id
 		}
-	}
+	};
 }
 
 registerTool(func, meta);

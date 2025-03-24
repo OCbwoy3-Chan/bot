@@ -5,16 +5,19 @@ import { getDistroNameSync, logger } from "./Utility";
 
 export function InitSentry() {
 	if (process.env.SENTRY_DSN) {
-		logger.info({ pid: "sentry" }, "Loading Sentry")
+		logger.info({ pid: "sentry" }, "Loading Sentry");
 		configDotenv();
 		s.init({
 			dsn: process.env.SENTRY_DSN,
-			tracesSampleRate: 1.0,
+			tracesSampleRate: 1.0
 		});
 	}
 }
 
-export function captureSentryException(e: Error | any, hint: ExclusiveEventHintOrCaptureContext = {}) {
+export function captureSentryException(
+	e: Error | any,
+	hint: ExclusiveEventHintOrCaptureContext = {}
+) {
 	if (process.env.SENTRY_DSN) {
 		(hint as any).contexts = (hint as any).contexts || {};
 		(hint as any).contexts = {
@@ -28,7 +31,7 @@ export function captureSentryException(e: Error | any, hint: ExclusiveEventHintO
 		};
 		(hint as any).tags = (hint as any).tags || {};
 		(hint as any).tags.sentryUtilCapture = true;
-		logger.info({ pid: "sentry" }, `Reporting Error: ${e}`)
-		s.captureException(e, hint as ExclusiveEventHintOrCaptureContext)
+		logger.info({ pid: "sentry" }, `Reporting Error: ${e}`);
+		s.captureException(e, hint as ExclusiveEventHintOrCaptureContext);
 	}
 }

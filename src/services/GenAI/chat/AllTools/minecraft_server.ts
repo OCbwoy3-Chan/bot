@@ -1,13 +1,12 @@
 import { FunctionDeclaration } from "@google/generative-ai";
 import { Client } from "exaroton";
-import { client as DJSClient } from "../../../Bot/bot"
+import { client as DJSClient } from "../../../Bot/bot";
 import { addTest, registerTool } from "../tools";
 
 let cached = {};
 let cacheReset = Date.now() - 1000;
 
 if (process.env.EXAROTON_TOKEN && process.env.EXAROTON_SERVER) {
-
 	const client = new Client(process.env.EXAROTON_TOKEN);
 
 	const server = client.server(process.env.EXAROTON_SERVER);
@@ -16,11 +15,10 @@ if (process.env.EXAROTON_TOKEN && process.env.EXAROTON_SERVER) {
 		const meta: FunctionDeclaration = {
 			name: "mc.status",
 			description:
-				"Fetches the status of the owner's Minecraft server, including the MOTD and the number of players online.",
+				"Fetches the status of the owner's Minecraft server, including the MOTD and the number of players online."
 		};
 
 		async function func(args: any): Promise<any> {
-
 			if (Date.now() < cacheReset) return cached;
 
 			const status = await server.get();
@@ -38,30 +36,32 @@ if (process.env.EXAROTON_TOKEN && process.env.EXAROTON_SERVER) {
 				motd: status.motd,
 				software: status.software,
 				players: status.players,
-				address: (DJSClient.user!.id === "1271869353389723738" ? "create.darktru.win" : (status.address || { cantGetAddressError: "ServerNotOnline" }))
+				address:
+					DJSClient.user!.id === "1271869353389723738"
+						? "create.darktru.win"
+						: status.address || {
+								cantGetAddressError: "ServerNotOnline"
+							}
 			};
 
 			cached = c;
 			cacheReset = Date.now() + 5000;
 			return c;
-
 		}
 
 		addTest(meta.name, null);
 		registerTool(func, meta);
-
 	})();
 
 	(() => {
 		const meta: FunctionDeclaration = {
 			name: "exaroton.credits",
 			description:
-				"Gets the amount of credits in all exaroton credit pools.",
+				"Gets the amount of credits in all exaroton credit pools."
 		};
 
 		async function func(args: any): Promise<any> {
-
-			const creds = (await client.getPools()).map(a => {
+			const creds = (await client.getPools()).map((a) => {
 				return {
 					name: a.name,
 					isOwner: a.isOwner,
@@ -69,20 +69,17 @@ if (process.env.EXAROTON_TOKEN && process.env.EXAROTON_SERVER) {
 					ownShare: a.ownShare,
 					ownCredits: a.ownCredits,
 					credits: a.credits
-				}
+				};
 			});
 
-			const acct = await client.getAccount()
+			const acct = await client.getAccount();
 			return {
 				accountCredits: acct.credits,
 				creditPools: creds
-			}
-
+			};
 		}
 
 		addTest(meta.name, null);
 		registerTool(func, meta);
-	})()
-
+	})();
 }
-

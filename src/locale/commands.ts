@@ -8,21 +8,27 @@ import { freemem, totalmem, uptime } from "os";
 import { Interaction } from "discord.js";
 import { r } from "112-l10n";
 
-const distro = getDistroNameSync()
+const distro = getDistroNameSync();
 
 export const infoCommand = {
-	genContent: async (roundTrip: string, gatewayPing: string, i: Interaction) => {
+	genContent: async (
+		roundTrip: string,
+		gatewayPing: string,
+		i: Interaction
+	) => {
 		const upd = uptime();
 		const days = Math.floor(upd / 86400);
 		const hours = Math.floor((upd % 86400) / 3600);
 		const minutes = Math.floor((upd % 3600) / 60);
 		const seconds = Math.floor(upd % 60);
-		const uptimeStr = `${days}d ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+		const uptimeStr = `${days}d ${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 
-		const totalMemoryGB = Math.round(totalmem() / 1024 / 1024 / 1024 * 100) / 100;
-		const usedMemoryGB = Math.round(freemem() / 1024 / 1024 / 1024 * 100) / 100;
+		const totalMemoryGB =
+			Math.round((totalmem() / 1024 / 1024 / 1024) * 100) / 100;
+		const usedMemoryGB =
+			Math.round((freemem() / 1024 / 1024 / 1024) * 100) / 100;
 
-		const m = await r(i, "etc:bot_info_output", {
+		const m = (await r(i, "etc:bot_info_output", {
 			warning: isFork() ? await r(i, "etc:bot_info.fork_warning") : "",
 			distro,
 			gatewayLatency: gatewayPing,
@@ -32,10 +38,10 @@ export const infoCommand = {
 			devMemUsed: usedMemoryGB,
 			devMemMax: totalMemoryGB,
 			numBannedSkids: (await prisma.robloxUserBan.findMany()).length
-		}) as any as string[];
+		})) as any as string[];
 
 		return m.join("\n");
-	},
+	}
 };
 
 export const gbanFederation = {
@@ -49,7 +55,7 @@ export const gbanFederation = {
 	bannedByHost: (plr: string, instance: string) =>
 		`> ${plr} is banned by the host instance on ${instance}`,
 	bannedByRemote: (plr: string, instance: string) =>
-		`> ${plr} is banned by a remote instance ${instance}`,
+		`> ${plr} is banned by a remote instance ${instance}`
 };
 
 export const general = {
@@ -60,7 +66,8 @@ export const general = {
 		invalidRoleId: (roleId: number): string =>
 			`> Invalid Role with ID \`${roleId}\``,
 		genai: {
-			illegalInEurope: (): string => "> AI Moderation is illegal in the European Union.",
+			illegalInEurope: (): string =>
+				"> AI Moderation is illegal in the European Union.",
 			unsafeRequest: (category: HarmCategory): string => {
 				let a = category.toString();
 				if (category === HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT)
@@ -76,9 +83,9 @@ export const general = {
 				return `> [Google GenerativeAI] Message flagged for ${a}.`;
 			},
 			aiDisabled: (): string => "> Generative AI Features are disabled.",
-			ratelimit: (): string => "> API quota exceeded.",
-		},
-	},
+			ratelimit: (): string => "> API quota exceeded."
+		}
+	}
 };
 
 export const banningCommands = {
@@ -92,27 +99,37 @@ export const banningCommands = {
 	success: {
 		userBanSuccessMessage: (name: string) => `${name} has been banned!`,
 		userUnbanSuccessMessage: (name: string) => `${name} has been unbanned!`,
-		lookupResultMessage: async (d: PlayerInfo, i: number, interaction: Interaction) => {
+		lookupResultMessage: async (
+			d: PlayerInfo,
+			i: number,
+			interaction: Interaction
+		) => {
 			let ap = "";
 			const bd: RobloxUserBan | null = await GetBanData(i.toString());
 			if (bd) {
-				ap = (await r(interaction, "mod:lookup_ban_result", {
-					moderator: `<@${bd.moderatorId}>`,
-					reason: bd.reason,
-					unban_date: (bd.bannedUntil === "-1")
-						? await r(interaction, "mod:unbanned_never")
-						: `<t:${bd.bannedUntil.toString()}>`
-				}) as any as string[]).map(a=>`> ${a}`).join("\n")
+				ap = (
+					(await r(interaction, "mod:lookup_ban_result", {
+						moderator: `<@${bd.moderatorId}>`,
+						reason: bd.reason,
+						unban_date:
+							bd.bannedUntil === "-1"
+								? await r(interaction, "mod:unbanned_never")
+								: `<t:${bd.bannedUntil.toString()}>`
+					})) as any as string[]
+				)
+					.map((a) => `> ${a}`)
+					.join("\n");
 			}
-			return `> # [${d.displayName} (@${d.username
-				})](https://fxroblox.com/users/${i})
+			return `> # [${d.displayName} (@${
+				d.username
+			})](https://fxroblox.com/users/${i})
 > **${await r(interaction, `mod:account_status.${d.isBanned ? "account_deleted" : "default"}`)}**${ap !== "" ? `\n\n${ap}` : ""}`;
-		},
+		}
 	},
 	lookups: {
 		lookupWebsiteLink: (name: string) =>
 			`https://ocbwoy3.dev/lookup?u=${name}`,
 		lookupBanReason: (reason: string) => `Reason: ${reason}`,
-		lookupBanCause: (cause: string) => `Banned for ${cause}`,
-	},
+		lookupBanCause: (cause: string) => `Banned for ${cause}`
+	}
 };

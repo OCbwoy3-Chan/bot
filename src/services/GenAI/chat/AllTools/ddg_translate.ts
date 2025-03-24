@@ -12,17 +12,17 @@ const meta: FunctionDeclaration = {
 		properties: {
 			target: {
 				description: "The target language ISO code (e.g., en).",
-				type: SchemaType.STRING,
+				type: SchemaType.STRING
 			},
 			query: {
 				description: "The text to translate.",
-				type: SchemaType.STRING,
-			},
-		},
-	},
+				type: SchemaType.STRING
+			}
+		}
+	}
 };
 
-addTest(meta.name,{
+addTest(meta.name, {
 	query: "Sveiki, Pasaule!",
 	target: "de"
 });
@@ -35,7 +35,7 @@ async function func(args: any): Promise<any> {
 
 	return {
 		detected_lang: translated.detected_language,
-		translated: translated.translated,
+		translated: translated.translated
 	};
 }
 

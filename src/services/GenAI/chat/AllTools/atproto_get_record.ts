@@ -33,10 +33,10 @@ const meta: FunctionDeclaration = {
 		properties: {
 			uri: {
 				description: "The record's URI (e.g., at://did:plc:...).",
-				type: SchemaType.STRING,
-			},
-		},
-	},
+				type: SchemaType.STRING
+			}
+		}
+	}
 };
 
 addTest(meta.name, {
@@ -46,7 +46,10 @@ addTest(meta.name, {
 async function getPdsFromDid(did: string): Promise<string> {
 	const didDoc = await fetchWithTimeout(`https://plc.directory/${did}`);
 	const json = await didDoc.json();
-	return json.service.find((s: any) => s.id === '#atproto_pds')?.serviceEndpoint || '';
+	return (
+		json.service.find((s: any) => s.id === "#atproto_pds")
+			?.serviceEndpoint || ""
+	);
 }
 
 async function func(args: any): Promise<any> {
@@ -54,11 +57,14 @@ async function func(args: any): Promise<any> {
 	const pds = await getPdsFromDid(uri.host);
 	// console.log(`${pds}/xrpc/com.atproto.repo.getRecord?repo=${uri.host}&collection=${uri.collection}&rkey=${uri.rkey}`)
 	// atproto get record no auth required hack
-	const data = await fetchWithTimeout(`${pds}/xrpc/com.atproto.repo.getRecord?repo=${uri.host}&collection=${uri.collection}&rkey=${uri.rkey}`,{
-		headers: {
-			'Content-Type': 'application/json',
+	const data = await fetchWithTimeout(
+		`${pds}/xrpc/com.atproto.repo.getRecord?repo=${uri.host}&collection=${uri.collection}&rkey=${uri.rkey}`,
+		{
+			headers: {
+				"Content-Type": "application/json"
+			}
 		}
-	});
+	);
 	return await data.json();
 }
 

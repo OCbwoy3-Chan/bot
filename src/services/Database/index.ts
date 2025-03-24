@@ -21,11 +21,13 @@ class DatabaseService {
 	}
 }
 
-export const Service = new DatabaseService(require("pino")({
-	base: {
-		pid: "db"
-	}
-}));
+export const Service = new DatabaseService(
+	require("pino")({
+		base: {
+			pid: "db"
+		}
+	})
+);
 
 export async function StartService(): Promise<void> {
 	await Service._StartService();

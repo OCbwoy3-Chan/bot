@@ -1,13 +1,16 @@
 import {
 	InteractionHandler,
-	InteractionHandlerTypes,
+	InteractionHandlerTypes
 } from "@sapphire/framework";
 import {
 	type ButtonInteraction,
-	type StringSelectMenuInteraction,
+	type StringSelectMenuInteraction
 } from "discord.js";
 import { general } from "../../../locale/commands";
-import { AddAIWhitelist, RemoveAIWhitelist } from "../../Database/helpers/AIWhitelist";
+import {
+	AddAIWhitelist,
+	RemoveAIWhitelist
+} from "../../Database/helpers/AIWhitelist";
 import { r } from "112-l10n";
 
 export class MessageComponentHandler extends InteractionHandler {
@@ -17,7 +20,7 @@ export class MessageComponentHandler extends InteractionHandler {
 	) {
 		super(ctx, {
 			...options,
-			interactionHandlerType: InteractionHandlerTypes.MessageComponent,
+			interactionHandlerType: InteractionHandlerTypes.MessageComponent
 		});
 	}
 
@@ -40,7 +43,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			if (interaction.user.id !== process.env.OWNER_ID) {
 				return await interaction.reply({
 					content: await r(interaction, "errors:not_bot_owner"),
-					ephemeral: true,
+					ephemeral: true
 				});
 			}
 
@@ -51,13 +54,15 @@ export class MessageComponentHandler extends InteractionHandler {
 			} catch (e_) {
 				return await interaction.reply({
 					content: `> ${e_}`,
-					ephemeral: true,
+					ephemeral: true
 				});
 			}
 
 			await interaction.reply({
-				content: await r(interaction, "etc:wl.ai_a", { user: `<@${userid}>` }),
-				ephemeral: true,
+				content: await r(interaction, "etc:wl.ai_a", {
+					user: `<@${userid}>`
+				}),
+				ephemeral: true
 			});
 			return;
 		}
@@ -66,7 +71,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			if (interaction.user.id !== process.env.OWNER_ID) {
 				return await interaction.reply({
 					content: general.errors.notOwner(),
-					ephemeral: true,
+					ephemeral: true
 				});
 			}
 
@@ -80,13 +85,15 @@ export class MessageComponentHandler extends InteractionHandler {
 			} catch (e_) {
 				return await interaction.reply({
 					content: `> ${e_}`,
-					ephemeral: true,
+					ephemeral: true
 				});
 			}
 
 			await interaction.reply({
-				content: await r(interaction, "etc:wl.ai_r", { user: `<@${userid}>` }),
-				ephemeral: true,
+				content: await r(interaction, "etc:wl.ai_r", {
+					user: `<@${userid}>`
+				}),
+				ephemeral: true
 			});
 
 			return;
