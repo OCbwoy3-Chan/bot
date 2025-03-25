@@ -30,7 +30,7 @@ if (process.env.EXAROTON_TOKEN && process.env.EXAROTON_SERVER) {
 			if (status.hasStatus(status.STATUS.OFFLINE)) s = "offline";
 			if (status.hasStatus(status.STATUS.CRASHED)) s = "crashed";
 
-			let c = {
+			const c = {
 				// name: status.name,
 				status: s,
 				motd: status.motd,

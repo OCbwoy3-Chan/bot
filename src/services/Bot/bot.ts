@@ -27,7 +27,7 @@ ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(
 	RegisterBehavior.BulkOverwrite
 );
 
-let cachedGuildLanguages: { [guild: string]: string } = {};
+const cachedGuildLanguages: { [guild: string]: string } = {};
 
 export function _clearCachedGuildLang(id: string) {
 	delete cachedGuildLanguages[id];

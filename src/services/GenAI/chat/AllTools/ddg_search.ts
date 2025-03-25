@@ -26,7 +26,7 @@ async function func(args: any): Promise<any> {
 	const searchResults = await search({
 		query: (args as any).query as string
 	});
-	let results = (searchResults.results as RegularResults).map((result) => {
+	const results = (searchResults.results as RegularResults).map((result) => {
 		return {
 			title: result.title,
 			description: result.description,
@@ -38,7 +38,7 @@ async function func(args: any): Promise<any> {
 			query: (args as any).query as string,
 			next: `${searchResults.next}`
 		});
-		let results2 = (searchResults2.results as RegularResults).map(
+		const results2 = (searchResults2.results as RegularResults).map(
 			(result) => {
 				return {
 					title: result.title,

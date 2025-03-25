@@ -59,8 +59,8 @@ router.get("/ocbwoy3chan", async (req: Request, res: Response) => {
 	});
 });
 
-let queuedJobs: string[] = [];
-let jobResults: { [jobid: string]: { tools: string[]; resp: string } } = {};
+const queuedJobs: string[] = [];
+const jobResults: { [jobid: string]: { tools: string[]; resp: string } } = {};
 
 router.post("/ocbwoy3chan/queue_job", async (req: Request, res: Response) => {
 	const authHeader = req.headers.authorization;
@@ -70,14 +70,14 @@ router.post("/ocbwoy3chan/queue_job", async (req: Request, res: Response) => {
 
 	// console.log(req.body);
 
-	let jobid = randomUUID();
+	const jobid = randomUUID();
 
 	const { msg: message, ctx: context } = req.body;
-	let ct: AIContext = context;
+	const ct: AIContext = context;
 
 	queuedJobs.push(jobid);
 
-	let chat = chatManager.getChat(
+	const chat = chatManager.getChat(
 		ct.currentChannel,
 		ct.currentAiModel,
 		"ocbwoy3_chan"

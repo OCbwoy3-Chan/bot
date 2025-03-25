@@ -26,7 +26,7 @@ let savedChatSession: Chat | null = null;
 
 let ChatPrompt = "default";
 let AIModel = "gemini-2.0-flash-exp";
-let BlacklistedMentions = /@(?:here|everyone)/;
+const BlacklistedMentions = /@(?:here|everyone)/;
 
 export function SetChatPrompt(p: string) {
 	if (!getPrompt(p)) throw "Prompt doesn't exist";
@@ -106,7 +106,7 @@ export class OCbwoy3ChanAI extends Listener {
 				}
 				if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Tools")) {
 					const tools = await getToolMetas();
-					let tString = tools
+					const tString = tools
 						.map((a) => {
 							let b: string[] = [];
 							if (a.parameters) {

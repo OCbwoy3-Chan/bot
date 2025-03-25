@@ -3,7 +3,7 @@ import { UserIdResolveCacheWipeInterval } from "./Constants";
 import { fetchWithTimeout, logger } from "./Utility";
 
 let usernameIdCache: { [username: string]: number } = {};
-let playerInfoCache: { [userid: string]: PlayerInfo } = {};
+const playerInfoCache: { [userid: string]: PlayerInfo } = {};
 
 // https://users.roblox.com/v1/users/1083030325
 type RobloxAPIResponse = {
@@ -56,7 +56,7 @@ export async function GetUserIdFromName(
 export async function GetUserDetails(
 	userid: number | string
 ): Promise<PlayerInfo> {
-	userid = `${userid}`
+	userid = `${userid}`;
 	if (playerInfoCache[userid.toString()]) {
 		return playerInfoCache[userid.toString()];
 	}

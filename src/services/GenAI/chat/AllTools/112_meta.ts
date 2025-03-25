@@ -9,7 +9,7 @@ import { cwd } from "process";
 const meta: FunctionDeclaration = {
 	name: "sys.version",
 	description:
-		"Gets the metadata about the current version 112, including the version, commit, node_env, gban providers, hostname, current working dir and federating instances",
+		"Gets the metadata about the current version 112, including the version, commit, node_env, gban providers, hostname, current working dir and federating instances"
 };
 
 addTest(meta.name, {
@@ -32,9 +32,9 @@ async function func(args: any): Promise<any> {
 			version,
 			commit
 		},
-		gbanProviders: getAllGbanProviders().map(a=>a.name),
-		federatingGbanProviders: getRegisteredFederatedInstances().map(a=>a.name)
+		gbanProviders: getAllGbanProviders().map((a) => a.name),
+		federatingGbanProviders: getRegisteredFederatedInstances().map(
+			(a) => a.name
+		)
 	};
 }
-
-

@@ -32,7 +32,7 @@ export async function banUserAcrossFederations(
 	reason: string
 ): Promise<string[]> {
 	await new Promise((resolve) => setTimeout(resolve, 1500)); // hardcoded
-	let fails: string[] = [];
+	const fails: string[] = [];
 	const banPromises = registeredInstances.map(
 		(instance) =>
 			new Promise((resolve) => {
@@ -62,7 +62,7 @@ export async function banUserAcrossFederations(
 export async function unbanUserAcrossFederations(
 	userId: string
 ): Promise<string[]> {
-	let fails: string[] = [];
+	const fails: string[] = [];
 	const unbanPromises = registeredInstances.map(
 		(instance) =>
 			new Promise((resolve) => {

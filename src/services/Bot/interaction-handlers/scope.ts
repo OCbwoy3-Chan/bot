@@ -32,7 +32,7 @@ export class AutocompleteHandler extends InteractionHandler {
 			case "scope": {
 				const searchResult = AllBanlandScopes;
 
-				let sr: string[] = [];
+				const sr: string[] = [];
 				searchResult.forEach((element) => {
 					if (
 						element

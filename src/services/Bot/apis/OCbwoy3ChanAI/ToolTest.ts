@@ -14,7 +14,7 @@ export async function testAllTools(
 	const tools = getTools();
 	const tests = getTests();
 
-	let results: { func: string; args: any; isError: boolean; result: any }[] =
+	const results: { func: string; args: any; isError: boolean; result: any }[] =
 		[];
 
 	const params: AIContext = {

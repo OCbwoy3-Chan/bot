@@ -157,11 +157,11 @@ class AskCommand extends Command {
 		let response = "";
 		let toolsUsed: string[] = [];
 		let err: any = false;
-		let rows: any[] = [];
+		const rows: any[] = [];
 		try {
 			[response, toolsUsed] = await chat.generateResponse(parts, params);
 
-			let t: { emoji: string; label: string; id: string }[] = [];
+			const t: { emoji: string; label: string; id: string }[] = [];
 
 			if (
 				toolsUsed.includes("memory.add") ||

@@ -30,7 +30,7 @@ export class AutocompleteHandler extends InteractionHandler {
 
 		switch (focusedOption.name) {
 			case "language": {
-				let sr: [string, string][] = [];
+				const sr: [string, string][] = [];
 				ALL_LANGUAGES.forEach((v) => {
 					if (
 						`${v.name}\0${v.id}`

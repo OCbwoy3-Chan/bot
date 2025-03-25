@@ -20,7 +20,7 @@ exec("clear");
 console.clear();
 
 async function loadServices() {
-	for (var service of SERVICE_LOAD_ORDER) {
+	for (const service of SERVICE_LOAD_ORDER) {
 		logger.info(`Loading service "${service}"`);
 		try {
 			const mod = require(`./services/${service}`);

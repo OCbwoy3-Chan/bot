@@ -7,7 +7,7 @@ import {
 } from "@db/GBanProvider";
 import { client } from "services/Bot/bot";
 
-let cachedModeratorDisplayNames: {
+const cachedModeratorDisplayNames: {
 	[id: string]: string;
 } = {};
 
@@ -29,9 +29,9 @@ export async function fetchModNickname(id: string): Promise<string> {
 class Local extends GbanProvider {
 	public async getBans(): Promise<TransformedGbanSchema> {
 		const data = await prisma.robloxUserBan.findMany();
-		let transformedBans: TransformedGbanSchema = {};
+		const transformedBans: TransformedGbanSchema = {};
 		data.forEach(async (b) => {
-			const x = (Number(b.bannedUntil) || -1)*1000
+			const x = (Number(b.bannedUntil) || -1) * 1000;
 			transformedBans[b.userId] = {
 				reason: b.reason,
 				moderator:
@@ -39,7 +39,10 @@ class Local extends GbanProvider {
 				verified: true,
 				isLocal: !!b.noFederate,
 				otherMetadata: {
-					bannedUntil: b.bannedUntil === "-1" ? "forever" : new Date(x).toISOString()
+					bannedUntil:
+						b.bannedUntil === "-1"
+							? "forever"
+							: new Date(x).toISOString()
 				}
 			};
 		});

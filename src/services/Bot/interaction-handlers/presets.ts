@@ -30,7 +30,7 @@ export class AutocompleteHandler extends InteractionHandler {
 
 		switch (focusedOption.name) {
 			case "duration": {
-				let sr: [string, number][] = [];
+				const sr: [string, number][] = [];
 				AllBanDurations.forEach((v: [string, number]) => {
 					if (
 						v[0]

@@ -223,7 +223,7 @@ class SlashCommand extends Subcommand {
 		const nofed = interaction.options.getBoolean("local") || false;
 		const scope = "All"; // ! DEPRECATED
 
-		let isHackban = false;
+		const isHackban = false;
 
 		// console.log(Math.ceil(Date.now()/1000),duration);
 
@@ -330,7 +330,7 @@ class SlashCommand extends Subcommand {
 			false;
 		const scope = "All"; // ! DEPRECATED
 
-		let isHackban = existingBan.hackBan;
+		const isHackban = existingBan.hackBan;
 
 		let date: number = Math.ceil(Date.now() / 1000) + Math.abs(duration);
 

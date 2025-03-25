@@ -23,7 +23,7 @@ class AParam extends GbanProvider {
 			}
 		);
 		const bans: { [id: string]: AParamBan } = await data.json();
-		let transformedBans: TransformedGbanSchema = {};
+		const transformedBans: TransformedGbanSchema = {};
 		Object.entries(bans).forEach(([v, d]) => {
 			transformedBans[v.toString()] = {
 				reason: d

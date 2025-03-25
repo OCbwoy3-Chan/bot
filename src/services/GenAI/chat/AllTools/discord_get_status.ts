@@ -62,7 +62,7 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 	const u = await client.users.fetch(id);
 	// console.log(u);
 
-	let status: Object | null = "failed to fetch";
+	let status: object | null = "failed to fetch";
 
 	try {
 		const ch: Channel | null = await client.channels.fetch(
@@ -74,9 +74,9 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 		}
 	} catch {}
 
-	let y: any = {};
+	const y: any = {};
 	try {
-		let x =
+		const x =
 			hostname() === "ocbwoy3-pc" && id === `${process.env.OWNER_ID!}`
 				? await funcGetMusic({})
 				: null;

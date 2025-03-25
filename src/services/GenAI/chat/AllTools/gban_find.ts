@@ -72,7 +72,7 @@ async function func(args: any): Promise<any> {
 
 	for (const filter of filters) {
 		if (filter.providers) {
-			let filteredGb: any = {};
+			const filteredGb: any = {};
 			for (const provider of filter.providers) {
 				if (gb[provider]) {
 					filteredGb[provider] = gb[provider];
@@ -82,10 +82,10 @@ async function func(args: any): Promise<any> {
 		}
 	}
 
-	for (let [provider, bans] of Object.entries(gb)) {
+	for (const [provider, bans] of Object.entries(gb)) {
 		if (bans) {
-			let promises: Promise<void>[] = [];
-			for (let [id, data] of Object.entries(bans)) {
+			const promises: Promise<void>[] = [];
+			for (const [id, data] of Object.entries(bans)) {
 				promises.push(
 					(async () => {
 						try {

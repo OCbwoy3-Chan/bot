@@ -27,7 +27,7 @@ class The112x4 extends GbanProvider {
 			}
 		);
 		const bans: { [id: string]: The112x4Ban } = await data.json();
-		let transformedBans: TransformedGbanSchema = {};
+		const transformedBans: TransformedGbanSchema = {};
 		Object.entries(bans).forEach(([v, d]) => {
 			transformedBans[v.toString()] = {
 				reason: d.reason,

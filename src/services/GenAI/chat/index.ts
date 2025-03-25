@@ -151,7 +151,7 @@ export class Chat {
 			ctx.mustFetchMemories = true;
 		}
 
-		let toolsUsed: string[] = [];
+		const toolsUsed: string[] = [];
 
 		result = await this.chatSession.sendMessage([
 			{
@@ -211,9 +211,11 @@ export class Chat {
 							ctx
 						);
 						if (process.env.NODE_ENV === "development") {
-							logger.child({
-								response: res
-							}).info(`AI: ${funcCall.name} response`)
+							logger
+								.child({
+									response: res
+								})
+								.info(`AI: ${funcCall.name} response`);
 						}
 						this.callHistory[callHash] = res; // Store the result
 					} catch (e_) {

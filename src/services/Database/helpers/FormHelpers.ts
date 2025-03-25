@@ -47,7 +47,7 @@ export async function submitFormResponse(
 	formId: string,
 	respondentId: string,
 	ip: string,
-	responses: Object
+	responses: object
 ): Promise<void> {
 	await prisma.formResponse.create({
 		data: {

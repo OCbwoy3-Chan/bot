@@ -107,7 +107,7 @@ did:plc:zxldzh7s6no6zikwqpasixrp
 did:plc:z3yk2cflhmn6vmzo3f5ixqh4`.split("\n");
 const LABELERS = LABELER_DIDS.join(", ");
 
-let labels: { [a: string]: any } = {};
+const labels: { [a: string]: any } = {};
 
 /* stupid pds' appview ratelimits wtf */
 
@@ -124,7 +124,7 @@ async function func(args: any): Promise<any> {
 					detailed: true
 				});
 				labelers.data.views.forEach((v) => {
-					let p = v as LabelerViewDetailed;
+					const p = v as LabelerViewDetailed;
 					(p.policies.labelValueDefinitions || []).forEach((l) => {
 						labels[`${p.creator.did}/${l.identifier}`] = {
 							labeler_did: p.creator.did,
@@ -183,7 +183,7 @@ async function func(args: any): Promise<any> {
 				}
 			}
 		);
-		let x = d.data;
+		const x = d.data;
 		x.labels = (d.data.labels || []).map((a) => {
 			if (a.src == x.did && a.val == "!no-unauthenticated") {
 				return {

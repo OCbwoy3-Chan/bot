@@ -30,7 +30,7 @@ export class BanlandCacheHelper {
 	public async RefreshBanlandCache(): Promise<void> {
 		const a = await GetAllBans();
 		this._updateBanCountFunc(a.length);
-		let b: { [userid: string]: BanlandEntry } = {};
+		const b: { [userid: string]: BanlandEntry } = {};
 		a.forEach((u: RobloxUserBan) => {
 			if (this.scope !== "All") {
 				if (u.bannedFrom !== this.scope) return;
@@ -52,7 +52,7 @@ export class BanlandCacheHelper {
 	}
 }
 
-let AllBanlandCacheHelpers: BanlandCacheHelper[] = [];
+const AllBanlandCacheHelpers: BanlandCacheHelper[] = [];
 
 /**
  * Registers a banland cache with the manager.

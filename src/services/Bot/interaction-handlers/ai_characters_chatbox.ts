@@ -30,7 +30,7 @@ export class AutocompleteHandler extends InteractionHandler {
 
 		switch (focusedOption.name) {
 			case "prompt": {
-				let sr: [string, string][] = [];
+				const sr: [string, string][] = [];
 				getCachedPromptsJ()
 					.filter((a) =>
 						interaction.user.id === "486147449703104523"
