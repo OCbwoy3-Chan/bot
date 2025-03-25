@@ -13,8 +13,10 @@ addTest(meta.name, null);
 async function func(args: any): Promise<any> {
 	return {
 		robloxAccountWhitelists: (
-			await prisma.whitelist_RobloxUser.findMany()
-		).filter((a) => !a.hidden),
+			await prisma.whitelist_RobloxUser.findMany({
+				where: { hidden: false }
+			})
+		).map((a) => ({ discordId: a.discordId, robloxUserIds: a.robloxId })),
 		banWhitelist: (await prisma.whitelist.findMany()).filter(
 			(a) => !a.hidden
 		),

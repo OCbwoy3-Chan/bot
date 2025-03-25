@@ -10,6 +10,10 @@ const logger: Logger = require("pino")({
 	}
 });
 
+declare global {
+	var NODE_ENV: string | "development" | "production";
+}
+
 const SERVICE_LOAD_ORDER = ["Database", "Server", "GenAI", "Bot"];
 
 exec("clear");

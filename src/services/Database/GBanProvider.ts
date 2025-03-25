@@ -6,7 +6,9 @@ export type TransformedGban = {
 	isLocal?: boolean;
 	propogatedFromGbanProvider?: string;
 	otherMetadata?: {
-		[a: string]: string | string[];
+		[a: string]: string | string[] | {
+			[a: string]: string | string[]
+		};
 	};
 };
 
@@ -45,6 +47,10 @@ export abstract class GbanProvider {
 }
 
 let allGbanProviders: GbanProvider[] = [];
+
+export function getAllGbanProviders(): GbanProvider[] {
+	return allGbanProviders;
+}
 
 export function registerGbanProvider(p: GbanProvider) {
 	allGbanProviders.push(p);

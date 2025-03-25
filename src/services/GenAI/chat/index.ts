@@ -163,7 +163,7 @@ export class Chat {
 			try {
 				logger.info(`AI (${loopCount} iter):`, result.response.text());
 			} catch {
-				throw `Response blocked, plz blame google: ${JSON.stringify(
+				throw `My response was most likely blocked, it might be Google's fault! Here's the error: ${JSON.stringify(
 					result.response.promptFeedback
 				)}`;
 			}
@@ -210,6 +210,11 @@ export class Chat {
 							funcCall.args as any,
 							ctx
 						);
+						if (process.env.NODE_ENV === "development") {
+							logger.child({
+								response: res
+							}).info(`AI: ${funcCall.name} response`)
+						}
 						this.callHistory[callHash] = res; // Store the result
 					} catch (e_) {
 						logger

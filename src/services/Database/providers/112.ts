@@ -31,6 +31,7 @@ class Local extends GbanProvider {
 		const data = await prisma.robloxUserBan.findMany();
 		let transformedBans: TransformedGbanSchema = {};
 		data.forEach(async (b) => {
+			const x = (Number(b.bannedUntil) || -1)*1000
 			transformedBans[b.userId] = {
 				reason: b.reason,
 				moderator:
@@ -38,7 +39,7 @@ class Local extends GbanProvider {
 				verified: true,
 				isLocal: !!b.noFederate,
 				otherMetadata: {
-					bannedUntil: b.bannedUntil
+					bannedUntil: b.bannedUntil === "-1" ? "forever" : new Date(x).toISOString()
 				}
 			};
 		});

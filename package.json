@@ -5,10 +5,11 @@
 	"main": "src/services/Bot/index.ts",
 	"type": "module",
 	"scripts": {
-		"dev": "bun run --watch src/index.ts | pino-pretty",
+		"dev": "NODE_ENV=development bun run --watch src/index.ts | pino-pretty",
 		"watch": "bun run --hot src/index.ts | pino-pretty",
-		"prod": "bun run src/index.ts | pino-pretty",
-		"lint": "bunx eslint src/"
+		"prod": "NODE_ENV=production bun run src/index.ts | pino-pretty",
+		"lint": "bunx eslint src/",
+		"format": "bunx prettier . --write"
 	},
 	"keywords": [],
 	"author": "OCbwoy3",

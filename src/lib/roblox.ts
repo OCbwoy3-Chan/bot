@@ -56,6 +56,7 @@ export async function GetUserIdFromName(
 export async function GetUserDetails(
 	userid: number | string
 ): Promise<PlayerInfo> {
+	userid = `${userid}`
 	if (playerInfoCache[userid.toString()]) {
 		return playerInfoCache[userid.toString()];
 	}

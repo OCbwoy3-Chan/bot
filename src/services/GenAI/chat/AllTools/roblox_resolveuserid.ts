@@ -20,7 +20,7 @@ const meta: FunctionDeclaration = {
 };
 
 addTest(meta.name, {
-	userid: "1083030325"
+	userid: "OCboy3"
 });
 
 async function func(args: any): Promise<any> {
