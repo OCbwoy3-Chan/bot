@@ -54,7 +54,11 @@ class SlashCommand extends Command {
 		const embed: APIEmbed = {
 			title: `${user.displayName}`,
 			fields: [
-				{ name: "Username", value: user.username, inline: false },
+				{
+					name: await r(interaction, "generic:wlmenu_username"),
+					value: user.username,
+					inline: false
+				},
 				{
 					name: await r(interaction, "generic:wlmenu_joined_discord"),
 					value: `<t:${Math.round(
@@ -64,11 +68,19 @@ class SlashCommand extends Command {
 				},
 				{
 					name: await r(interaction, "generic:wlmenu_is_wl"),
-					value: `${(await IsWhitelisted(user.id)) ? await r(interaction, "generic:yes") : await r(interaction, "generic:no")}`
+					value: `${
+						(await IsWhitelisted(user.id))
+							? await r(interaction, "generic:yes")
+							: await r(interaction, "generic:no")
+					}`
 				},
 				{
 					name: await r(interaction, "generic:wlmenu_is_ai_wl"),
-					value: `${(await IsAIWhitelisted(user.id)) ? await r(interaction, "generic:yes") : await r(interaction, "generic:no")}`
+					value: `${
+						(await IsAIWhitelisted(user.id))
+							? await r(interaction, "generic:yes")
+							: await r(interaction, "generic:no")
+					}`
 				}
 			],
 			thumbnail: { url: user.displayAvatarURL() },

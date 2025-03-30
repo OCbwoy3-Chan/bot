@@ -23,5 +23,6 @@
 	"unwl_success": "Veiksmīgi noņemts {{user}} no baltā saraksta!",
 	"confirm_unban_button": "UNBANOT",
 	"prompt_unban_confirm": "Vai esat pārliecināts, ka vēlaties atcelt {{user}} banu?",
-	"unban_success": "{{user}} tika veiksmīgi unbanots."
+	"unban_success": "{{user}} tika veiksmīgi unbanots.",
+	"username": "Lietotājvārds"
 }
