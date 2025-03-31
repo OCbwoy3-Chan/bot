@@ -25,7 +25,7 @@ import { r } from "112-l10n";
 let savedChatSession: Chat | null = null;
 
 let ChatPrompt = "default";
-let AIModel = "gemini-2.0-flash-exp";
+let AIModel = "gemini-2.0-flash-lite";
 const BlacklistedMentions = /@(?:here|everyone)/;
 
 export function SetChatPrompt(p: string) {
@@ -147,7 +147,7 @@ export class OCbwoy3ChanAI extends Listener {
 						}
 					}
 					await m2.reply({
-						content: `${m2.author.id} ${AIModel} ${ChatPrompt}`,
+						content: `${m2.author.id} ${AIModel} ${prompt}`,
 						files: [
 							new AttachmentBuilder(
 								Buffer.from(

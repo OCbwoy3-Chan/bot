@@ -3,6 +3,7 @@ import { join } from "path";
 
 export type CharacterInfo = {
 	filename: string;
+	remap?: string;
 	name: string;
 	description: string;
 	definition?: string;
@@ -104,6 +105,7 @@ export function loadPromptsFromDirectory(directory: string): void {
 			const prompt = generateSystemPrompt(characterInfo);
 			promptCache[file.replace(/\.json$/, "")] = prompt;
 			promptChList.push(characterInfo);
+			// console.error(characterInfo.filename);
 		}
 	});
 }
