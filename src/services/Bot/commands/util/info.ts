@@ -1,6 +1,6 @@
 import { Command } from "@sapphire/framework";
 import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
-import { infoCommand } from "../../../locale/commands";
+import { infoCommand } from "../../../../locale/commands";
 
 class SlashCommand extends Command {
 	public constructor(

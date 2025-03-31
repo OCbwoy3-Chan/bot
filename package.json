@@ -17,6 +17,7 @@
 	"dependencies": {
 		"@atproto/api": "^0.13.25",
 		"@atproto/identity": "^0.4.3",
+		"@discordjs/opus": "^0.10.0",
 		"@discordjs/voice": "^0.18.0",
 		"@google/generative-ai": "^0.21.0",
 		"@navetacandra/ddg": "^0.0.6",
@@ -39,12 +40,14 @@
 		"exaroton": "^1.11.3",
 		"express": "^4.20.0",
 		"figlet": "^1.8.0",
+		"libsodium-wrappers": "^0.7.15",
 		"noblox.js": "^6.0.2",
 		"nsfwjs": "^4.2.1",
 		"pino": "^9.4.0",
 		"playwright-core": "^1.51.0",
 		"puppeteer-core": "^24.2.0",
 		"sapphire": "^0.0.3",
+		"sodium": "^3.0.2",
 		"tsc-watch": "^6.2.0"
 	},
 	"devDependencies": {

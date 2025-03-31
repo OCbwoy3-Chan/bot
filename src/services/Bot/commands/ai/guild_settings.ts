@@ -1,8 +1,8 @@
 import { PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
-import { general } from "../../../locale/commands";
-import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
+import { general } from "../../../../locale/commands";
+import { IsAIWhitelisted } from "../../../Database/helpers/AIWhitelist";
 import {
 	SetGuildPrompt,
 	ClearGuildPrompt,
@@ -10,7 +10,7 @@ import {
 	SetChannelPrompt,
 	ClearChannelPrompt,
 	GetChannelPrompt
-} from "../../Database/helpers/AISettings";
+} from "../../../Database/helpers/AISettings";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
 import { r } from "112-l10n";
 

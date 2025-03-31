@@ -7,11 +7,11 @@ import {
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder
 } from "discord.js";
-import { general } from "../../../locale/commands";
-import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
-import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
-import { getCachedPromptsJ } from "../../GenAI/prompt/GeneratePrompt";
-import { clearOCbwoy3ChansHistory } from "../listeners/OCbwoy3ChanAI";
+import { general } from "../../../../locale/commands";
+import { IsAIWhitelisted } from "../../../Database/helpers/AIWhitelist";
+import { areGenAIFeaturesEnabled } from "../../../GenAI/gemini";
+import { getCachedPromptsJ } from "../../../GenAI/prompt/GeneratePrompt";
+import { clearOCbwoy3ChansHistory } from "../../listeners/OCbwoy3ChanAI";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
 import { SetChannelPrompt } from "@db/helpers/AISettings";
 import { r } from "112-l10n";

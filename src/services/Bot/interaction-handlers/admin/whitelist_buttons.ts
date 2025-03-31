@@ -9,7 +9,7 @@ import {
 import {
 	AddWhitelist,
 	RemoveWhitelist
-} from "../../Database/helpers/DiscordWhitelist";
+} from "../../../Database/helpers/DiscordWhitelist";
 import { r } from "112-l10n";
 
 export class MessageComponentHandler extends InteractionHandler {

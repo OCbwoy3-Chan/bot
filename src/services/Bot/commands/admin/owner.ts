@@ -7,12 +7,13 @@ import {
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder
 } from "discord.js";
-import { general } from "../../../locale/commands";
-import { prisma } from "../../Database/db";
-import { AllModels, areGenAIFeaturesEnabled } from "../../GenAI/gemini";
+import { general } from "../../../../locale/commands";
+import { prisma } from "../../../Database/db";
+import { AllModels, areGenAIFeaturesEnabled } from "../../../GenAI/gemini";
 import { resetOCbwoy3ChansAPIKey } from "services/Server/router/chat";
 import { captureSentryException } from "@112/SentryUtil";
 import { fetchT } from "@sapphire/plugin-i18next";
+import { generateDependencyReport } from "@discordjs/voice";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -53,6 +54,10 @@ class SlashCommand extends Subcommand {
 				{
 					name: "sentry_error",
 					chatInputRun: "chatInputSentryError"
+				},
+				{
+					name: "debug",
+					chatInputRun: "chatInputDebug"
 				}
 			]
 		});
@@ -112,6 +117,23 @@ class SlashCommand extends Subcommand {
 							.setName("sentry_error")
 							.setDescription(
 								"Triggers a command error and reports it to Sentry (if DSN is specified)"
+							)
+					)
+					.addSubcommand((command) =>
+						command
+							.setName("debug")
+							.setDescription("Debugs the bot")
+							.addStringOption((a) =>
+								a
+									.setName("what")
+									.setRequired(true)
+									.setDescription("What to debug")
+									.addChoices([
+										{
+											name: "@discordjs/voice",
+											value: "discordjs_voice"
+										}
+									])
 							)
 					)
 			// .addStringOption(x=>x.setName("user").setDescription("The Username of the user to ban").setRequired(true))
@@ -222,6 +244,31 @@ class SlashCommand extends Subcommand {
 			captureSentryException(e);
 		}
 	}
+
+	public async chatInputDebug(
+		interaction: Command.ChatInputCommandInteraction
+	) {
+		const whatToDebug = interaction.options.getString("what",true);
+
+		switch (whatToDebug) {
+			case "discordjs_voice": {
+				await interaction.reply({
+					ephemeral: true,
+					content: generateDependencyReport()
+				})
+				break;
+			}
+			default: {
+				await interaction.reply({
+					ephemeral: true,
+					content: "invalid opt"
+				})
+				break;
+			}
+		}
+	}
+
+
 }
 
 export default SlashCommand;

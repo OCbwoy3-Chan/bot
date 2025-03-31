@@ -1,11 +1,11 @@
 import { PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
-import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
-import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
-import { generateBanReason } from "../../GenAI/gen";
-import { BanUser, UpdateUserBan } from "../../Database/helpers/RobloxBan";
-import { GetUserIdFromName, GetUserDetails } from "../../../lib/roblox";
+import { IsAIWhitelisted } from "../../../Database/helpers/AIWhitelist";
+import { areGenAIFeaturesEnabled } from "../../../GenAI/gemini";
+import { generateBanReason } from "../../../GenAI/gen";
+import { BanUser, UpdateUserBan } from "../../../Database/helpers/RobloxBan";
+import { GetUserIdFromName, GetUserDetails } from "../../../../lib/roblox";
 import { isEuropean } from "@112/Utility";
 import { r } from "112-l10n";
 import { IsWhitelisted } from "@db/helpers/DiscordWhitelist";
@@ -18,6 +18,7 @@ class SlashCommand extends Subcommand {
 	) {
 		super(context, {
 			...options,
+			name: "aimod",
 			description: "AI Moderation Tools",
 			preconditions: (<unknown>[]) as PreconditionEntryResolvable[],
 			subcommands: [

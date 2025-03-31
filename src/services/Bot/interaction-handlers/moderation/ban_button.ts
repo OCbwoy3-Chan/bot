@@ -9,9 +9,9 @@ import {
 	ButtonBuilder,
 	ButtonStyle
 } from "discord.js";
-import { GetUserDetails } from "../../../lib/roblox";
-import { IsWhitelisted } from "../../Database/helpers/DiscordWhitelist";
-import { GetBanData, UnbanUser } from "../../Database/helpers/RobloxBan";
+import { GetUserDetails } from "../../../../lib/roblox";
+import { IsWhitelisted } from "../../../Database/helpers/DiscordWhitelist";
+import { GetBanData, UnbanUser } from "../../../Database/helpers/RobloxBan";
 import { r } from "112-l10n";
 
 export class MessageComponentHandler extends InteractionHandler {

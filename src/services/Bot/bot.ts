@@ -22,6 +22,15 @@ const logger = require("pino")({
 	}
 });
 
+
+const {
+	DefaultWebSocketManagerOptions: { identifyProperties }
+} = require("@discordjs/ws");
+
+identifyProperties.browser = "Discord iOS"; // "Discord Embedded";
+identifyProperties.device = "linux"; // "Xbox Series X|S";
+identifyProperties.os = "linux"; // "Linux";
+
 // fucking magic
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(
 	RegisterBehavior.BulkOverwrite
@@ -69,7 +78,8 @@ export const client = new SapphireClient({
 		GatewayIntentBits.DirectMessages,
 		GatewayIntentBits.GuildMembers,
 		GatewayIntentBits.GuildPresences,
-		GatewayIntentBits.Guilds
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildVoiceStates
 	],
 	partials: [
 		Partials.Channel,
@@ -92,6 +102,11 @@ export const client = new SapphireClient({
 			}
 		})
 	},
+	ws: {
+		properties: {
+			$browser: "Discord Embedded"
+		}
+	} as any,
 	presence: {
 		status: "dnd",
 		activities: [

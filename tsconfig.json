@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"target": "es2015",
 		"module": "commonjs",
-		"rootDir": "src/",
+		"rootDirs": ["src/", "bin/"],
 		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": true,

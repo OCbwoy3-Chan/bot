@@ -1,7 +1,7 @@
 import { Command, PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
-import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
+import { IsAIWhitelisted } from "../../../Database/helpers/AIWhitelist";
+import { areGenAIFeaturesEnabled } from "../../../GenAI/gemini";
 
 import {
 	ApplicationIntegrationType,

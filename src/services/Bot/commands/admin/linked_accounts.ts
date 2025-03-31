@@ -8,7 +8,7 @@ import {
 	RawFile,
 	UserContextMenuCommandInteraction
 } from "discord.js";
-import { prisma } from "../../Database/db";
+import { prisma } from "../../../Database/db";
 import { r } from "112-l10n";
 
 class SlashCommand extends Command {

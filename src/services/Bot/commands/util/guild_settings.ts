@@ -3,7 +3,7 @@ import { Subcommand } from "@sapphire/plugin-subcommands";
 import { PermissionFlagsBits } from "discord.js";
 import { prisma } from "@db/db";
 import { r } from "112-l10n";
-import { _clearCachedGuildLang } from "../bot";
+import { _clearCachedGuildLang } from "../../bot";
 
 class SlashCommand extends Subcommand {
 	public constructor(

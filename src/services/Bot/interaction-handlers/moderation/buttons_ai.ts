@@ -9,7 +9,7 @@ import {
 	ButtonBuilder,
 	ButtonStyle
 } from "discord.js";
-import { general } from "../../../locale/commands";
+import { general } from "../../../../locale/commands";
 import { r } from "112-l10n";
 
 export class MessageComponentHandler extends InteractionHandler {

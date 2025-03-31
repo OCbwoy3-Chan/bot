@@ -1,11 +1,11 @@
 import { Command, PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
-import { GetUserDetails, GetUserIdFromName } from "../../../lib/roblox";
+import { GetUserDetails, GetUserIdFromName } from "../../../../lib/roblox";
 import {
 	addRobloxWhitelist,
 	removeRobloxWhitelist
-} from "../../Database/helpers/RobloxWhitelist";
+} from "../../../Database/helpers/RobloxWhitelist";
 import { r } from "112-l10n";
 
 class SlashCommand extends Subcommand {
@@ -15,6 +15,7 @@ class SlashCommand extends Subcommand {
 	) {
 		super(context, {
 			...options,
+			name: "wl",
 			description: "Commands to manage 112's Roblox whitelists.",
 			preconditions: (<unknown>[
 				"OwnerOnly"

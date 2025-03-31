@@ -3,13 +3,13 @@ import {
 	InteractionHandlerTypes
 } from "@sapphire/framework";
 import type { StringSelectMenuInteraction } from "discord.js";
-import { general } from "../../../locale/commands";
-import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
-import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
+import { general } from "../../../../locale/commands";
+import { IsAIWhitelisted } from "../../../Database/helpers/AIWhitelist";
+import { areGenAIFeaturesEnabled } from "../../../GenAI/gemini";
 import {
 	CharacterInfo,
 	getCachedPromptsJ
-} from "../../GenAI/prompt/GeneratePrompt";
+} from "../../../GenAI/prompt/GeneratePrompt";
 import { SetChannelPrompt } from "@db/helpers/AISettings";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
 import { r } from "112-l10n";

@@ -9,7 +9,7 @@ import {
 	InteractionContextType,
 	UserContextMenuCommandInteraction
 } from "discord.js";
-import { IsWhitelisted } from "../../Database/helpers/DiscordWhitelist";
+import { IsWhitelisted } from "../../../Database/helpers/DiscordWhitelist";
 import { IsAIWhitelisted } from "@db/helpers/AIWhitelist";
 import { r } from "112-l10n";
 

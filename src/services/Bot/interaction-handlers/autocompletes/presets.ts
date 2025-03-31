@@ -3,7 +3,7 @@ import {
 	InteractionHandlerTypes
 } from "@sapphire/framework";
 import type { AutocompleteInteraction } from "discord.js";
-import { AllBanlandScopes } from "../../../lib/Constants";
+import { AllBanDurations } from "../../../../lib/Constants";
 
 export class AutocompleteHandler extends InteractionHandler {
 	public constructor(
@@ -29,35 +29,29 @@ export class AutocompleteHandler extends InteractionHandler {
 		const focusedOption = interaction.options.getFocused(true);
 
 		switch (focusedOption.name) {
-			case "scope": {
-				const searchResult = AllBanlandScopes;
-
-				const sr: string[] = [];
-				searchResult.forEach((element) => {
+			case "duration": {
+				const sr: [string, number][] = [];
+				AllBanDurations.forEach((v: [string, number]) => {
 					if (
-						element
+						v[0]
 							.toUpperCase()
 							.trim()
-							.replace("_", " ")
-							.includes(
-								focusedOption.value
-									.toUpperCase()
-									.trim()
-									.replace("_", " ")
-							)
+							.includes(focusedOption.value.toUpperCase().trim())
 					) {
-						sr.push(element);
+						sr.push(v);
 					}
 				});
 
 				sr.splice(20, 420); // 20 maximum enforced by discord
 
-				const srm = sr.map((match) => ({ name: match, value: match }));
+				const srm = sr.map((match) => ({
+					name: match[0],
+					value: match[1]
+				}));
 				return this.some(srm);
 			}
-			default: {
+			default:
 				return this.none();
-			}
 		}
 	}
 }

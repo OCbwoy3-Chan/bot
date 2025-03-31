@@ -1,12 +1,12 @@
 import { Command, PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { IsAIWhitelisted } from "../../Database/helpers/AIWhitelist";
-import { areGenAIFeaturesEnabled } from "../../GenAI/gemini";
+import { IsAIWhitelisted } from "../../../Database/helpers/AIWhitelist";
+import { areGenAIFeaturesEnabled } from "../../../GenAI/gemini";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
 import {
 	GetChannelPrompt,
 	GetGuildPrompt
-} from "../../Database/helpers/AISettings";
+} from "../../../Database/helpers/AISettings";
 import { AIContext } from "@ocbwoy3chanai/chat/index";
 
 import {
@@ -20,8 +20,8 @@ import {
 } from "discord.js";
 import { Part } from "@google/generative-ai";
 import { getDistroNameSync } from "@112/Utility";
-import { GetAIModel } from "../listeners/OCbwoy3ChanAI";
-import { client } from "../bot";
+import { GetAIModel } from "../../listeners/OCbwoy3ChanAI";
+import { client } from "../../bot";
 import { r } from "112-l10n";
 
 class AskCommand extends Command {

@@ -3,9 +3,9 @@ import {
 	InteractionHandlerTypes
 } from "@sapphire/framework";
 import type { StringSelectMenuInteraction } from "discord.js";
-import { general } from "../../../locale/commands";
-import { AllModels, areGenAIFeaturesEnabled } from "../../GenAI/gemini";
-import { SetAIModel } from "../listeners/OCbwoy3ChanAI";
+import { general } from "../../../../locale/commands";
+import { AllModels, areGenAIFeaturesEnabled } from "../../../GenAI/gemini";
+import { SetAIModel } from "../../listeners/OCbwoy3ChanAI";
 import { r } from "112-l10n";
 
 export class MenuHandler extends InteractionHandler {

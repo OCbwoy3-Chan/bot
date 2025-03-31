@@ -3,7 +3,7 @@ import {
 	InteractionHandlerTypes
 } from "@sapphire/framework";
 import type { AutocompleteInteraction } from "discord.js";
-import { getCachedPromptsJ } from "../../GenAI/prompt/GeneratePrompt";
+import { getCachedPromptsJ } from "../../../GenAI/prompt/GeneratePrompt";
 
 export class AutocompleteHandler extends InteractionHandler {
 	public constructor(

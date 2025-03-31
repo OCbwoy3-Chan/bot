@@ -7,14 +7,14 @@ import {
 	ButtonStyle,
 	InteractionContextType
 } from "discord.js";
-import { BanlandScope } from "../../../lib/Constants";
-import { GetUserDetails, GetUserIdFromName } from "../../../lib/roblox";
-import { banningCommands } from "../../../locale/commands";
+import { BanlandScope } from "../../../../lib/Constants";
+import { GetUserDetails, GetUserIdFromName } from "../../../../lib/roblox";
+import { banningCommands } from "../../../../locale/commands";
 import {
 	BanUser,
 	GetBanData,
 	UpdateUserBan
-} from "../../Database/helpers/RobloxBan";
+} from "../../../Database/helpers/RobloxBan";
 import { r } from "112-l10n";
 import { IsWhitelisted } from "@db/helpers/DiscordWhitelist";
 
@@ -25,6 +25,7 @@ class SlashCommand extends Subcommand {
 	) {
 		super(context, {
 			...options,
+			name: "mod",
 			description: "Commands to manage global bans.",
 			preconditions: (<unknown>[]) as PreconditionEntryResolvable[],
 			subcommands: [
