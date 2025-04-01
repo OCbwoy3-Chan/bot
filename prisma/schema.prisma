@@ -79,6 +79,10 @@ model Whitelist_OCbwoy3ChanAI {
     hidden Boolean @default(false)
 }
 
+model Whitelist_OCbwoy3ChanAI_ChannelSpecific {
+    id     String  @id @unique
+}
+
 // AI Configs
 
 model OCbwoy3ChanAI_ChannelSettings {

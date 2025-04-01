@@ -128,7 +128,7 @@ export const client = new SapphireClient({
 		defaultName: "en",
 		i18next: {
 			fallbackLang: "en",
-			debug: hostname() === "ocbwoy3-pc" ? true : false,
+			debug: false, // hostname() === "ocbwoy3-pc" ? true : false,
 			returnObjects: true,
 			resources: loadTranslations(),
 			preload: ALL_LANGUAGES.map((a) => a.id)

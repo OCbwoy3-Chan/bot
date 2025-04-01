@@ -8,7 +8,7 @@ import {
 	RawFile
 } from "discord.js";
 import { getDistroNameSync } from "@112/Utility";
-import { IsAIWhitelisted } from "@db/helpers/AIWhitelist";
+import { IsAIWhitelisted, IsChannelAIWhitelisted } from "@db/helpers/AIWhitelist";
 import { AIContext, Chat } from "@ocbwoy3chanai/chat/index";
 import { areGenAIFeaturesEnabled } from "@ocbwoy3chanai/gemini";
 import { getPrompt } from "@ocbwoy3chanai/prompt/GeneratePrompt";
@@ -25,7 +25,8 @@ import { r } from "112-l10n";
 let savedChatSession: Chat | null = null;
 
 let ChatPrompt = "default";
-let AIModel = "gemini-2.0-flash-lite";
+let AIModel = "gemini-1.5-flash-8b";
+
 const BlacklistedMentions = /@(?:here|everyone)/;
 
 export function SetChatPrompt(p: string) {
@@ -80,7 +81,15 @@ export class OCbwoy3ChanAI extends Listener {
 			if (!m2.channel.isDMBased()) {
 				// if (!m2.channel.permissionsFor(client.user!.id)?.has("SendMessages")) return;
 			}
-			if ((await IsAIWhitelisted(m2.author.id)) !== true) return;
+			/*
+			console.log(
+				await IsChannelAIWhitelisted(m2.channel.id),
+				await IsAIWhitelisted(m2.author.id)
+			)
+			*/
+			if ((await IsChannelAIWhitelisted(m2.channel.id)) !== true) {
+				if ((await IsAIWhitelisted(m2.author.id)) !== true) return;
+			}
 
 			if (m2.author.id === process.env.OWNER_ID!) {
 				if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Update")) {

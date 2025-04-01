@@ -6,6 +6,7 @@ dist/
 temp.md
 
 $private_*
+$private/
 
 prisma-engines/
 prisma/*.db

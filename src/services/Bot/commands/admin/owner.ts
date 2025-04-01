@@ -14,6 +14,7 @@ import { resetOCbwoy3ChansAPIKey } from "services/Server/router/chat";
 import { captureSentryException } from "@112/SentryUtil";
 import { fetchT } from "@sapphire/plugin-i18next";
 import { generateDependencyReport } from "@discordjs/voice";
+import { AddChannelAIWhitelist, RemoveChannelAIWhitelist } from "@db/helpers/AIWhitelist";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -58,6 +59,10 @@ class SlashCommand extends Subcommand {
 				{
 					name: "debug",
 					chatInputRun: "chatInputDebug"
+				},
+				{
+					name: "s_wl",
+					chatInputRun: "chatInputSetChannelWhitelist"
 				}
 			]
 		});
@@ -132,6 +137,27 @@ class SlashCommand extends Subcommand {
 										{
 											name: "@discordjs/voice",
 											value: "discordjs_voice"
+										}
+									])
+							)
+					)
+					.addSubcommand((command) =>
+						command
+							.setName("s_wl")
+							.setDescription("Sets the channel whitelist state")
+							.addStringOption((a) =>
+								a
+									.setName("action")
+									.setRequired(true)
+									.setDescription("What to do")
+									.addChoices([
+										{
+											name: "add",
+											value: "add"
+										},
+										{
+											name: "remove",
+											value: "remove"
 										}
 									])
 							)
@@ -268,6 +294,39 @@ class SlashCommand extends Subcommand {
 		}
 	}
 
+	public async chatInputSetChannelWhitelist(
+		interaction: Command.ChatInputCommandInteraction
+	) {
+		const action = interaction.options.getString("action", true);
+
+		try {
+			if (!interaction.channel) throw "Not a channel!";
+			const channel = interaction.channel!;
+			if (action === "add") {
+				await AddChannelAIWhitelist(channel.id);
+				return interaction.reply({
+					content: `Successfully whitelisted <#${channel.id}>.`,
+					ephemeral: true
+				});
+			} else if (action === "remove") {
+				await RemoveChannelAIWhitelist(channel.id);
+				return interaction.reply({
+					content: `Successfully unwhitelisted <#${channel.id}>.`,
+					ephemeral: true
+				});
+			} else {
+				return interaction.reply({
+					content: "error.",
+					ephemeral: true
+				});
+			}
+		} catch (error) {
+			return interaction.reply({
+				content: `Error: ${error}`,
+				ephemeral: true
+			});
+		}
+	}
 
 }
 
