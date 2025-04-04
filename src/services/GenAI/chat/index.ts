@@ -59,7 +59,7 @@ export class Chat {
 	isProcessingQueue: boolean = false;
 
 	constructor(
-		public chatModel: string = "gemini-2.0-flash-lite-preview-02-05",
+		public chatModel: string = "gemini-1.5-flash-8b",
 		public prompt: string = "ocbwoy3-chan",
 		public cfg: GenerationConfig = { temperature: 1, topP: 0.95, topK: 40 }
 	) {
@@ -159,6 +159,7 @@ export class Chat {
 			},
 			...question
 		]);
+		let didTheThing = true;
 		while (loopCount < 4) {
 			try {
 				logger.info(`AI (${loopCount} iter):`, result.response.text());
@@ -169,13 +170,20 @@ export class Chat {
 			}
 			loopCount++;
 
-			if (!result.response.functionCalls()) break;
-			if (result.response.functionCalls()?.length === 0) break;
+			// annoying shit because google can't add proper tool support
+			if (!result.response.functionCalls()) {
+				if (didTheThing === true) break;
+				didTheThing = true;
+			} else if (result.response.functionCalls()?.length === 0) {
+				if (didTheThing === true) break;
+				didTheThing = true;
+			};
 
 			const functionCalls =
 				result.response.functionCalls() as FunctionCall[];
+			if ((functionCalls || [].length !== 0)) didTheThing = true;
 			const functionResults = await Promise.all(
-				functionCalls.map(async (funcCall) => {
+				(functionCalls || []).map(async (funcCall) => {
 					if (!toolsUsed.includes(funcCall.name)) {
 						toolsUsed.push(funcCall.name);
 					}

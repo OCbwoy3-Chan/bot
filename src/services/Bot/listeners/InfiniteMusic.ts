@@ -1,6 +1,7 @@
 import {
 	joinVoiceChannel,
-	createAudioPlayer, AudioPlayerStatus,
+	createAudioPlayer,
+	AudioPlayerStatus,
 	VoiceConnection,
 	createAudioResource
 } from "@discordjs/voice";
@@ -11,7 +12,16 @@ import { join } from "path";
 export class InfiniteMusic extends Listener {
 	private player = createAudioPlayer();
 	private connection: VoiceConnection | null = null;
-	private readonly audioFilePath = join(__dirname, "..", "..", "..", "..", "media", "$private", "teto.mp4")
+	private readonly audioFilePath = join(
+		__dirname,
+		"..",
+		"..",
+		"..",
+		"..",
+		"media",
+		"$private",
+		"teto.mp4"
+	);
 	private readonly targetChannelId = "1354740148620754984";
 
 	public constructor(
@@ -56,7 +66,9 @@ export class InfiniteMusic extends Listener {
 		this.connection = joinVoiceChannel({
 			channelId: channel.id,
 			guildId: channel.guild.id,
-			adapterCreator: channel.guild.voiceAdapterCreator
+			adapterCreator: channel.guild.voiceAdapterCreator,
+			selfMute: false,
+			selfDeaf: false
 		});
 
 		this.connection.setMaxListeners(999);
@@ -70,13 +82,39 @@ export class InfiniteMusic extends Listener {
 			return;
 		}
 
-		const resource = createAudioResource(this.audioFilePath);
+		(async () => {
+			try {
+				const x = await fetch(
+					`https://discord.com/api/v9/channels/${this.targetChannelId}/voice-status`,
+					{
+						headers: {
+							Authorization: `Bot ${container.client.token}`,
+							"Content-Type": "application/json"
+						},
+						method: "PUT",
+						body: JSON.stringify({
+							status: "Triple Baka - 24/7"
+						})
+					}
+				);
+				// console.log(await x.text())
+			} catch (a) {
+				// console.log(a);
+			}
+		})();
+
+		let resource = createAudioResource(this.audioFilePath, {
+			metadata: {}
+		});
 
 		this.player.play(resource);
 		this.connection.subscribe(this.player);
 
 		this.player.on(AudioPlayerStatus.Idle, () => {
-			this.playAudioLoop();
+			let rx = createAudioResource(this.audioFilePath, {
+				metadata: {}
+			});
+			this.player.play(rx);
 		});
 
 		this.player.on("error", (error) => {

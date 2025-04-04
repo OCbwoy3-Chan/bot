@@ -199,7 +199,7 @@ class AskCommand extends Command {
 				});
 			}
 
-			if (toolsUsed.includes("get_website_content")) {
+			if (toolsUsed.includes("playwright")) {
 				t.push({
 					emoji: "🎭",
 					label: await r(interaction, "ai:tools.playwright"),

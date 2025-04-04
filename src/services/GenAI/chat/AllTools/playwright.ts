@@ -5,7 +5,7 @@ import { chromium } from "playwright-core";
 import { logger } from "@112/Utility";
 
 const meta: FunctionDeclaration = {
-	name: "get_website_content",
+	name: "playwright",
 	description: "Retrieves text from a website using Playwright.",
 	parameters: {
 		required: [],
@@ -21,8 +21,7 @@ const meta: FunctionDeclaration = {
 };
 
 addTest(meta.name, {
-	url: "https://streeteasy.com" // streeteasy has anti-bot so you can check if playwright actually works
-	// doesn't work on vps's
+	url: "https://ocbwoy3.dev" // example
 });
 
 const userAgents = [

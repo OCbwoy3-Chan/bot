@@ -24,5 +24,9 @@
 	"current_prompt_server": "Current server default character: {{prompt}}",
 	"current_prompt_channel": "Current channel character: {{prompt}}",
 	"no_prompt_set": "No character set!",
-	"update_channel_prompt": "{{user}} updated the channel's character to **{{char}}**."
+	"update_channel_prompt": "{{user}} updated the channel's character to **{{char}}**.",
+	"errors": {
+		"blocked_by_google": "My response was blocked by Google, here's why: {{reason}}",
+		"unknown": "I couldn't generate a response, here's why: {{reason}}"
+	}
 }

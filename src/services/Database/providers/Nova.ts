@@ -12,6 +12,8 @@ interface NovaBan {
 	reason: string;
 	verified: boolean;
 	bannedBy: string; // discord userid
+	accounts?: string[];
+	expiresIn?: string;
 }
 
 const cachedModeratorDisplayNames: {
@@ -53,7 +55,11 @@ class Nova extends GbanProvider {
 			transformedBans[v.toString()] = {
 				reason: d.reason,
 				moderator: await fetchModNickname(d.bannedBy),
-				verified: d.verified
+				verified: d.verified,
+				otherMetadata: {
+					associatedAccounts: d.accounts || null,
+					unbannedAt: d.expiresIn || "Never"
+				}
 			};
 		});
 		return transformedBans;

@@ -9,8 +9,9 @@ export type TransformedGban = {
 		[a: string]:
 			| string
 			| string[]
+			| null
 			| {
-					[a: string]: string | string[];
+					[a: string]: string | string[] | null;
 			  };
 	};
 };

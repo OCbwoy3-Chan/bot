@@ -110,16 +110,14 @@ export const client = new SapphireClient({
 	presence: {
 		status: "dnd",
 		activities: [
-			/*
 			{
 				name: "skids vanish into thin air",
 				state: "another one bites the dust",
 				type: ActivityType.Watching,
-			}
-			*/
+			},
 			{
 				name: ".gg/yokstar",
-				state: "w server",
+				state: "join now",
 				type: ActivityType.Listening
 			}
 		]
