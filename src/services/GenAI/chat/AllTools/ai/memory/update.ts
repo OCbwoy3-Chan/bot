@@ -1,19 +1,23 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { addTest, registerTool } from "../tools";
-import { prisma } from "../../../Database/db";
+import { addTest, registerTool } from "../../../tools";
+import { prisma } from "../../../../../Database/db";
 
 const meta: FunctionDeclaration = {
-	name: "memory.add",
+	name: "memory.update",
 	description:
-		"Adds a memory about the currently asking user from CurrentContext.",
+		"Updated a specific memory about the currently asking user from CurrentContext via a entry ID.",
 	parameters: {
-		required: ["memory"],
+		required: ["id", "memory"],
 		type: SchemaType.OBJECT,
-		description: "memory.add parameters",
+		description: "memory.update parameters",
 		properties: {
+			id: {
+				description: "The ID of the memory to update.",
+				type: SchemaType.STRING
+			},
 			memory: {
 				description:
-					"The memory to save (e.g. Likes Concise Responses, etc.).",
+					"The updated memory to save (e.g. Likes Concise Responses, etc.).",
 				type: SchemaType.STRING
 			}
 		}
@@ -40,23 +44,22 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 			user: userId
 		}
 	});
-	if (memories.length >= 40) {
-		return {
-			error: "You can have a maximum of 40 memories per user."
-		};
-	}
-
-	const newMemory = await prisma.oCbwoy3ChanAI_UserMemory.create({
+	const newMemory = await prisma.oCbwoy3ChanAI_UserMemory.update({
+		where: {
+			id: args.id,
+			AND: {
+				user: ctx.askingUserId
+			}
+		},
 		data: {
-			user: userId,
 			memory: args.memory
 		}
 	});
 
 	return {
 		user: userId,
-		memory_added: {
-			new_entry_id: newMemory.id
+		memory_updated: {
+			entry_id: newMemory.id
 		}
 	};
 }

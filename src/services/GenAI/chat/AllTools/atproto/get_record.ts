@@ -1,7 +1,6 @@
-import { AtUri, BskyAgent } from "@atproto/api";
-import { HandleResolver } from "@atproto/identity";
+import { AtUri } from "@atproto/api";
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { addTest, registerTool } from "../tools";
+import { addTest, registerTool } from "../../tools";
 
 async function fetchWithTimeout(url: string, opts?: any) {
 	const timeout = 2500;

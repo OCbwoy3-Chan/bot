@@ -2,14 +2,14 @@ import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { $ } from "bun";
 import { Channel } from "discord.js";
 import { hostname } from "os";
-import { AIContext } from "..";
-import { client } from "../../../Bot/bot";
-import { addTest, registerTool } from "../tools";
+import { AIContext } from "../..";
+import { client } from "../../../../Bot/bot";
+import { addTest, registerTool } from "../../tools";
 
 const meta: FunctionDeclaration = {
 	name: "discord.get_status",
 	description:
-		"Retrieves the Discord user's status, including activities, music, games, online status, and platform info (e.g., Xbox, PS4, PS5).",
+		"Retrieves the Discord user's status, including activities, music, games, online status, and platform info (e.g., Xbox, PS4, PS5). Additonally gets what the user is listening to, if are.",
 	parameters: {
 		required: ["id"],
 		type: SchemaType.OBJECT,
@@ -62,7 +62,7 @@ async function func(args: any, ctx: AIContext): Promise<any> {
 	const u = await client.users.fetch(id);
 	// console.log(u);
 
-	let status: object | null = "failed to fetch";
+	let status: object | string | null = "failed to fetch";
 
 	try {
 		const ch: Channel | null = await client.channels.fetch(

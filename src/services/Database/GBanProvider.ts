@@ -32,6 +32,12 @@ export async function fetchWithTimeout(url: string, opts?: RequestInit) {
 		throw new Error(`Took too long to fetch ${url} (>${timeout}ms)`);
 	}
 
+	// oh man how much i love cloudflare argo tunnels!!!
+	if ([403,530,502].includes(response.status) && response.headers.get('server')?.includes('cloudflare')) {
+		if ([530,502].includes(response.status)) throw `Cloudflare Argo Tunnel not running.`;
+		throw `Request blocked by Cloudflare for ${url}`;
+	}
+
 	return response;
 }
 

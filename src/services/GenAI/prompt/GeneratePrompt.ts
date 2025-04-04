@@ -4,6 +4,7 @@ April 4 2025 - Existing code "fixed" by gemini-2.5-pro-exp-03-25 with the Dr. Py
 
 */
 
+import { logger } from "@112/Utility";
 import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
 
@@ -135,7 +136,7 @@ export function loadPromptsFromDirectory(directory: string): void {
 					characterInfo.personalityTraits &&
 					!Array.isArray(characterInfo.personalityTraits)
 				) {
-					console.warn(
+					logger.warn(
 						`Personality traits for ${characterInfo.filename} is not an array, attempting to fix.`
 					);
 					// Attempt basic split or wrap in array, adjust as needed based on your JSON format
@@ -158,14 +159,14 @@ export function loadPromptsFromDirectory(directory: string): void {
 				promptChList.push(characterInfo);
 				// console.error(`Loaded prompt for: ${characterInfo.filename}`);
 			} catch (error) {
-				console.error(
+				logger.error(
 					`Failed to load or parse prompt file: ${filePath}`,
 					error
 				);
 			}
 		}
 	});
-	console.log(`Loaded ${promptChList.length} character prompts.`);
+	logger.info(`Loaded ${promptChList.length} character prompts.`);
 }
 
 export function getPrompt(name: string): string | undefined {

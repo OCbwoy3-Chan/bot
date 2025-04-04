@@ -1,5 +1,5 @@
 import { FunctionDeclaration } from "@google/generative-ai";
-import { addTest } from "../tools";
+import { addTest, registerTool } from "../../tools";
 import { getAllGbanProviders } from "@db/GBanProvider";
 import { execSync } from "child_process";
 import { getRegisteredFederatedInstances } from "@db/federation";
@@ -9,7 +9,7 @@ import { cwd } from "process";
 const meta: FunctionDeclaration = {
 	name: "sys.version",
 	description:
-		"Gets the metadata about the current version 112, including the version, commit, node_env, gban providers, hostname, current working dir and federating instances"
+		"Gets the metadata about the current 112 or the bot's version, including the version, commit, node_env, gban providers, hostname, current working dir and federating instances"
 };
 
 addTest(meta.name, {
@@ -38,3 +38,5 @@ async function func(args: any): Promise<any> {
 		)
 	};
 }
+
+registerTool(func, meta);

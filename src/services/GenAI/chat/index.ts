@@ -13,13 +13,15 @@ import { getGeminiInstance } from "../gemini";
 import { getPrompt } from "../prompt/GeneratePrompt";
 import { getToolMetas, getTools } from "./tools";
 
-const files = readdirSync(`${__dirname}/AllTools`);
+const files = readdirSync(`${__dirname}/AllTools`,{recursive:true});
 
 files.forEach((a) => {
-	try {
-		import(`${__dirname}/AllTools/${a}`);
-	} catch (e_) {
-		logger.child({ error: e_ }).error(a);
+	if (typeof a === "string" && a.endsWith(".ts")) {
+		try {
+			import(`${__dirname}/AllTools/${a}`);
+		} catch (e_) {
+			logger.child({ error: e_ }).error(a);
+		}
 	}
 });
 

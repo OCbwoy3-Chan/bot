@@ -1,6 +1,6 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { addTest, registerTool } from "../tools";
-import { prisma } from "../../../Database/db";
+import { addTest, registerTool } from "../../../tools";
+import { prisma } from "../../../../../Database/db";
 
 const meta: FunctionDeclaration = {
 	name: "memory.delete",

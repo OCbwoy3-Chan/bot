@@ -1,6 +1,6 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { translate } from "@navetacandra/ddg";
-import { addTest, registerTool } from "../tools";
+import { addTest, registerTool } from "../../tools";
 
 const meta: FunctionDeclaration = {
 	name: "ddg.translate",

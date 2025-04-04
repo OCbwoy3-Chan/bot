@@ -1,6 +1,6 @@
 import { FunctionDeclaration } from "@google/generative-ai";
-import { prisma } from "../../../Database/db";
-import { addTest, registerTool } from "../tools";
+import { prisma } from "../../../../Database/db";
+import { addTest, registerTool } from "../../tools";
 
 const meta: FunctionDeclaration = {
 	name: "wl.get_all",

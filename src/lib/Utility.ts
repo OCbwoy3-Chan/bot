@@ -69,6 +69,11 @@ export async function _determineEuropeanness(): Promise<void> {
 		"SE"
 		// "UK" // brexit
 	];
+	if (process.env.BYPASS_EUROPEAN_CHECK === "1") {
+		_setIsEuropean(false);
+		logger.warn("Bypassing EU Check");
+		return;
+	}
 	try {
 		const response = await fetch("https://ipapi.co/json/");
 		const data = await response.json();

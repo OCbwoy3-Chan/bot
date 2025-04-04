@@ -1,6 +1,6 @@
 import { HandleResolver } from "@atproto/identity";
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { addTest, registerTool } from "../tools";
+import { addTest, registerTool } from "../../tools";
 
 async function fetchWithTimeout(url: string, opts?: any) {
 	const timeout = 2500;

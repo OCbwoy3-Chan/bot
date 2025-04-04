@@ -1,5 +1,5 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { addTest, registerTool } from "../tools";
+import { addTest, registerTool } from "../../tools";
 import { getAllBans, getAllGbanProviders } from "@db/GBanProvider";
 import { GetUserDetails } from "@112/roblox";
 

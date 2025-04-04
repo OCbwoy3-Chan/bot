@@ -1,7 +1,7 @@
-import AtpAgent, { BskyAgent } from "@atproto/api";
+import { BskyAgent } from "@atproto/api";
 import { HandleResolver } from "@atproto/identity";
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { addTest, registerTool } from "../tools";
+import { addTest, registerTool } from "../../tools";
 import { LabelerViewDetailed } from "@atproto/api/dist/client/types/app/bsky/labeler/defs";
 
 async function fetchWithTimeout(url: string, opts?: any) {

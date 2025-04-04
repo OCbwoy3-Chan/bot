@@ -1,7 +1,7 @@
 import { FunctionDeclaration } from "@google/generative-ai";
 import { Client } from "exaroton";
-import { client as DJSClient } from "../../../Bot/bot";
-import { addTest, registerTool } from "../tools";
+import { client as DJSClient } from "../../../../Bot/bot";
+import { addTest, registerTool } from "../../tools";
 
 let cached = {};
 let cacheReset = Date.now() - 1000;

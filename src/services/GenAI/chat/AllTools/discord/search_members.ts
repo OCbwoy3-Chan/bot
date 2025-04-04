@@ -1,7 +1,7 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { client } from "../../../Bot/bot";
-import { addTest, registerTool } from "../tools";
-import { AIContext } from "..";
+import { client } from "../../../../Bot/bot";
+import { addTest, registerTool } from "../../tools";
+import { AIContext } from "../..";
 import { Channel } from "discord.js";
 
 const meta: FunctionDeclaration = {

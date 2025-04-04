@@ -1,5 +1,5 @@
 import { FunctionDeclaration } from "@google/generative-ai";
-import { addTest, registerTool } from "../tools";
+import { addTest, registerTool } from "../../../tools";
 
 const meta: FunctionDeclaration = {
 	name: "time_now",

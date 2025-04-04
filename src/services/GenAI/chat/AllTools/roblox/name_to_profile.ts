@@ -1,6 +1,6 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { GetUserDetails, GetUserIdFromName } from "../../../../lib/roblox";
-import { addTest, registerTool } from "../tools";
+import { GetUserDetails, GetUserIdFromName } from "../../../../../lib/roblox";
+import { addTest, registerTool } from "../../tools";
 
 const meta: FunctionDeclaration = {
 	name: "roblox.name2info",

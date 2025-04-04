@@ -1,5 +1,5 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { addTest, registerTool } from "../tools";
+import { addTest, registerTool } from "../../tools";
 
 import { chromium } from "playwright-core";
 import { logger } from "@112/Utility";
