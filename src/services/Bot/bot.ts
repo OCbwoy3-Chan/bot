@@ -133,8 +133,6 @@ export const client = new SapphireClient({
 		},
 		fetchLanguage: async (context: InternationalizationContext) => {
 			if (!context.guild) {
-				if (context.user && context.user.id === "486147449703104523")
-					return "lv";
 				return "en";
 			}
 
