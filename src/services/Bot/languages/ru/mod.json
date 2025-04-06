@@ -1,0 +1,15 @@
+{
+	"unban_success": "{{пользователь}} был разбанен.",
+	"unban_whitelist_error": "Этот пользователь в белом списке.",
+	"not_banned": "Этот пользователь не в бане.",
+	"account_status": {
+		"default": "Roblox аккаунт",
+		"account_deleted": "Аккаунт удалён"
+	},
+	"unbanned_never": "Никогда",
+	"lookup_ban_result": [
+		"**Модератор:** {{moderator}}",
+		"**Причина:** {{reason}}",
+		"**Разбанен:** {{unban_date}}"
+	]
+}
