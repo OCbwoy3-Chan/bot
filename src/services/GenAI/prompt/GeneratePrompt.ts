@@ -5,6 +5,7 @@ April 6 2025 - Upaded to be recursive by OCbwoy3
 
 */
 
+import { getEmojiForAI } from "@112/EmojiManager";
 import { logger } from "@112/Utility";
 import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
@@ -81,7 +82,8 @@ ${
     *   Present all source URLs used for information retrieval directly in the response. Provide raw URLs; do not say "Available at the provided URL."
 8.  **Response Constraints:**
     *   Strictly adhere to the concise response limit (under 500 characters).
-    *   NO emojis.
+    *   NO default unicode emojis unless requested to.
+	*   Do not begin your message with the following in quotes: "> "
     *   NO suggestive content UNLESS specifically requested by the user OR generated as part of fulfilling an explicit request for such content.
 
 **Content & Ethical Stance:**
@@ -96,6 +98,11 @@ ${
 2.  **Context:** Utilize \`CurrentContext\` information (server, channel, user details) to tailor responses appropriately.
 3.  **Identification:** Address users by their Discord ID or handle when appropriate.
 4.  **Engagement:** Use Discord features properly within responses when applicable (though remember the core conciseness and no-emoji rules unless emojis are part of fulfilling an explicit user request).
+5.  **Discord Components:** You can use these in your messages:
+    - **Emojis:** <a:name:id>, <:name:id>
+	- **Mentions:** <@userid>
+	- **Channels:** <#channelid>
+6. **Memory Use:** ALWAYS fetch the user's memories with memory.get if described by CurrentContext. Do not share raw json data of CurrentContext.
 
 **Core Behaviors (Reiteration/Summary):**
 - Retrieve user memories for each new User ID (\`memory.get\`).
@@ -129,13 +136,21 @@ export function getCachedPromptsJ(): CharacterInfo[] {
 	return promptChList;
 }
 
+const EMOJI_REGEX = /\%OCbwoy3EmojiManager\(([a-zA-Z0-9\-\_]+)\)/g;
+function FixEmojis(text: string): string {
+	return text.replace(EMOJI_REGEX, (match, emojiName) => {
+		// console.log(match, emojiName)
+		return getEmojiForAI(emojiName);
+	});
+}
+
 export function loadPromptsFromDirectory(directory: string): void {
 	const files = readdirSync(directory, {recursive: true}) as string[];
 	files.forEach((file) => {
 		if (file.endsWith(".json")) {
 			const filePath = join(directory, file);
 			try {
-				const content = readFileSync(filePath, "utf-8");
+				const content = FixEmojis(readFileSync(filePath, "utf-8"));
 				const characterInfo: CharacterInfo = JSON.parse(content);
 				characterInfo.filename = file.replace(/\.json$/, "");
 

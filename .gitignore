@@ -17,3 +17,5 @@ direnv/bin/nix-direnv-reload
 /core
 112.sh
 upd.sh
+
+/emojis.json

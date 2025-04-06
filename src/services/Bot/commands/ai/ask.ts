@@ -21,8 +21,8 @@ import {
 import { Part } from "@google/generative-ai";
 import { getDistroNameSync } from "@112/Utility";
 import { GetAIModel } from "../../listeners/OCbwoy3ChanAI";
-import { client } from "../../bot";
 import { r } from "112-l10n";
+import { getEmoji } from "@112/EmojiManager";
 
 class AskCommand extends Command {
 	public constructor(
@@ -143,7 +143,7 @@ class AskCommand extends Command {
 				? {
 						name: interaction.guild.name,
 						id: interaction.guild.id
-					}
+				  }
 				: null,
 			currentChannelM: {
 				name: interaction.channel
@@ -169,7 +169,7 @@ class AskCommand extends Command {
 				toolsUsed.includes("memory.update")
 			) {
 				t.push({
-					emoji: "📓",
+					emoji: getEmoji("MemoryUpdate"),
 					label: await r(interaction, "ai:tools.memory_update"),
 					id: "ocbwoy3chan_tool_noop_mem"
 				});
@@ -182,10 +182,7 @@ class AskCommand extends Command {
 				toolsUsed.includes("atproto.get_record")
 			) {
 				t.push({
-					emoji:
-						client.user!.id === "1271869353389723738"
-							? "<:bsky:1329812129288552458>"
-							: "🦋",
+					emoji: getEmoji("AT_Protocol"),
 					label: await r(interaction, "ai:tools.atproto"),
 					id: "ocbwoy3chan_tool_noop_atproto"
 				});
@@ -193,7 +190,7 @@ class AskCommand extends Command {
 
 			if (toolsUsed.includes("ddg.search")) {
 				t.push({
-					emoji: "🪿",
+					emoji: getEmoji("DuckDuckGo"),
 					label: await r(interaction, "ai:tools.duckduckgo"),
 					id: "ocbwoy3chan_tool_noop_ddg"
 				});
@@ -201,7 +198,7 @@ class AskCommand extends Command {
 
 			if (toolsUsed.includes("playwright")) {
 				t.push({
-					emoji: "🎭",
+					emoji: getEmoji("Playwright"),
 					label: await r(interaction, "ai:tools.playwright"),
 					id: "ocbwoy3chan_tool_noop_playwright"
 				});
@@ -213,9 +210,7 @@ class AskCommand extends Command {
 			) {
 				t.push({
 					emoji:
-						client.user!.id === "1271869353389723738"
-							? "<:exaroton:1344571414958702654>"
-							: "⛏️",
+						getEmoji("Exaroton"),
 					label: await r(interaction, "ai:tools.exaroton"),
 					id: "ocbwoy3chan_tool_noop_exaroton"
 				});
@@ -223,7 +218,7 @@ class AskCommand extends Command {
 
 			if (toolsUsed.includes("fandom")) {
 				t.push({
-					emoji: "🔬",
+					emoji: getEmoji("Fandom"),
 					label: await r(interaction, "ai:tools.fandom"),
 					id: "ocbwoy3chan_tool_noop_fandom"
 				});
