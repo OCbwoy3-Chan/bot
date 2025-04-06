@@ -29,6 +29,7 @@ if (opts.update) {
 	}
 
 	(async () => {
+		console.log(chalk.cyanBright("Stashing existing changes"));
 		await $`cd ${PATH} && git stash`.nothrow().quiet();
 
 		console.log(chalk.cyanBright("Pulling latest changes"));
@@ -51,13 +52,14 @@ if (opts.update) {
 		console.log(chalk.cyanBright("Restaring 112"));
 		await $`pm2 restart 112`.nothrow();
 	})();
-} else if (opts.fasr) {
+} else if (opts.fast) {
 	if (!existsSync(PATH)) {
 		console.log(chalk.redBright("112's path doesn't exist"));
 		throw "path not exists";
 	}
 
 	(async () => {
+		console.log(chalk.cyanBright("Stashing existing changes"));
 		await $`cd ${PATH} && git stash`.nothrow().quiet();
 
 		console.log(chalk.cyanBright("Pulling latest changes"));

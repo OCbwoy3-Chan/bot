@@ -7,7 +7,6 @@ import {
 	Message,
 	RawFile
 } from "discord.js";
-import { getDistroNameSync } from "@112/Utility";
 import { IsAIWhitelisted, IsChannelAIWhitelisted } from "@db/helpers/AIWhitelist";
 import { AIContext, Chat } from "@ocbwoy3chanai/chat/index";
 import { areGenAIFeaturesEnabled } from "@ocbwoy3chanai/gemini";
@@ -43,11 +42,6 @@ export function SetAIModel(p: string) {
 export function GetAIModel() {
 	return AIModel;
 }
-
-const staticAIContext = {
-	currentDistro: getDistroNameSync(),
-	currentWorkingDir: process.cwd()
-};
 
 export class OCbwoy3ChanAI extends Listener {
 	public constructor(
@@ -320,8 +314,7 @@ export class OCbwoy3ChanAI extends Listener {
 				currentChannelM: {
 					name: m.channel.isDMBased() ? null : m.channel.name
 				},
-				embeds: m.embeds.map((a) => a.toJSON()),
-				...staticAIContext
+				embeds: m.embeds.map((a) => a.toJSON())
 			};
 
 			let response = "";
