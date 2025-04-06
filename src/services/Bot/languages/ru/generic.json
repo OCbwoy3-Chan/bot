@@ -22,5 +22,7 @@
 	"wl_success": "Успешно вайтлистнул пользователя {{user}} для {{discord}}!",
 	"unwl_success": "Успешно добавили {{user}} в вайтлист!",
 	"confirm_unban_button": "ПОДТВЕРДИТЬ СНЯТИЕ БАНА",
-	"prompt_unban_confirm": "Вы уверены, что хотите снять бан с {{user}}?"
+	"prompt_unban_confirm": "Вы уверены, что хотите снять бан с {{user}}?",
+	"unban_success": "{{user}} был разбанен.",
+	"username": "Никнейм"
 }
