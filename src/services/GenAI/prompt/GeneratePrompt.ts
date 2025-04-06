@@ -1,6 +1,7 @@
 /*
 
 April 4 2025 - Existing code "fixed" by gemini-2.5-pro-exp-03-25 with the Dr. Pyrite Jailbreak.
+April 6 2025 - Upaded to be recursive by OCbwoy3
 
 */
 
@@ -22,9 +23,16 @@ export type CharacterInfo = {
 
 // read all files from sys/ directory ending with .txt
 // Assuming these contain the political views / worldview text files
-const sysFiles = readdirSync(join(__dirname, "sys")).filter((file) =>
-	file.endsWith(".txt")
-);
+const sysFiles: string[] = (
+	readdirSync(join(__dirname, "sys"), {
+		recursive: true
+	}) as string[]
+).filter((file) => {
+	if (typeof file === "string") {
+		if (file.endsWith(".txt")) return true;
+	}
+	return false;
+});
 const contents: string[] = sysFiles.map((file) =>
 	readFileSync(join(__dirname, "sys", file), "utf-8")
 );
@@ -103,7 +111,7 @@ ${
 
 	// --- DYNAMIC WORLD VIEW / POLITICS ---
 	// This loads the political/worldview text from the sys/ directory files
-	prompt += `\n### DYNAMIC\nPolitical Views:\n`; // Added marker
+	prompt += `\n### DYNAMIC\n\n`; // Added marker
 	prompt += contents.join("\n\n"); // Content from sys/*.txt files
 	prompt += `\n###\n`; // Added marker
 	// --- END DYNAMIC WORLD VIEW ---
@@ -122,7 +130,7 @@ export function getCachedPromptsJ(): CharacterInfo[] {
 }
 
 export function loadPromptsFromDirectory(directory: string): void {
-	const files = readdirSync(directory);
+	const files = readdirSync(directory, {recursive: true}) as string[];
 	files.forEach((file) => {
 		if (file.endsWith(".json")) {
 			const filePath = join(directory, file);
@@ -170,7 +178,6 @@ export function loadPromptsFromDirectory(directory: string): void {
 }
 
 export function getPrompt(name: string): string | undefined {
-	// Add basic case-insensitivity or normalization if needed
 	const normalizedName = name.toLowerCase();
 	const foundKey = Object.keys(promptCache).find(
 		(key) => key.toLowerCase() === normalizedName
@@ -178,5 +185,13 @@ export function getPrompt(name: string): string | undefined {
 	return foundKey ? promptCache[foundKey] : undefined;
 }
 
-// Initial load on startup
-loadPromptsFromDirectory(join(__dirname, "c.ai")); // Adjust path as necessary
+/*
+
+Character folder originally named 'c.ai', as I wanted OCbwoy3-Chan to be the Character.AI of Discord,
+but without the massive limitations and the shit ton of ethical concerns and lawsuits and without
+people killing themselves just because a character said so. As a result, this is the Contoversy-Free (tm)
+"version of Character.AI" - For Discord!
+
+*/
+
+loadPromptsFromDirectory(join(__dirname, "characters"));

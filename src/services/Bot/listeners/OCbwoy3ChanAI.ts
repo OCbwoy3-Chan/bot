@@ -24,7 +24,7 @@ import { r } from "112-l10n";
 
 let savedChatSession: Chat | null = null;
 
-let ChatPrompt = "default";
+let ChatPrompt = "ocbwoy3_chan/default";
 let AIModel = "gemini-1.5-flash-8b";
 
 const BlacklistedMentions = /@(?:here|everyone)/;

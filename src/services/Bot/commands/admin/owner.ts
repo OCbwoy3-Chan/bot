@@ -3,6 +3,7 @@ import { Subcommand } from "@sapphire/plugin-subcommands";
 import {
 	ActionRowBuilder,
 	ApplicationIntegrationType,
+	AttachmentBuilder,
 	InteractionContextType,
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder
@@ -15,6 +16,8 @@ import { captureSentryException } from "@112/SentryUtil";
 import { fetchT } from "@sapphire/plugin-i18next";
 import { generateDependencyReport } from "@discordjs/voice";
 import { AddChannelAIWhitelist, RemoveChannelAIWhitelist } from "@db/helpers/AIWhitelist";
+import { getCachedPromptsJ } from "@ocbwoy3chanai/prompt/GeneratePrompt";
+import { GetChannelPrompt, GetGuildPrompt } from "@db/helpers/AISettings";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -135,8 +138,16 @@ class SlashCommand extends Subcommand {
 									.setDescription("What to debug")
 									.addChoices([
 										{
-											name: "@discordjs/voice",
+											name: "Discord.js Voice Dependencies",
 											value: "discordjs_voice"
+										},
+										{
+											name: "AI Characters",
+											value: "ai_characters"
+										},
+										{
+											name: "AI Character Selecetion",
+											value: "ai_selection"
 										}
 									])
 							)
@@ -281,6 +292,37 @@ class SlashCommand extends Subcommand {
 				await interaction.reply({
 					ephemeral: true,
 					content: generateDependencyReport()
+				})
+				break;
+			}
+			case "ai_characters": {
+				await interaction.reply({
+					ephemeral: true,
+					files: [
+						new AttachmentBuilder(Buffer.from(JSON.stringify(getCachedPromptsJ())), {
+							name: "char.json"
+						})
+					]
+				})
+				break;
+			}
+			case "ai_selection": {
+				let x = [
+					"S Default ChatPrompt -> ocbwoy3_chan/default"
+				];
+				const channelPrompt = await GetChannelPrompt(interaction.channel!.id);
+				if (channelPrompt) {
+					x.push(`S Channel -> ${channelPrompt}`)
+				} else if (interaction!.guild) {
+					const guildPrompt = await GetGuildPrompt(interaction.guild.id);
+					if (guildPrompt) {
+						x.push(`S Guild Default -> ${guildPrompt}`)
+					}
+				}
+
+				await interaction.reply({
+					ephemeral: true,
+					content: x.join("\n")
 				})
 				break;
 			}
