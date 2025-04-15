@@ -1,8 +1,7 @@
 import {
-	ChatSession,
-	Content,
-	FunctionCall,
-	GenerateContentResult,
+	Chat as ChatGemini, FunctionCall,
+	GenerateContentConfig,
+	GenerateContentResponse,
 	HarmBlockThreshold,
 	HarmCategory,
 	Part
@@ -52,7 +51,7 @@ export type GenerationConfig = {
 };
 
 export class Chat {
-	chatSession: ChatSession | null = null;
+	chatSession: ChatGemini | null = null;
 	callHistory: { [hash: string]: any } = {}; // Store previous calls
 	usersInChat: string[] = [];
 	messageQueue: Array<{
@@ -66,39 +65,11 @@ export class Chat {
 	constructor(
 		public chatModel: string = "gemini-1.5-flash-8b",
 		public prompt: string = "ocbwoy3-chan",
-		public cfg: GenerationConfig = { temperature: 1, topP: 0.95, topK: 40 }
+		public cfg: GenerationConfig | Partial<GenerateContentConfig> = { temperature: 1, topP: 0.95, topK: 40 }
 	) {
 		const gemini = getGeminiInstance();
 
-		const model = gemini.getGenerativeModel({
-			model: chatModel,
-			tools: [
-				{
-					functionDeclarations: toolMetas
-				}
-			],
-			safetySettings: [
-				{
-					category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-					threshold: HarmBlockThreshold.BLOCK_NONE
-				},
-				{
-					category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-					threshold: HarmBlockThreshold.BLOCK_NONE
-				},
-				{
-					category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-					threshold: HarmBlockThreshold.BLOCK_NONE
-				},
-				{
-					category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-					threshold: HarmBlockThreshold.BLOCK_NONE
-				}
-			],
-			systemInstruction: getPrompt(prompt)
-		});
-
-		const generationConfig = {
+		const generationConfig: Partial<GenerateContentConfig> = {
 			temperature: cfg.temperature || 1,
 			topP: cfg.topP || 0.95,
 			topK: cfg.topK || 40,
@@ -108,10 +79,37 @@ export class Chat {
 
 		const chatSession = this.chatSession
 			? this.chatSession
-			: model.startChat({
-					generationConfig,
-					history: []
-			  });
+			: gemini.chats.create({
+			model: chatModel,
+			config: {
+				tools: [
+					{
+						functionDeclarations: toolMetas
+					}
+				],
+				safetySettings: [
+					{
+						category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+						threshold: HarmBlockThreshold.BLOCK_NONE
+					},
+					{
+						category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+						threshold: HarmBlockThreshold.BLOCK_NONE
+					},
+					{
+						category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+						threshold: HarmBlockThreshold.BLOCK_NONE
+					},
+					{
+						category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+						threshold: HarmBlockThreshold.BLOCK_NONE
+					}
+				],
+				systemInstruction: getPrompt(prompt),
+				...generationConfig
+			},
+			history: []
+		});
 
 		this.chatSession = chatSession;
 	}
@@ -149,7 +147,7 @@ export class Chat {
 
 		logger.info(`User: ${question}`);
 
-		let result: GenerateContentResult | null = null;
+		let result: GenerateContentResponse | null = null;
 		let loopCount = 0;
 
 		const toolsUsed: string[] = [];
@@ -172,7 +170,9 @@ export class Chat {
 					typeof a === "string" ? { text: a } : a
 				);
 			}
-			((this.chatSession as any)._history as Content[]).push(
+
+			// SECRET TypeScript hack
+			(this.chatSession as any).history.push(
 				{
 					role: "user",
 					parts: [
@@ -196,21 +196,25 @@ export class Chat {
 			);
 			logger.info("AI (sys): [ Automatic memory.get ]");
 			toolsUsed.push("memory.get");
-			result = await this.chatSession.sendMessage([
-				{
-					functionResponse: {
-						name: "memory.get",
-						response: await tools["memory.get"]!(null, ctx)
+			result = await this.chatSession.sendMessage({
+				message: [
+					{
+						functionResponse: {
+							name: "memory.get",
+							response: await tools["memory.get"]!(null, ctx)
+						}
 					}
-				}
-			]);
+				]
+			});
 		} else {
-			result = await this.chatSession.sendMessage([
-				{
-					text: "CurrentContext: " + JSON.stringify(ctx)
-				},
-				...question
-			]);
+			result = await this.chatSession.sendMessage({
+				message: [
+					{
+						text: "CurrentContext: " + JSON.stringify(ctx)
+					},
+					...question
+				]
+			});
 		}
 
 		// console.log(this.chatSession, ctx, ...question)
@@ -220,20 +224,20 @@ export class Chat {
 		let didTheThing = true;
 		while (loopCount < 6) {
 			try {
-				logger.info(`AI (${loopCount} iter): ${result.response.text().trim()}`);
+				logger.info(`AI (${loopCount} iter): ${result.text?.trim()}`);
 			} catch {
 				throw `My response was most likely blocked, it might be Google's fault! Here's the error: ${JSON.stringify(
-					result.response.promptFeedback
+					result.promptFeedback
 				)}`;
 			}
 			loopCount++;
 
 			// annoying shit because google can't add proper tool support
 
-			if (!result.response.functionCalls()) {
+			if (!result.functionCalls) {
 				if (didTheThing === true) break;
 				didTheThing = true;
-			} else if (result.response.functionCalls()?.length === 0) {
+			} else if (result.functionCalls?.length === 0) {
 				if (didTheThing === true) break;
 				didTheThing = true;
 			}
@@ -241,7 +245,7 @@ export class Chat {
 			// but then openai has to be a pain in the ass with forcing everyone to moderate their shit
 
 			const functionCalls =
-				result.response.functionCalls() as FunctionCall[];
+				result.functionCalls as FunctionCall[];
 			if (functionCalls || [].length !== 0) didTheThing = true;
 			const functionResults = await Promise.all(
 				(functionCalls || []).map(async (funcCall) => {
@@ -308,16 +312,20 @@ export class Chat {
 				})
 			);
 
-			result = await this.chatSession.sendMessage(functionResults);
+			result = await this.chatSession.sendMessage({
+				message: functionResults
+			});
 		}
 		try {
-			result.response.text().trim()
+			if (result.promptFeedback) throw "";
+			if (!result.text) throw "";
+			result.text!.trim()
 			// logger.info(
 			// 	`AI (${loopCount} last iter): ${result.response.text().trim()}`
 			// );
 		} catch {
 			throw `Response blocked by Google: ${JSON.stringify(
-				result.response.promptFeedback
+				result.promptFeedback
 			)}`;
 		}
 
@@ -326,7 +334,7 @@ export class Chat {
 		// logger.info(`AI: ${(result as GenerateContentResult).response.text().trim()}`);
 
 		if (
-			(result as GenerateContentResult).response.text().trim().length ===
+			result.text.trim().length ===
 			0
 		) {
 			this.chatSession = null;
@@ -336,7 +344,7 @@ export class Chat {
 		// console.log(await this.chatSession?.getHistory())
 
 		return [
-			(result as GenerateContentResult).response.text().trim(),
+			result.text.trim(),
 			toolsUsed
 		];
 	}

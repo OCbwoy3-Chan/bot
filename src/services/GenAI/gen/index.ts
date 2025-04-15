@@ -29,13 +29,10 @@ Remember to use the pipe symbol seperators like Nova. Keep the comment at around
 TOS = Rules. Do not change words such as Roblox, Discord, etc.
 PLEASE WRITE THE REASON AND ALL OTHER FIELDS IN THE TARGET LANGUAGE.`;
 
-	const model = gemini.getGenerativeModel({
+	const session = gemini.chats.create({
 		model: "gemini-2.0-flash-lite",
-		systemInstruction: prompt
-	});
-
-	const session = model.startChat({
-		generationConfig: {
+		config: {
+			systemInstruction: prompt,
 			temperature: 1,
 			topP: 0.95,
 			topK: 40,
@@ -62,15 +59,17 @@ PLEASE WRITE THE REASON AND ALL OTHER FIELDS IN THE TARGET LANGUAGE.`;
 		}
 	});
 
-	const resp = await session.sendMessage([
-		"```json\n" +
-			JSON.stringify(
-				{ targetLanguage, bans: banReasons },
-				undefined,
-				"\t"
-			) +
-			"\n```"
-	]);
+	const resp = await session.sendMessage({
+		message: [
+			"```json\n" +
+				JSON.stringify(
+					{ targetLanguage, bans: banReasons },
+					undefined,
+					"\t"
+				) +
+				"\n```"
+		]
+	});
 
 	/*
 
@@ -91,5 +90,7 @@ PLEASE WRITE THE REASON AND ALL OTHER FIELDS IN THE TARGET LANGUAGE.`;
 
 	*/
 
-	return JSON.parse(resp.response.text()) as BanReason;
+	if (resp.promptFeedback) throw resp.promptFeedback;
+	if (!resp.text) throw "No message :(";
+	return JSON.parse(resp.text) as BanReason;
 }

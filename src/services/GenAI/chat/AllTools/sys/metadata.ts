@@ -10,7 +10,7 @@ import { getDistroNameSync } from "@112/Utility";
 const meta: FunctionDeclaration = {
 	name: "sys.version",
 	description:
-		"Gets the metadata about the current 112 or the bot's version, including the version, commit, node_env, gban providers, hostname, device details, current working dir and federating instances"
+		"Gets the metadata about the current 112 or the bot's version, including the branch, version, commit, node_env, gban providers, hostname, device details, current working dir and federating instances"
 };
 
 addTest(meta.name, {

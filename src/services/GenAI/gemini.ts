@@ -1,27 +1,19 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { GoogleAIFileManager } from "@google/generative-ai/server";
+import { GoogleGenAI } from "@google/generative-ai";
 import { logger } from "../../lib/Utility";
 
-let genai: GoogleGenerativeAI | null = null;
-let file_manager: GoogleAIFileManager | null = null;
+let genai: GoogleGenAI | null = null;
 
-export function initGemini(apiKey: string): GoogleGenerativeAI {
+export function initGemini(apiKey: string): GoogleGenAI {
 	logger.info(
 		`Creating new GoogleGenerativeAI(apiKey || process.env.GEMINI_API_KEY)`
 	);
-	genai = new GoogleGenerativeAI(apiKey);
-	file_manager = new GoogleAIFileManager(apiKey);
+	genai = new GoogleGenAI({
+		apiKey
+	});
 	return genai;
 }
 
-export function getGeminiInstance(): GoogleGenerativeAI {
-	if (!genai) {
-		throw new Error("GenAI not initialized");
-	}
-	return genai;
-}
-
-export function getFileManagerInstance(): GoogleGenerativeAI {
+export function getGeminiInstance(): GoogleGenAI {
 	if (!genai) {
 		throw new Error("GenAI not initialized");
 	}
