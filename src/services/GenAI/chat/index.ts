@@ -245,11 +245,11 @@ export class Chat {
 			if (functionCalls || [].length !== 0) didTheThing = true;
 			const functionResults = await Promise.all(
 				(functionCalls || []).map(async (funcCall) => {
-					if (!toolsUsed.includes(funcCall.name)) {
-						toolsUsed.push(funcCall.name);
+					if (!toolsUsed.includes(funcCall.name!)) {
+						toolsUsed.push(funcCall.name!);
 					}
 					const callHash = this.generateCallHash(
-						funcCall.name,
+						funcCall.name!,
 						funcCall.args
 					);
 
@@ -275,7 +275,7 @@ export class Chat {
 						.child({ args: funcCall.args })
 						.info(`AI: Calling ${funcCall.name}`);
 					try {
-						res = await ((tools as any)[funcCall.name] as Function)(
+						res = await ((tools as any)[funcCall.name!] as Function)(
 							funcCall.args as any,
 							ctx
 						);
