@@ -1,5 +1,6 @@
 import {
 	ChatSession,
+	Content,
 	FunctionCall,
 	GenerateContentResult,
 	HarmBlockThreshold,
@@ -12,8 +13,10 @@ import { logger } from "../../../lib/Utility";
 import { getGeminiInstance } from "../gemini";
 import { getPrompt } from "../prompt/GeneratePrompt";
 import { getToolMetas, getTools } from "./tools";
+import assert from "assert";
+import { getLocaleNow } from "services/Bot/bot";
 
-const files = readdirSync(`${__dirname}/AllTools`,{recursive:true});
+const files = readdirSync(`${__dirname}/AllTools`, { recursive: true });
 
 files.forEach((a) => {
 	if (typeof a === "string" && a.endsWith(".ts")) {
@@ -108,7 +111,7 @@ export class Chat {
 			: model.startChat({
 					generationConfig,
 					history: []
-				});
+			  });
 
 		this.chatSession = chatSession;
 	}
@@ -149,22 +152,75 @@ export class Chat {
 		let result: GenerateContentResult | null = null;
 		let loopCount = 0;
 
-		if (ctx && !this.usersInChat.includes(ctx.askingUserId)) {
-			ctx.mustFetchMemories = true;
-		}
-
 		const toolsUsed: string[] = [];
 
-		result = await this.chatSession.sendMessage([
-			{
-				text: "CurrentContext: " + JSON.stringify(ctx)
-			},
-			...question
-		]);
+		ctx = ctx || ({} as AIContext);
+
+		ctx.guildLocale = await getLocaleNow({
+			channel: ctx?.currentChannelM,
+			guild: ctx?.currentServer,
+			user: 0 as any
+		});
+
+		if (ctx && !this.usersInChat.includes(ctx.askingUserId)) {
+			ctx.mustFetchMemories = true;
+			let qRemap: Part[] = [];
+			if (typeof question === "string") {
+				qRemap = [{ text: question }];
+			} else {
+				qRemap = question.map((a) =>
+					typeof a === "string" ? { text: a } : a
+				);
+			}
+			((this.chatSession as any)._history as Content[]).push(
+				{
+					role: "user",
+					parts: [
+						{
+							text: "CurrentContext: " + JSON.stringify(ctx)
+						},
+						...qRemap
+					]
+				},
+				{
+					role: "model",
+					parts: [
+						{
+							functionCall: {
+								name: "memory.get",
+								args: {}
+							}
+						}
+					]
+				}
+			);
+			logger.info("AI (sys): [ Automatic memory.get ]");
+			toolsUsed.push("memory.get");
+			result = await this.chatSession.sendMessage([
+				{
+					functionResponse: {
+						name: "memory.get",
+						response: await tools["memory.get"]!(null, ctx)
+					}
+				}
+			]);
+		} else {
+			result = await this.chatSession.sendMessage([
+				{
+					text: "CurrentContext: " + JSON.stringify(ctx)
+				},
+				...question
+			]);
+		}
+
+		// console.log(this.chatSession, ctx, ...question)
+
+		assert(result, "No result :( @ocbwoy3 fix the code");
+
 		let didTheThing = true;
-		while (loopCount < 4) {
+		while (loopCount < 6) {
 			try {
-				logger.info(`AI (${loopCount} iter):`, result.response.text());
+				logger.info(`AI (${loopCount} iter): ${result.response.text().trim()}`);
 			} catch {
 				throw `My response was most likely blocked, it might be Google's fault! Here's the error: ${JSON.stringify(
 					result.response.promptFeedback
@@ -173,17 +229,20 @@ export class Chat {
 			loopCount++;
 
 			// annoying shit because google can't add proper tool support
+
 			if (!result.response.functionCalls()) {
 				if (didTheThing === true) break;
 				didTheThing = true;
 			} else if (result.response.functionCalls()?.length === 0) {
 				if (didTheThing === true) break;
 				didTheThing = true;
-			};
+			}
+
+			// but then openai has to be a pain in the ass with forcing everyone to moderate their shit
 
 			const functionCalls =
 				result.response.functionCalls() as FunctionCall[];
-			if ((functionCalls || [].length !== 0)) didTheThing = true;
+			if (functionCalls || [].length !== 0) didTheThing = true;
 			const functionResults = await Promise.all(
 				(functionCalls || []).map(async (funcCall) => {
 					if (!toolsUsed.includes(funcCall.name)) {
@@ -252,7 +311,10 @@ export class Chat {
 			result = await this.chatSession.sendMessage(functionResults);
 		}
 		try {
-			logger.info(`AI (${loopCount} last iter):`, result.response.text());
+			result.response.text().trim()
+			// logger.info(
+			// 	`AI (${loopCount} last iter): ${result.response.text().trim()}`
+			// );
 		} catch {
 			throw `Response blocked by Google: ${JSON.stringify(
 				result.response.promptFeedback
@@ -260,9 +322,8 @@ export class Chat {
 		}
 
 		this.callHistory = {};
-		logger.info(
-			`AI: ${(result as GenerateContentResult).response.text().trim()}`
-		);
+		//prettier-ignore
+		// logger.info(`AI: ${(result as GenerateContentResult).response.text().trim()}`);
 
 		if (
 			(result as GenerateContentResult).response.text().trim().length ===
@@ -271,6 +332,8 @@ export class Chat {
 			this.chatSession = null;
 			return ["", toolsUsed];
 		}
+
+		// console.log(await this.chatSession?.getHistory())
 
 		return [
 			(result as GenerateContentResult).response.text().trim(),

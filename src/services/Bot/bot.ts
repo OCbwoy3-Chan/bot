@@ -71,6 +71,24 @@ function loadTranslations() {
 	return resources;
 }
 
+export async function getLocaleNow(context: InternationalizationContext): Promise<string> {
+	if (!context.guild) {
+		return "en";
+	}
+
+	if (!cachedGuildLanguages[context.guild.id]) {
+		const guildSettings = await prisma.guildSetting.findFirst({
+			where: {
+				id: context.guild.id
+			}
+		});
+		cachedGuildLanguages[context.guild.id] =
+			guildSettings?.language || "en";
+		return guildSettings?.language || "en";
+	}
+	return cachedGuildLanguages[context.guild.id];
+}
+
 export const client = new SapphireClient({
 	intents: [
 		GatewayIntentBits.MessageContent,
@@ -132,21 +150,7 @@ export const client = new SapphireClient({
 			preload: ALL_LANGUAGES.map((a) => a.id)
 		},
 		fetchLanguage: async (context: InternationalizationContext) => {
-			if (!context.guild) {
-				return "en";
-			}
-
-			if (!cachedGuildLanguages[context.guild.id]) {
-				const guildSettings = await prisma.guildSetting.findFirst({
-					where: {
-						id: context.guild.id
-					}
-				});
-				cachedGuildLanguages[context.guild.id] =
-					guildSettings?.language || "en";
-				return guildSettings?.language || "en";
-			}
-			return cachedGuildLanguages[context.guild.id];
+			return getLocaleNow(context);
 		},
 		defaultMissingKey: "generic:i18n_missing_key"
 	} as any

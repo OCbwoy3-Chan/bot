@@ -1,12 +1,9 @@
 import { Message } from "discord.js";
 import { getTools, getTests } from "@ocbwoy3chanai/chat/tools";
 import { AIContext } from "@ocbwoy3chanai/chat";
-import { getDistroNameSync, logger } from "@112/Utility";
+import { logger } from "@112/Utility";
 
-const staticAIContext = {
-	currentDistro: getDistroNameSync(),
-	currentWorkingDir: process.cwd()
-};
+const staticAIContext = {}
 
 export async function testAllTools(
 	m: Message

@@ -19,7 +19,6 @@ import {
 	InteractionContextType
 } from "discord.js";
 import { Part } from "@google/generative-ai";
-import { getDistroNameSync } from "@112/Utility";
 import { GetAIModel } from "../../listeners/OCbwoy3ChanAI";
 import { r } from "112-l10n";
 import { getEmoji } from "@112/EmojiManager";
@@ -149,9 +148,7 @@ class AskCommand extends Command {
 				name: interaction.channel
 					? (interaction.channel as GuildChannel).name || null
 					: null
-			},
-			currentDistro: getDistroNameSync(),
-			currentWorkingDir: process.cwd()
+			}
 		};
 
 		let response = "";
