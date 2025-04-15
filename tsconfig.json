@@ -21,7 +21,10 @@
 			],
 			"@112/*": ["lib/*"],
 			"@db/*": ["services/Database/*"],
-			"112-l10n": ["services/Bot/languages/l10n_core.ts"]
+			"112-l10n": ["services/Bot/languages/l10n_core.ts"],
+
+			// NEXT COMPAT
+			"@google/generative-ai": ["next-compat/GoogleGenAI.ts"]
 		}
 	}
 }

@@ -19,7 +19,7 @@
 		"@atproto/identity": "^0.4.3",
 		"@discordjs/opus": "^0.10.0",
 		"@discordjs/voice": "^0.18.0",
-		"@google/generative-ai": "^0.21.0",
+		"@google/genai": "^0.8.0",
 		"@navetacandra/ddg": "^0.0.6",
 		"@prisma/client": "^5.12.1",
 		"@sapphire/decorators": "^6.1.1",
