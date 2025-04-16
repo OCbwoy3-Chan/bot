@@ -13,6 +13,7 @@
           nativeBuildInputs = [ pkgs.bashInteractive ];
           buildInputs = with pkgs; [
             nodePackages.prisma
+            ffmpeg
           ];
           shellHook = with pkgs; ''
             		  export PATH=${bun}/bin:$PATH

@@ -1,3 +1,4 @@
+
 import {
 	AudioPlayerStatus,
 	AudioReceiveStream,
@@ -31,6 +32,7 @@ class PCMStreamMixer extends Transform {
 		super();
 		this.on("error", (err) => {
 			if ((err as any).code === "ERR_STREAM_PREMATURE_CLOSE") {
+				console.log(err)
 				console.warn(
 					"PCMStreamMixer: Stream prematurely closed:",
 					err.message
@@ -66,6 +68,8 @@ class PCMStreamMixer extends Transform {
 			} else {
 				console.error("Stream error:", err);
 			}
+            // Also remove the stream on error
+            this.streams = this.streams.filter((s) => s !== stream);
 		});
 	}
 
@@ -150,22 +154,21 @@ export class LiveSession {
 
 		await mt.await();
 
+		// Always active audio stream
 		const resource = createAudioResource(this.mixer, {
 			inputType: StreamType.Raw,
-			silencePaddingFrames: Number.MAX_VALUE
-		});
+			silencePaddingFrames: -1 // Might want to reconsider this if silence causes issues
+		})
 		player.play(resource);
 		this.connection.subscribe(player);
 
-		// Restart playback when it ends
-		player.on(AudioPlayerStatus.Idle, (s) => {
-			console.log("Playback ended, restarting...");
-			const resource = createAudioResource(this.mixer, {
-				inputType: StreamType.Raw,
-				silencePaddingFrames: Number.MAX_VALUE
-			});
-			player.play(resource);
-		});
+		player.on(AudioPlayerStatus.Playing, () => console.log("Live Session: Playing"));
+
+		// Log buffering events
+		player.on(AudioPlayerStatus.Buffering, () => console.log("Buffering"));
+		player.on(AudioPlayerStatus.Idle, () => console.log("Idle"));
+
+		this.isPlaying = () => player.state.status === AudioPlayerStatus.Playing;
 
 		const activeUsers = new Set<string>();
 
@@ -178,18 +181,31 @@ export class LiveSession {
 
 			const sub = this.connection.receiver.subscribe(userId, {
 				end: {
-					behavior: EndBehaviorType.AfterSilence, // Ensure the stream ends only after silence
-					duration: 1000 // Optional: Adjust silence duration threshold (in ms)
+					behavior: EndBehaviorType.Manual
 				}
 			});
+            this.subscriptions.push(sub); // Track the subscription
 
 			const onData = (a: Buffer) => {
 				try {
-					this.mixer.write(decoder.decode(a));
+					// console.log(decoder.decode(a).toString('hex'));
+					this.session!.sendRealtimeInput({ media: {
+						data: decoder.decode(a).toString(),
+						mimeType: "audio/pcm; rate=48000; channels=2; bit-depth=16; endianness=little"
+					} });
 					// console.log(a.toString("hex"))
 				} catch (err) {
+                    // Check if session is still valid before sending
+                    if (!this.session || this.plsDie) {
+                         console.warn(`Session closed while trying to send audio for user ${userId}`);
+                         sub.off("data", onData); // Stop listening
+                         try { sub.destroy(); } catch (e) { console.warn(`Error destroying subscription for ${userId} during send:`, e) }
+                         activeUsers.delete(userId);
+                         this.subscriptions = this.subscriptions.filter(s => s !== sub);
+                         return;
+                    }
 					console.error(
-						`Error decoding audio for user ${userId}:`,
+						`Error sending audio data for user ${userId}:`, // Updated error message context
 						err
 					);
 				}
@@ -197,36 +213,91 @@ export class LiveSession {
 
 			sub.on("data", onData);
 
+            sub.on("error", (err) => { // Add error handler for the subscription itself
+                console.error(`AudioReceiveStream error for user ${userId}:`, err);
+                // Clean up specific user's stream on error
+                sub.off("data", onData);
+                try { sub.destroy(); } catch (e) { console.warn(`Error destroying subscription for ${userId} on error:`, e) }
+                activeUsers.delete(userId);
+                this.subscriptions = this.subscriptions.filter(s => s !== sub);
+            });
+
 			const onEnd = (endedUserId: string) => {
 				if (endedUserId === userId || this.plsDie === true) {
 					// console.warn(userId, 'remove');
 					sub.off("data", onData); // Remove the 'data' listener
-					sub.destroy(); // Destroy the subscription
+                    try { sub.destroy(); } catch (e) { console.warn(`Error destroying subscription for ${userId} on end:`, e) } // Destroy the subscription
 					this.connection.receiver.speaking.off("end", onEnd); // Remove the 'end' listener
 					activeUsers.delete(userId); // Remove the user from the active set
+                    this.subscriptions = this.subscriptions.filter(s => s !== sub);
 				}
 			};
 
 			this.connection.receiver.speaking.on("end", onEnd);
 		});
+
+		// this.session.on("audio", (a) => {
+		// 	this.mixer.write(a);
+		// })
 	}
 
+	public isPlaying: () => boolean = () => false;
+
 	public async endSession() {
-		assert(!!this.session);
-		this.plsDie = true;
-		this.session?.close();
-		await sleep(1500);
+		assert(!!this.session || this.plsDie, "Session already ended or ending"); // Allow if plsDie is true
+        if (!this.session) return; // Avoid multiple end attempts
+
+		this.plsDie = true; // Signal ongoing processes to stop
+        console.log("Starting endSession cleanup...");
+
+        try {
+            this.session?.close();
+            this.session = null; // Set session to null after closing
+        } catch (e) {
+            console.warn("Error closing AI session:", e);
+            this.session = null; // Also set to null on error
+        }
+
+		await sleep(200); // Reduced sleep, maybe unnecessary if cleanup is robust
+
 		this.connection.receiver.speaking.removeAllListeners();
 		this.mixer.removeAllListeners();
-		this.mixer.removeAllStreams();
-		this.subscriptions.forEach((a) => {
+		this.mixer.removeAllStreams(); // Destroys streams added via addStream
+
+        try {
+            if (player.state.status !== AudioPlayerStatus.Idle) {
+                 player.stop(true); // Force stop the player
+            }
+        } catch(e) {
+            console.warn("Error stopping audio player:", e);
+        }
+
+        try {
+            if (this.connection.state.status !== 'destroyed') {
+				// no work on this
+                // this.connection.unsubscribe(player); // Unsubscribe player
+            }
+        } catch(e) {
+            console.warn("Error unsubscribing player:", e);
+        }
+
+
+		// Clean up individual subscriptions more carefully
+		console.log(`Cleaning up ${this.subscriptions.length} subscriptions.`);
+		this.subscriptions.forEach((sub) => {
 			try {
-				a.removeAllListeners();
-			} catch {}
-			try {
-				a.destroy(new Error("OCbwoy3-Chan Live Session closed"));
-			} catch {}
+				sub.removeAllListeners();
+                if (!sub.destroyed) {
+				    sub.destroy();
+                }
+			} catch (e){
+                console.warn("Error cleaning up subscription:", e);
+            }
 		});
-		this.connection.removeAllListeners();
+        this.subscriptions = []; // Clear the array
+
+        // Remove connection listeners last?
+		// this.connection.removeAllListeners(); // Maybe keep connection listeners if connection is reused?
+		console.log("endSession cleanup finished.");
 	}
 }
