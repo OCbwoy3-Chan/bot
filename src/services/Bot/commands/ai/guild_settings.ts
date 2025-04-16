@@ -59,13 +59,10 @@ class GuildSettingsCommand extends Subcommand {
 				.setName(this.name)
 				.setDescription(this.description)
 				.setContexts(
-					InteractionContextType.BotDM,
-					InteractionContextType.Guild,
-					InteractionContextType.PrivateChannel
+					InteractionContextType.Guild
 				)
 				.setIntegrationTypes(
-					ApplicationIntegrationType.GuildInstall,
-					ApplicationIntegrationType.UserInstall
+					ApplicationIntegrationType.GuildInstall
 				)
 				.addSubcommand((builder) =>
 					builder

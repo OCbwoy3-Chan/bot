@@ -44,13 +44,10 @@ class LiveCommand extends Subcommand {
 				.setName(this.name)
 				.setDescription(this.description)
 				.setContexts(
-					InteractionContextType.BotDM,
-					InteractionContextType.Guild,
-					InteractionContextType.PrivateChannel
+					InteractionContextType.Guild
 				)
 				.setIntegrationTypes(
-					ApplicationIntegrationType.GuildInstall,
-					ApplicationIntegrationType.UserInstall
+					ApplicationIntegrationType.GuildInstall
 				)
 				.addSubcommand((builder) =>
 					builder
@@ -184,9 +181,9 @@ class LiveCommand extends Subcommand {
 				}
 
 				const session = new LiveSession(connection);
-				await session.beginSession();
+				session.beginSession();
 				await interaction.followUp({
-					content: "Session started!",
+					content: "Session started! (Hopefully)",
 					ephemeral: false
 				});
 				break;
