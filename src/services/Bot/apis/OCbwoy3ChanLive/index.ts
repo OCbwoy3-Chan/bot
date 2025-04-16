@@ -110,14 +110,26 @@ class OCbwoy3ChanLive {
 			return;
 		}
 
-		const audioFilePath = join(rootAudioPath, sound); // Replace with actual path
+		const audioFilePath = join(rootAudioPath, sound);
 		let resource = createAudioResource(audioFilePath);
 
 		this.player.play(resource);
 		this.connection.subscribe(this.player);
 
 		this.player.on("error", (error) => {
-			container.logger.error(`Audio player error: ${error.message}`);
+			if ((error as any).code === "ERR_STREAM_PREMATURE_CLOSE") {
+				container.logger.warn("Audio player prematurely closed:", error.message);
+			} else {
+				container.logger.error(`Audio player error: ${error.message}`);
+			}
+		});
+
+		this.connection.on("error", (error) => {
+			if ((error as any).code === "ERR_STREAM_PREMATURE_CLOSE") {
+				container.logger.warn("Voice connection prematurely closed:", error.message);
+			} else {
+				container.logger.error(`Voice connection error: ${error.message}`);
+			}
 		});
 	}
 }

@@ -1,12 +1,19 @@
 import { PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { ApplicationIntegrationType, ChannelType, InteractionContextType } from "discord.js";
+import {
+	ApplicationIntegrationType,
+	ChannelType,
+	InteractionContextType
+} from "discord.js";
 import { IsAIWhitelisted } from "../../../Database/helpers/AIWhitelist";
 import { r } from "112-l10n";
 import { AllVoiceModels } from "@ocbwoy3chanai/gemini";
 
 import OCbwoy3ChanLive from "../../apis/OCbwoy3ChanLive";
 import { LiveSession } from "services/Bot/apis/OCbwoy3ChanLive/Session";
+import { logger } from "@112/Utility";
+
+let CurrentLiveSession: LiveSession | null = null;
 
 class LiveCommand extends Subcommand {
 	public constructor(
@@ -43,12 +50,8 @@ class LiveCommand extends Subcommand {
 			builder
 				.setName(this.name)
 				.setDescription(this.description)
-				.setContexts(
-					InteractionContextType.Guild
-				)
-				.setIntegrationTypes(
-					ApplicationIntegrationType.GuildInstall
-				)
+				.setContexts(InteractionContextType.Guild)
+				.setIntegrationTypes(ApplicationIntegrationType.GuildInstall)
 				.addSubcommand((builder) =>
 					builder
 						.setName("join")
@@ -138,12 +141,33 @@ class LiveCommand extends Subcommand {
 			});
 		}
 
-		const result = OCbwoy3ChanLive.leaveChannel();
+		if (CurrentLiveSession) {
+			return await interaction.reply({
+				content: "Session still active.",
+				ephemeral: true
+			});
+		}
 
-		return await interaction.reply({
-			content: result,
-			ephemeral: false
-		});
+		try {
+			const result = OCbwoy3ChanLive.leaveChannel();
+
+			return await interaction.reply({
+				content: result,
+				ephemeral: false
+			});
+		} catch (error) {
+			if ((error as any).code === "ERR_STREAM_PREMATURE_CLOSE") {
+				logger.warn(
+					"Error during leave session: Stream prematurely closed."
+				);
+			} else {
+				logger.error("Unexpected error during leave session:", error);
+			}
+			return await interaction.reply({
+				content: "An error occurred while leaving the session.",
+				ephemeral: true
+			});
+		}
 	}
 
 	public async chatInputAction(
@@ -158,58 +182,77 @@ class LiveCommand extends Subcommand {
 			});
 		}
 
-		switch (action) {
-			case "start":
-				if (!OCbwoy3ChanLive.getChannel()) {
-					return await interaction.reply({
-						content: "Bot is not in a voice channel. Use `/live join` first.",
+		try {
+			switch (action) {
+				case "start":
+					if (!OCbwoy3ChanLive.getChannel()) {
+						return await interaction.reply({
+							content:
+								"Bot is not in a voice channel. Use `/live join` first.",
+							ephemeral: true
+						});
+					}
+
+					await interaction.deferReply({
+						fetchReply: true,
 						ephemeral: true
 					});
-				}
 
-				await interaction.deferReply({
-					fetchReply: true,
-					ephemeral: true
-				});
+					const connection = OCbwoy3ChanLive.getConnection();
+					if (!connection) {
+						return await interaction.reply({
+							content: "Failed to retrieve voice connection.",
+							ephemeral: true
+						});
+					}
 
-				const connection = OCbwoy3ChanLive.getConnection();
-				if (!connection) {
+					const session = new LiveSession(connection);
+					session.beginSession();
+
+					CurrentLiveSession = session;
+
+					await interaction.followUp({
+						content: "Session started! (Hopefully)",
+						ephemeral: false
+					});
+					break;
+
+				case "stop":
+					if (!CurrentLiveSession) {
+						return await interaction.reply({
+							content: "No live session.",
+							ephemeral: true
+						});
+					}
+					CurrentLiveSession.endSession();
+					CurrentLiveSession = null;
+					break;
+
+				case "pause":
+					// OCbwoy3ChanLive.getPlayer().pause();
+					break;
+
+				case "resume":
+					// OCbwoy3ChanLive.getPlayer().unpause();
+					break;
+
+				default:
 					return await interaction.reply({
-						content: "Failed to retrieve voice connection.",
+						content: "Invalid action type.",
 						ephemeral: true
 					});
-				}
-
-				const session = new LiveSession(connection);
-				session.beginSession();
-				await interaction.followUp({
-					content: "Session started! (Hopefully)",
-					ephemeral: false
-				});
-				break;
-
-			case "stop":
-				break;
-
-			case "pause":
-				// OCbwoy3ChanLive.getPlayer().pause();
-				break;
-
-			case "resume":
-				// OCbwoy3ChanLive.getPlayer().unpause();
-				break;
-
-			default:
-				return await interaction.reply({
-					content: "Invalid action type.",
-					ephemeral: true
-				});
+			}
+		} catch(e_) {
+			return await interaction.reply({
+				content: `> # Action error (${action})\n> ${e_}`,
+				ephemeral: true
+			});
 		}
 
 		// Simulate performing the action
 		return await interaction.reply({
-			content: `Action performed: ${action}`,
-			ephemeral: false
+			content: `dummy action execution feedback: ${action}\ntbd`,
+			ephemeral: true
 		});
 	}
 
