@@ -24,6 +24,11 @@ export function areGenAIFeaturesEnabled(): boolean {
 	return genai ? true : false;
 }
 
+export const AllVoiceModels: { [a: string]: string } = {
+	"Gemini 2.0 Flash Live": "gemini-2.0-flash-live-001"
+}
+
+
 export const AllModels: { [a: string]: { m: string; t: string } } = {
 	// GEMINI 2.5
 	"Gemini 2.5 Pro Experimental 02-05": {

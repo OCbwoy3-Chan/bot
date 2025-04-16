@@ -5,6 +5,7 @@ import {
 	VoiceConnection,
 	createAudioResource
 } from "@discordjs/voice";
+import { areGenAIFeaturesEnabled } from "@ocbwoy3chanai/gemini";
 import { container, Listener } from "@sapphire/framework";
 import { ChannelType, VoiceChannel } from "discord.js";
 import { join } from "path";
@@ -38,6 +39,7 @@ export class InfiniteMusic extends Listener {
 	public async run() {
 		const { client, logger } = container;
 
+		if (areGenAIFeaturesEnabled()) return;
 		if (client.user?.id !== "1271869353389723738") return;
 
 		this.player.setMaxListeners(999);

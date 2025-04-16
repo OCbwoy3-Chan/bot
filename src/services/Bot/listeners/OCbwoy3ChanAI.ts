@@ -118,7 +118,7 @@ export class OCbwoy3ChanAI extends Listener {
 										"No description provided",
 									`Type: ${a.parameters.type}`,
 									`Required: ${a.parameters.required?.join(", ")}`,
-									Object.entries(a.parameters.properties)
+									Object.entries(a.parameters!.properties!)
 										.map(([name, data]) => {
 											return `Param: ${name} - ${JSON.stringify(data)}`;
 										})
