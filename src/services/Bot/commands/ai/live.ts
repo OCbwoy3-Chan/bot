@@ -189,7 +189,6 @@ class LiveCommand extends Subcommand {
 				break;
 
 			case "stop":
-				OCbwoy3ChanLive.leaveChannel();
 				break;
 
 			case "pause":
