@@ -20,7 +20,8 @@
 		"exaroton": "Exaroton",
 		"fandom": "Fandom"
 	},
-	"message_too_long": "Mans ziņojums ir parāk garš, sūtu kā failu.",
+	"message_too_long": "Mana ziņa ir pārāk gara, sūtu kā failu.",
+	"message_too_long_no_file_perm": "Mana ziņa ir pārāk gara, man nav atļaujas šeit sūtīt failus :(",
 	"current_prompt_server": "Pašreizējais servera noklusējuma tēls: {{prompt}}",
 	"current_prompt_channel": "Pašreizējais kanāla tēls: {{prompt}}",
 	"no_prompt_set": "Tēls nav iestatīts!",

@@ -239,7 +239,7 @@ class AskCommand extends Command {
 			if (response.length === 0) throw "Got empty message";
 			if (response.trim().replace(/ +/g, " ").length > 2000) {
 				return await interaction.followUp({
-					content: await r(interaction, "ai:mesage_too_long"),
+					content: await r(interaction, "ai:message_too_long"),
 					files: [
 						new AttachmentBuilder(Buffer.from(response), {
 							name: "message.txt"

@@ -21,6 +21,7 @@
 		"fandom": "Fandom"
 	},
 	"message_too_long": "My message is too long, sending as a file.",
+	"message_too_long_no_file_perm": "My message is too long, I don't have permission to send files here :(",
 	"current_prompt_server": "Current server default character: {{prompt}}",
 	"current_prompt_channel": "Current channel character: {{prompt}}",
 	"no_prompt_set": "No character set!",

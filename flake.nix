@@ -13,14 +13,13 @@
           nativeBuildInputs = [ pkgs.bashInteractive ];
           buildInputs = with pkgs; [
             nodePackages.prisma
+            ffmpeg
           ];
           shellHook = with pkgs; ''
             		  export PATH=${bun}/bin:$PATH
-                      export PRISMA_MIGRATION_ENGINE_BINARY="${prisma-engines}/bin/migration-engine"
-                      export PRISMA_QUERY_ENGINE_BINARY="${prisma-engines}/bin/query-engine"
-                      export PRISMA_QUERY_ENGINE_LIBRARY="${prisma-engines}/lib/libquery_engine.node"
-                      export PRISMA_INTROSPECTION_ENGINE_BINARY="${prisma-engines}/bin/introspection-engine"
-                      export PRISMA_FMT_BINARY="${prisma-engines}/bin/prisma-fmt"
+                      export PRISMA_QUERY_ENGINE_LIBRARY=${pkgs.prisma-engines}/lib/libquery_engine.node
+                      export PRISMA_QUERY_ENGINE_BINARY=${pkgs.prisma-engines}/bin/query-engine
+                      export PRISMA_SCHEMA_ENGINE_BINARY=${pkgs.prisma-engines}/bin/schema-engine
           '';
         };
       });
