@@ -82,12 +82,7 @@ class SlashCommand extends Subcommand {
 	public async chatInputGenerateBanReason(
 		interaction: Subcommand.ChatInputCommandInteraction
 	) {
-		if (!(await IsAIWhitelisted(interaction.user.id))) {
-			return await interaction.reply({
-				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
-			});
-		}
+		const canIBanSkids = await IsAIWhitelisted(interaction.user.id);
 		if (!(await IsWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "errors:missing_wl"),
@@ -144,7 +139,7 @@ class SlashCommand extends Subcommand {
 			content: `${vibe_check}
 \`\`\`${banReason.ban_reason}\`\`\`\n
 ${banReason.explanation}
--# ${banReason.comment}`,
+-# ${banReason.comment}${canIBanSkids ? `\n${await r(interaction,"ai:ban_no_perms")}` : ""}`,
 			ephemeral: false
 		});
 	}
@@ -160,7 +155,7 @@ ${banReason.explanation}
 		}
 		if (!(await IsWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
-				content: await r(interaction, "errors:missing_wl"),
+				content: await r(interaction, "ai:ban_no_perms"),
 				ephemeral: true
 			});
 		}

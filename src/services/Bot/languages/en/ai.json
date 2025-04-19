@@ -12,6 +12,7 @@
 		"unfair": "I've deemed {{user}}'s ban to be unfair."
 	},
 	"ban_acted": "Successfully banned {{user}} with reason: {{reason}}",
+	"ban_no_perms": "You are not whitelisted, therefore you can only generate ban reasons.",
 	"tools": {
 		"memory_update": "Memory updated",
 		"atproto": "AT Protocol",
