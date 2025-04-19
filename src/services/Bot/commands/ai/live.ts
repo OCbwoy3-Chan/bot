@@ -12,6 +12,7 @@ import { AllVoiceModels } from "@ocbwoy3chanai/gemini";
 import OCbwoy3ChanLive from "../../apis/OCbwoy3ChanLive";
 import { LiveSession } from "services/Bot/apis/OCbwoy3ChanLive/Session";
 import { logger } from "@112/Utility";
+import { sleep } from "bun";
 
 let CurrentLiveSession: LiveSession | null = null;
 
@@ -206,10 +207,10 @@ class LiveCommand extends Subcommand {
 						});
 					}
 
-					const session = new LiveSession(connection);
-					session.beginSession();
+					let sessionx = new LiveSession(connection);
+					sessionx.beginSession();
 
-					CurrentLiveSession = session;
+					CurrentLiveSession = sessionx;
 
 					await interaction.followUp({
 						content: "Session started! (Hopefully)",
@@ -233,6 +234,25 @@ class LiveCommand extends Subcommand {
 					break;
 
 				case "resume":
+					const channel = interaction.guild!.channels.cache.find(a=>a.type===ChannelType.GuildVoice);
+
+					if (!channel) {
+						return await interaction.reply({
+							content: "No VC :(",
+							ephemeral: true
+						});
+					}
+			
+					const result = await OCbwoy3ChanLive.joinChannel(channel.id);
+
+					await sleep(1000);
+
+					const connectionxx = OCbwoy3ChanLive.getConnection();
+
+					let sessionxx = new LiveSession(connectionxx!);
+					sessionxx.beginSession();
+
+					CurrentLiveSession = sessionxx;
 					// OCbwoy3ChanLive.getPlayer().unpause();
 					break;
 

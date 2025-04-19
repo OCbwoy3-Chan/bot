@@ -31,6 +31,8 @@ class OCbwoy3ChanLive {
 	private ch: VoiceChannel | null = null;
 
 	public async joinChannel(channelId: string) {
+		if (this.connection) throw "I'm already in a VC!";
+
 		const { client, logger } = container;
 
 		logger.info(`Attempting to join channel: ${channelId}`);
