@@ -139,7 +139,7 @@ class SlashCommand extends Subcommand {
 			content: `${vibe_check}
 \`\`\`${banReason.ban_reason}\`\`\`\n
 ${banReason.explanation}
--# ${banReason.comment}${canIBanSkids ? `\n${await r(interaction,"ai:ban_no_perms")}` : ""}`,
+-# ${banReason.comment}${!canIBanSkids ? `\n${await r(interaction,"ai:ban_no_perms")}` : ""}`,
 			ephemeral: false
 		});
 	}
