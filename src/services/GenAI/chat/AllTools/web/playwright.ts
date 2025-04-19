@@ -44,12 +44,19 @@ async function func(args: any): Promise<any> {
 	const ctx = await browser.newContext({
 		userAgent: userAgents[Math.floor(Math.random() * userAgents.length)]
 	});
-
 	const page = await ctx.newPage();
+
+	// Add protocol to URL if not provided
+	let url = args.url;
+	if (!/^https?:\/\//i.test(url)) {
+		url = `https://${url}`;
+		logger.info(`[PLAYWRIGHT] Transforming shit url ${args.url} into a beautiful ${url}`);
+	}
 
 	logger.info(`[PLAYWRIGHT] Visiting ${args.url}`);
 
-	await page.goto(args.url);
+
+	await page.goto(url);
 	await page.setViewportSize({ width: 1080, height: 1024 });
 
 	// logger.info(`[PLAYWRIGHT] Waiting 2s`);

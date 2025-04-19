@@ -16,6 +16,7 @@ class ChatManager {
 			chatData.lastUsed = now;
 			return chatData.chat;
 		} else {
+			logger.info(`[OCbwoy3-Chan Chat Manager] Creating chat ID ${channelId} (${model}, ${prompt})`)
 			const chat = new Chat(model, prompt);
 			this.chats.set(channelId, { chat, lastUsed: now });
 			return chat;
@@ -34,7 +35,7 @@ class ChatManager {
 		const now = Date.now();
 		for (const [channelId, chatData] of this.chats.entries()) {
 			if (now - chatData.lastUsed > this.timeout) {
-				logger.info(`[ChatManager] cleanup ${channelId}`);
+				logger.info(`[OCbwoy3-Chan Chat Manager] (INACTIVE) Cleaning up ${channelId}`)
 				this.chats.delete(channelId);
 			}
 		}

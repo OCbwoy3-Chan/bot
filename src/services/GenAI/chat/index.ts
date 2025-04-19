@@ -162,6 +162,7 @@ export class Chat {
 
 		if (ctx && !this.usersInChat.includes(ctx.askingUserId)) {
 			ctx.mustFetchMemories = true;
+			this.usersInChat.push(ctx.askingUserId)
 			let qRemap: Part[] = [];
 			if (typeof question === "string") {
 				qRemap = [{ text: question }];
@@ -194,7 +195,7 @@ export class Chat {
 					]
 				}
 			);
-			logger.info("AI (sys): [ Automatic memory.get ]");
+			logger.info("[OCbwoy3-Chan AI] Appending an automatic memory.get call");
 			toolsUsed.push("memory.get");
 			result = await this.chatSession.sendMessage({
 				message: [
@@ -224,7 +225,7 @@ export class Chat {
 		let didTheThing = true;
 		while (loopCount < 6) {
 			try {
-				logger.info(`AI (${loopCount} iter): ${result.text?.trim()}`);
+				logger.info(`[OCbwoy3-Chan AI] Generation iter #${loopCount}: ${result.text?.trim()}`);
 			} catch {
 				throw `My response was most likely blocked, it might be Google's fault! Here's the error: ${JSON.stringify(
 					result.promptFeedback
@@ -259,7 +260,7 @@ export class Chat {
 
 					if (this.callHistory[callHash]) {
 						logger.info(
-							`AI: Using cached result for ${funcCall.name}`
+							`[OCbwoy3-Chan AI] Using cached result for ${funcCall.name}`
 						);
 						return {
 							functionResponse: {
@@ -269,15 +270,15 @@ export class Chat {
 						};
 					}
 					logger.info(
-						`Cached ${
+						`[OCbwoy3-Chan AI] Cached ${
 							funcCall.name
-						} for this gen - ${callHash.slice(0, 7)}...`
+						} for this generation - ${callHash.slice(0, 7)}...`
 					);
 
 					let res = {};
 					logger
 						.child({ args: funcCall.args })
-						.info(`AI: Calling ${funcCall.name}`);
+						.info(`[OCbwoy3-Chan AI] Calling ${funcCall.name}`);
 					try {
 						res = await ((tools as any)[funcCall.name!] as Function)(
 							funcCall.args as any,
@@ -288,13 +289,13 @@ export class Chat {
 								.child({
 									response: res
 								})
-								.info(`AI: ${funcCall.name} response`);
+								.info(`[OCbwoy3-Chan AI] Tool response for ${funcCall.name}`);
 						}
 						this.callHistory[callHash] = res; // Store the result
 					} catch (e_) {
 						logger
 							.child({ error: `${e_}` })
-							.error(`AI: Error calling ${funcCall.name}`);
+							.info(`[OCbwoy3-Chan AI] Error calling ${funcCall.name}`);
 						res = {
 							"*comment":
 								"TELL THE USER ABOUT THIS JAVASCRIPT ERROR WHILE RUNNING TOOL",

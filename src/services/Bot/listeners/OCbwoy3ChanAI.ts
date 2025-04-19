@@ -24,7 +24,7 @@ import { r } from "112-l10n";
 let savedChatSession: Chat | null = null;
 
 let ChatPrompt = "ocbwoy3_chan/default";
-let AIModel = "gemini-1.5-flash-8b";
+let AIModel = "gemini-2.0-flash";
 
 const BlacklistedMentions = /@(?:here|everyone)/;
 
@@ -166,14 +166,6 @@ export class OCbwoy3ChanAI extends Listener {
 				}
 			}
 
-			logger.info(
-				`OCbwoy3ChanAIDebug ${m2.author.id} ${AIModel} ${ChatPrompt}`
-			);
-
-			if (!savedChatSession) {
-				logger.info("OCbwoy3ChanAIDebug newchatsession :3 owo");
-			}
-
 			let prompt = ChatPrompt;
 			const channelPrompt = await GetChannelPrompt(m2.channel.id);
 			if (channelPrompt) {
@@ -184,6 +176,10 @@ export class OCbwoy3ChanAI extends Listener {
 					prompt = guildPrompt;
 				}
 			}
+
+			logger.info(
+				`[OCbwoy3-Chan AI Debugger] Author: ${m2.author.id} Model: ${AIModel} Character: ${ChatPrompt}`
+			);
 
 			const chat = chatManager.getChat(m2.channel.id, AIModel, prompt);
 

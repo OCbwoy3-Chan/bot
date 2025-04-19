@@ -66,6 +66,8 @@ function loadTranslations() {
 			resources[lang].ai.help_msg = content.replace(/ \/\/\*.*$/im, "");
 			// console.log(content.replace(/ \/\/\*.*$/im,""));
 		}
+
+		resources[lang].generic.i18n_missing_key = "i18next missing/invalid key {{key}}"
 	}
 
 	return resources;

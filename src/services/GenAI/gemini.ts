@@ -30,13 +30,16 @@ export const AllVoiceModels: { [a: string]: string } = {
 
 
 export const AllModels: { [a: string]: { m: string; t: string } } = {
+
 	// GEMINI 2.5
+
 	"Gemini 2.5 Pro Experimental 02-05": {
 		m: "gemini-2.5-pro-exp-03-25",
 		t: "1mil"
 	},
 
 	// GEMINI 2.0
+
 	"Gemini 2.0 Flash": {
 		m: "gemini-2.0-flash",
 		t: "1mil"
@@ -47,10 +50,16 @@ export const AllModels: { [a: string]: { m: string; t: string } } = {
 	},
 
 	// PREVIEW
-	"Gemini 2.0 Flash Experimental": { m: "gemini-2.0-flash-exp", t: "1mil" },
-	"LearnLM 1.5 Pro Experimental": {
+	// "Gemini 2.0 Flash Experimental": { m: "gemini-2.0-flash-exp", t: "1mil" },
+
+	"LearnLM 1.5 Pro": {
 		m: "learnlm-1.5-pro-experimental",
 		t: "32k"
+	},
+
+	"LearnLM 2.0 Flash": {
+		m: "learnlm-2.0-flash-experimental",
+		t: "1m"
 	},
 
 	// GEMINI 1.5

@@ -1,0 +1,18 @@
+{
+	"suspensions": {
+		"guild_ai": "This server's use of Generative AI features has been suspended.",
+		"user_ai": "Your use of Generative AI features has been suspended."
+	},
+	"ai": {
+		"guild_freeplay": "This server can now chat with OCbwoy3-Chan AI!",
+		"live": "You can now chat with OCbwoy3-Chan LIVE!"
+	},
+	"legal": {
+		"ai_tos": "Usage of OCbwoy3-Chan is governed by its respective [Terms of Service](<https://ocbwoy3.dev/chan/legal/tos>) and [Privacy Policy](<https://ocbwoy3.dev/chan/legal/privacy>). Violation of these rules may result in suspension of access to our services.",
+		"ai_hello": "Learn more about OCbwoy3-Chan at [ocbwoy3.dev](<https://ocbwoy3.dev/chan>).",
+		"eu": "Our European users are subject to additional data protection regulations under the [GDPR](<https://gdpr-info.eu/>). [Learn more](<https://ocbwoy3.dev/chan/legal/privacy>).",
+		"world_age": "You must be at least 13 years old to use our services.",
+		"america_coppa_protested_edition": "You must be at least 16 years old to use our services due to COPPA 2.0.",
+		"europe_gdpr_age": "Under the GDPR laws in your country, you must be at least {{age_of_digial_consent}} years old to use our services."
+	}
+}
