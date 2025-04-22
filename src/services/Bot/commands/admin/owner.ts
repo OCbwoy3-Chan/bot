@@ -18,6 +18,7 @@ import { generateDependencyReport } from "@discordjs/voice";
 import { AddChannelAIWhitelist, RemoveChannelAIWhitelist } from "@db/helpers/AIWhitelist";
 import { getCachedPromptsJ } from "@ocbwoy3chanai/prompt/GeneratePrompt";
 import { GetChannelPrompt, GetGuildPrompt } from "@db/helpers/AISettings";
+import { sep } from "path";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -308,7 +309,7 @@ class SlashCommand extends Subcommand {
 			}
 			case "ai_selection": {
 				let x = [
-					"S Default ChatPrompt -> ocbwoy3_chan/default"
+					`S Default ChatPrompt -> ocbwoy3_chan${sep}default`
 				];
 				const channelPrompt = await GetChannelPrompt(interaction.channel!.id);
 				if (channelPrompt) {

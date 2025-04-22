@@ -20,10 +20,11 @@ import {
 import { getToolMetas } from "@ocbwoy3chanai/chat/tools";
 import { exec } from "child_process";
 import { r } from "112-l10n";
+import { sep } from "path";
 
 let savedChatSession: Chat | null = null;
 
-let ChatPrompt = "ocbwoy3_chan/default";
+let ChatPrompt = `ocbwoy3_chan${sep}default`;
 let AIModel = "gemini-2.0-flash";
 
 const BlacklistedMentions = /@(?:here|everyone)/;
