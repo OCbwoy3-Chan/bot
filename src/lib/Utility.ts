@@ -124,7 +124,8 @@ export async function getDistroName(): Promise<string> {
 			});
 			resolve("Unknown Distro");
 		} catch {
-			resolve(platform());
+			const pl = platform();
+			resolve(pl === "win32" ? "Microsoft Windows" : pl === "darwin" ? "macOS" : pl);
 		}
 	});
 }
@@ -141,7 +142,8 @@ export function getDistroNameSync(): string {
 		});
 		return retval;
 	} catch {
-		return platform();
+		const pl = platform();
+		return (pl === "win32" ? "Microsoft Windows" : pl === "darwin" ? "macOS" : pl);
 	}
 }
 

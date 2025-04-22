@@ -3,7 +3,7 @@ import { addTest, registerTool } from "../../tools";
 import { getAllGbanProviders } from "@db/GBanProvider";
 import { execSync } from "child_process";
 import { getRegisteredFederatedInstances } from "@db/federation";
-import { hostname } from "os";
+import { hostname, platform } from "os";
 import { cwd } from "process";
 import { getDistroNameSync } from "@112/Utility";
 
@@ -24,7 +24,8 @@ const commit = execSync("git rev-parse HEAD").toString().trim();
 async function func(args: any): Promise<any> {
 	return {
 		device: {
-			currentDistro: getDistroNameSync(),
+			operatingSystem: getDistroNameSync(),
+			platform: platform()
 		},
 		runtime: {
 			hostname: hostname(),

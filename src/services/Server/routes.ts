@@ -32,7 +32,7 @@ app.get("/discord", async (req: Request, res: Response) => {
 
 	app.get("/", async (req: Request, res: Response) => {
 		// res.redirect(307,"https://ocbwoy3.dev")
-		res.status(418).header("Content-Type", "text/plain").send(`ocbwoy3.dev - ${branch}@${commit} (${version}) running on ${distro}`)
+		res.status(418).header("Content-Type", "text/plain").send(`ocbwoy3.dev - [112 / OCbwoy3-Chan] ${branch}@${commit} (${version}) running on ${distro}`)
 	});
 })().catch(a=>{})
 
