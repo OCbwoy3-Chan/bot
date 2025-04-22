@@ -1,9 +1,10 @@
 import { configDotenv } from "dotenv";
 configDotenv();
 
-import { exec } from "child_process";
+import { exec, execSync } from "child_process";
 import figlet from "figlet";
 import { Logger } from "pino";
+import chalk from "chalk";
 const logger: Logger = require("pino")({
 	base: {
 		pid: "init"
@@ -16,6 +17,7 @@ declare global {
 
 const SERVICE_LOAD_ORDER = ["Database", "Server", "GenAI", "Bot"];
 
+exec("cls");
 exec("clear");
 console.clear();
 
@@ -43,6 +45,18 @@ async function printFiglet(a: string, b: figlet.Fonts): Promise<string> {
 }
 
 (async () => {
+	const branch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
+	const version = execSync("git describe --tags").toString().trim();
+	const commit = execSync("git rev-parse HEAD").toString().trim();
+
+	process.stdout.write(`\x1b]2;ocbwoy3.dev - ${branch}@${commit.slice(0,6)} (${version})\x1b\x5c`);
 	console.log(await printFiglet("ocbwoy3 . dev", "Big"));
+	if (process.platform !== "linux" && process.platform !== "darwin") {
+		if (process.platform === "win32") {
+			console.log(chalk.redBright.bold("WARNING - Windows is not supported, you may run into issues."))
+		} else {
+			console.log(chalk.redBright.bold(`WARNING - Your platform (${process.platform}) is not supproted, you may run into issues.`))
+		}
+	}
 	loadServices();
 })();
