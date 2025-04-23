@@ -7,7 +7,10 @@ import {
 	Message,
 	RawFile
 } from "discord.js";
-import { IsAIWhitelisted, IsChannelAIWhitelisted } from "@db/helpers/AIWhitelist";
+import {
+	IsAIWhitelisted,
+	IsChannelAIWhitelisted
+} from "@db/helpers/AIWhitelist";
 import { AIContext, Chat } from "@ocbwoy3chanai/chat/index";
 import { areGenAIFeaturesEnabled } from "@ocbwoy3chanai/gemini";
 import { getPrompt } from "@ocbwoy3chanai/prompt/GeneratePrompt";

@@ -64,19 +64,30 @@ class OCbwoy3ChanLive {
 
 		this.connection.setMaxListeners(999);
 
-		this.connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
-			try {
-				await Promise.race([
-					entersState(this.connection!, VoiceConnectionStatus.Signalling, 5_000),
-					entersState(this.connection!, VoiceConnectionStatus.Connecting, 5_000),
-				]);
-				// Seems to be reconnecting to a new channel - ignore disconnect
-			} catch {
-				// Seems to be a real disconnect which SHOULDN'T be recovered from
-				this.connection?.destroy();
-				this.connection?.removeAllListeners();
+		this.connection.on(
+			VoiceConnectionStatus.Disconnected,
+			async (oldState, newState) => {
+				try {
+					await Promise.race([
+						entersState(
+							this.connection!,
+							VoiceConnectionStatus.Signalling,
+							5_000
+						),
+						entersState(
+							this.connection!,
+							VoiceConnectionStatus.Connecting,
+							5_000
+						)
+					]);
+					// Seems to be reconnecting to a new channel - ignore disconnect
+				} catch {
+					// Seems to be a real disconnect which SHOULDN'T be recovered from
+					this.connection?.destroy();
+					this.connection?.removeAllListeners();
+				}
 			}
-		});
+		);
 
 		return `Joined channel: ${channel.name}`;
 	}
@@ -95,15 +106,15 @@ class OCbwoy3ChanLive {
 	}
 
 	public getChannel(): VoiceChannel | null {
-		return this.ch
+		return this.ch;
 	}
 
 	public getPlayer(): AudioPlayer {
-		return this.player
+		return this.player;
 	}
 
 	public getConnection(): VoiceConnection | null {
-		return this.connection
+		return this.connection;
 	}
 
 	public playAudio(sound: string) {
@@ -120,7 +131,10 @@ class OCbwoy3ChanLive {
 
 		this.player.on("error", (error) => {
 			if ((error as any).code === "ERR_STREAM_PREMATURE_CLOSE") {
-				container.logger.warn("Audio player prematurely closed:", error.message);
+				container.logger.warn(
+					"Audio player prematurely closed:",
+					error.message
+				);
 			} else {
 				container.logger.error(`Audio player error: ${error.message}`);
 			}
@@ -128,9 +142,14 @@ class OCbwoy3ChanLive {
 
 		this.connection.on("error", (error) => {
 			if ((error as any).code === "ERR_STREAM_PREMATURE_CLOSE") {
-				container.logger.warn("Voice connection prematurely closed:", error.message);
+				container.logger.warn(
+					"Voice connection prematurely closed:",
+					error.message
+				);
 			} else {
-				container.logger.error(`Voice connection error: ${error.message}`);
+				container.logger.error(
+					`Voice connection error: ${error.message}`
+				);
 			}
 		});
 	}

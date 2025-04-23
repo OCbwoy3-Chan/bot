@@ -58,12 +58,8 @@ class GuildSettingsCommand extends Subcommand {
 			builder
 				.setName(this.name)
 				.setDescription(this.description)
-				.setContexts(
-					InteractionContextType.Guild
-				)
-				.setIntegrationTypes(
-					ApplicationIntegrationType.GuildInstall
-				)
+				.setContexts(InteractionContextType.Guild)
+				.setIntegrationTypes(ApplicationIntegrationType.GuildInstall)
 				.addSubcommand((builder) =>
 					builder
 						.setName("reset")

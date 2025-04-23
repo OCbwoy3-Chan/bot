@@ -20,9 +20,9 @@ export type CharacterInfo = {
 	promptDefOnly?: boolean;
 	noBullshit?: boolean; // Kept for potential future use, though overridden by logic below
 	hidden?: boolean;
-	name_aichooser?: string,
-	backstory?: Object,
-	deprecated?: boolean
+	name_aichooser?: string;
+	backstory?: Object;
+	deprecated?: boolean;
 };
 
 // read all files from sys/ directory ending with .txt
@@ -193,7 +193,7 @@ function FixEmojis(text: string): string {
 }
 
 export function loadPromptsFromDirectory(directory: string): void {
-	const files = readdirSync(directory, {recursive: true}) as string[];
+	const files = readdirSync(directory, { recursive: true }) as string[];
 	files.forEach((file) => {
 		if (file.endsWith(".json")) {
 			const filePath = join(directory, file);

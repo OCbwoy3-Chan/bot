@@ -135,8 +135,8 @@ export async function getDistroName(): Promise<string> {
 				pl === "win32"
 					? "Microsoft Windows"
 					: pl === "darwin"
-					? "macOS"
-					: pl
+						? "macOS"
+						: pl
 			);
 		}
 	});
@@ -158,8 +158,8 @@ export function getDistroNameSync(): string {
 		return pl === "win32"
 			? "Microsoft Windows"
 			: pl === "darwin"
-			? "macOS"
-			: pl;
+				? "macOS"
+				: pl;
 	}
 }
 

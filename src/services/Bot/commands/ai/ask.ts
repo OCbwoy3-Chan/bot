@@ -143,7 +143,7 @@ class AskCommand extends Command {
 				? {
 						name: interaction.guild.name,
 						id: interaction.guild.id
-				  }
+					}
 				: null,
 			currentChannelM: {
 				name: interaction.channel
@@ -207,8 +207,7 @@ class AskCommand extends Command {
 				toolsUsed.includes("exaroton.credits")
 			) {
 				t.push({
-					emoji:
-						getEmoji("Exaroton"),
+					emoji: getEmoji("Exaroton"),
 					label: await r(interaction, "ai:tools.exaroton"),
 					id: "ocbwoy3chan_tool_noop_exaroton"
 				});

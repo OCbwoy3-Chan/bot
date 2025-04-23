@@ -16,7 +16,6 @@ let EMOJIS: { [k: string]: string } = {
 	Playwright: "🎭",
 	Exaroton: "⛏️",
 	Fandom: "🔬"
-
 } as const;
 
 type Emoji =
@@ -49,15 +48,16 @@ for (const key in loadedEmojis) {
 	}
 }
 
-export function getAllEmojisForAI(): { [scope: string]: {[emoji: string]: string} } {
+export function getAllEmojisForAI(): {
+	[scope: string]: { [emoji: string]: string };
+} {
 	return {
 		BotInteractionComponents: Object.fromEntries(
 			Object.entries(EMOJIS).filter(([key]) => !key.startsWith("ai_"))
 		),
 		AIEmojis: Object.fromEntries(
 			Object.entries(EMOJIS).filter(([key]) => key.startsWith("ai_"))
-		),
-
+		)
 	};
 }
 

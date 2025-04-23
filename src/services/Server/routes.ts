@@ -23,8 +23,10 @@ app.get("/discord", async (req: Request, res: Response) => {
 	res.redirect("https://ocbwoy3.dev/discord");
 });
 
-(async()=>{
-	const branch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
+(async () => {
+	const branch = execSync("git rev-parse --abbrev-ref HEAD")
+		.toString()
+		.trim();
 	const version = execSync("git describe --tags").toString().trim();
 	const commit = execSync("git rev-parse HEAD").toString().trim();
 
@@ -32,10 +34,13 @@ app.get("/discord", async (req: Request, res: Response) => {
 
 	app.get("/", async (req: Request, res: Response) => {
 		// res.redirect(307,"https://ocbwoy3.dev")
-		res.status(418).header("Content-Type", "text/plain").send(`ocbwoy3.dev - [112 / OCbwoy3-Chan] ${branch}@${commit} (${version}) running on ${distro}`)
+		res.status(418)
+			.header("Content-Type", "text/plain")
+			.send(
+				`ocbwoy3.dev - [112 / OCbwoy3-Chan] ${branch}@${commit} (${version}) running on ${distro}`
+			);
 	});
-})().catch(a=>{})
-
+})().catch((a) => {});
 
 app.use(router);
 
@@ -45,15 +50,21 @@ AllBanlandCacheHelper._updateBanCountFunc = setNumBans;
 AddToBanlandCacheManager(AllBanlandCacheHelper);
 
 app.get("/banland.json", async (req: Request, res: Response) => {
-	res.header("Content-Type", "application/json").send(await AllBanlandCacheHelper.GetCachedBanland());
+	res.header("Content-Type", "application/json").send(
+		await AllBanlandCacheHelper.GetCachedBanland()
+	);
 });
 
 app.get("/bans", async (req: Request, res: Response) => {
-	res.header("Content-Type", "application/json").send(await AllBanlandCacheHelper.GetCachedBanland());
+	res.header("Content-Type", "application/json").send(
+		await AllBanlandCacheHelper.GetCachedBanland()
+	);
 });
 
 app.get("/.prikolshub/banland.json", async (req: Request, res: Response) => {
-	res.header("Content-Type", "application/json").send(await AllBanlandCacheHelper.GetCachedBanland());
+	res.header("Content-Type", "application/json").send(
+		await AllBanlandCacheHelper.GetCachedBanland()
+	);
 });
 
 app.use(aiRouter);

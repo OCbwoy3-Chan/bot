@@ -234,7 +234,9 @@ class LiveCommand extends Subcommand {
 					break;
 
 				case "resume":
-					const channel = interaction.guild!.channels.cache.find(a=>a.type===ChannelType.GuildVoice);
+					const channel = interaction.guild!.channels.cache.find(
+						(a) => a.type === ChannelType.GuildVoice
+					);
 
 					if (!channel) {
 						return await interaction.reply({
@@ -242,8 +244,10 @@ class LiveCommand extends Subcommand {
 							ephemeral: true
 						});
 					}
-			
-					const result = await OCbwoy3ChanLive.joinChannel(channel.id);
+
+					const result = await OCbwoy3ChanLive.joinChannel(
+						channel.id
+					);
 
 					await sleep(1000);
 
@@ -262,7 +266,7 @@ class LiveCommand extends Subcommand {
 						ephemeral: true
 					});
 			}
-		} catch(e_) {
+		} catch (e_) {
 			return await interaction.reply({
 				content: `> # Action error (${action})\n> ${e_}`,
 				ephemeral: true

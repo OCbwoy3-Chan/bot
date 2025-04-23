@@ -1,15 +1,22 @@
 type CreatedMutex = {
-	resolve: ()=>void,
-	await: ()=>Promise<void>
-}
+	resolve: () => void;
+	await: () => Promise<void>;
+};
 
 export function createMutex(): CreatedMutex {
-	let resolveF = (...a: any)=>{}
+	let resolveF = (...a: any) => {};
 
-	const promise = new Promise((resolve, reject)=>{ resolveF = resolve })
+	const promise = new Promise((resolve, reject) => {
+		resolveF = resolve;
+	});
 
 	return {
-		resolve: ()=>{resolveF(1)},
-		await: async()=>{await promise; return}
-	}
+		resolve: () => {
+			resolveF(1);
+		},
+		await: async () => {
+			await promise;
+			return;
+		}
+	};
 }

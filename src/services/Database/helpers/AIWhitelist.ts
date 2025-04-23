@@ -66,11 +66,12 @@ export async function IsAIWhitelisted(userId: string): Promise<boolean> {
  */
 
 export async function AddChannelAIWhitelist(channelId: string): Promise<void> {
-	const existingWhitelist = await prisma.whitelist_OCbwoy3ChanAI_ChannelSpecific.findFirst({
-		where: {
-			id: channelId
-		}
-	});
+	const existingWhitelist =
+		await prisma.whitelist_OCbwoy3ChanAI_ChannelSpecific.findFirst({
+			where: {
+				id: channelId
+			}
+		});
 	if (existingWhitelist) {
 		throw "Channel is already whitelisted";
 	}
@@ -86,12 +87,15 @@ export async function AddChannelAIWhitelist(channelId: string): Promise<void> {
  * @param channelId The Discord User ID of the user to remove from the whitelist
  */
 
-export async function RemoveChannelAIWhitelist(channelId: string): Promise<void> {
-	const existingWhitelist = await prisma.whitelist_OCbwoy3ChanAI_ChannelSpecific.findFirst({
-		where: {
-			id: channelId
-		}
-	});
+export async function RemoveChannelAIWhitelist(
+	channelId: string
+): Promise<void> {
+	const existingWhitelist =
+		await prisma.whitelist_OCbwoy3ChanAI_ChannelSpecific.findFirst({
+			where: {
+				id: channelId
+			}
+		});
 	if (!existingWhitelist) {
 		throw "Channel is not whitelisted";
 	}
@@ -109,11 +113,14 @@ export async function RemoveChannelAIWhitelist(channelId: string): Promise<void>
  * @returns True if the user is whitelisted, false otherwise
  */
 
-export async function IsChannelAIWhitelisted(channelId: string): Promise<boolean> {
-	const existingWhitelist = await prisma.whitelist_OCbwoy3ChanAI_ChannelSpecific.findFirst({
-		where: {
-			id: channelId
-		}
-	});
+export async function IsChannelAIWhitelisted(
+	channelId: string
+): Promise<boolean> {
+	const existingWhitelist =
+		await prisma.whitelist_OCbwoy3ChanAI_ChannelSpecific.findFirst({
+			where: {
+				id: channelId
+			}
+		});
 	return existingWhitelist !== null;
 }

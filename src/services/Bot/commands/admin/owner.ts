@@ -15,7 +15,10 @@ import { resetOCbwoy3ChansAPIKey } from "services/Server/router/chat";
 import { captureSentryException } from "@112/SentryUtil";
 import { fetchT } from "@sapphire/plugin-i18next";
 import { generateDependencyReport } from "@discordjs/voice";
-import { AddChannelAIWhitelist, RemoveChannelAIWhitelist } from "@db/helpers/AIWhitelist";
+import {
+	AddChannelAIWhitelist,
+	RemoveChannelAIWhitelist
+} from "@db/helpers/AIWhitelist";
 import { getCachedPromptsJ } from "@ocbwoy3chanai/prompt/GeneratePrompt";
 import { GetChannelPrompt, GetGuildPrompt } from "@db/helpers/AISettings";
 import { sep } from "path";
@@ -286,52 +289,57 @@ class SlashCommand extends Subcommand {
 	public async chatInputDebug(
 		interaction: Command.ChatInputCommandInteraction
 	) {
-		const whatToDebug = interaction.options.getString("what",true);
+		const whatToDebug = interaction.options.getString("what", true);
 
 		switch (whatToDebug) {
 			case "discordjs_voice": {
 				await interaction.reply({
 					ephemeral: true,
 					content: generateDependencyReport()
-				})
+				});
 				break;
 			}
 			case "ai_characters": {
 				await interaction.reply({
 					ephemeral: true,
 					files: [
-						new AttachmentBuilder(Buffer.from(JSON.stringify(getCachedPromptsJ())), {
-							name: "char.json"
-						})
+						new AttachmentBuilder(
+							Buffer.from(JSON.stringify(getCachedPromptsJ())),
+							{
+								name: "char.json"
+							}
+						)
 					]
-				})
+				});
 				break;
 			}
 			case "ai_selection": {
-				let x = [
-					`S Default ChatPrompt -> ocbwoy3_chan${sep}default`
-				];
-				const channelPrompt = await GetChannelPrompt(interaction.channel!.id);
+				let x = [`S Default ChatPrompt -> ocbwoy3_chan${sep}default`];
+				const channelPrompt = await GetChannelPrompt(
+					interaction.channel!.id
+				);
 				if (channelPrompt) {
-					x.push(`S Channel -> ${channelPrompt}`)
+					x.push(`S Channel -> ${channelPrompt}`);
 				} else if (interaction!.guild) {
-					const guildPrompt = await GetGuildPrompt(interaction.guild.id);
+					const guildPrompt = await GetGuildPrompt(
+						interaction.guild.id
+					);
 					if (guildPrompt) {
-						x.push(`S Guild Default -> ${guildPrompt}`)
+						x.push(`S Guild Default -> ${guildPrompt}`);
 					}
 				}
 
 				await interaction.reply({
 					ephemeral: true,
 					content: x.join("\n")
-				})
+				});
 				break;
 			}
 			default: {
 				await interaction.reply({
 					ephemeral: true,
 					content: "invalid opt"
-				})
+				});
 				break;
 			}
 		}
@@ -370,7 +378,6 @@ class SlashCommand extends Subcommand {
 			});
 		}
 	}
-
 }
 
 export default SlashCommand;

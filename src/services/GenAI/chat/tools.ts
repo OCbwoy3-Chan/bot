@@ -18,7 +18,7 @@ export function registerTool(f: Function, m: FunctionDeclaration): void {
 }
 
 export function addTest(toolName?: string, args?: any) {
-	assert(toolName,"No tool name :(");
+	assert(toolName, "No tool name :(");
 	tests.push({ tool: toolName!, args });
 }
 

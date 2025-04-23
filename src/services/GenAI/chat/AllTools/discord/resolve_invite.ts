@@ -38,16 +38,17 @@ async function func(args: any): Promise<any> {
 						i.guild.nsfwLevel === GuildNSFWLevel.Default
 							? null
 							: i.guild.nsfwLevel === GuildNSFWLevel.Safe
-							? "safe"
-							: i.guild.nsfwLevel === GuildNSFWLevel.Explicit
-							? "explicit"
-							: i.guild.nsfwLevel === GuildNSFWLevel.AgeRestricted
-							? "age_restricted"
-							: "unknown",
+								? "safe"
+								: i.guild.nsfwLevel === GuildNSFWLevel.Explicit
+									? "explicit"
+									: i.guild.nsfwLevel ===
+										  GuildNSFWLevel.AgeRestricted
+										? "age_restricted"
+										: "unknown",
 					numNitroBoosters: i.guild.premiumSubscriptionCount,
 					vanityInviteCode: i.guild.vanityURLCode,
 					description: i.guild.description
-			  }
+				}
 			: null,
 		members: i.memberCount,
 		invitedBy: i.inviter
@@ -55,7 +56,7 @@ async function func(args: any): Promise<any> {
 					name: i.inviter.displayName,
 					username: i.inviter.username,
 					id: i.inviter.id
-			  }
+				}
 			: null,
 		json: i.toJSON()
 	};

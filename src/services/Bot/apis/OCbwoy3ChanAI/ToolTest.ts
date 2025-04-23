@@ -3,7 +3,7 @@ import { getTools, getTests } from "@ocbwoy3chanai/chat/tools";
 import { AIContext } from "@ocbwoy3chanai/chat";
 import { logger } from "@112/Utility";
 
-const staticAIContext = {}
+const staticAIContext = {};
 
 export async function testAllTools(
 	m: Message
@@ -11,8 +11,12 @@ export async function testAllTools(
 	const tools = getTools();
 	const tests = getTests();
 
-	const results: { func: string; args: any; isError: boolean; result: any }[] =
-		[];
+	const results: {
+		func: string;
+		args: any;
+		isError: boolean;
+		result: any;
+	}[] = [];
 
 	const params: AIContext = {
 		askingUserId: m.author.id,
