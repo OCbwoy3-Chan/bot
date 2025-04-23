@@ -5,7 +5,7 @@ import { getDistroNameSync, logger } from "./Utility";
 
 export function InitSentry() {
 	if (process.env.SENTRY_DSN) {
-		logger.info({ pid: "sentry" }, "Loading Sentry");
+		logger.info("[SENTRY] Loading Sentry");
 		configDotenv();
 		s.init({
 			dsn: process.env.SENTRY_DSN,
@@ -31,7 +31,7 @@ export function captureSentryException(
 		};
 		(hint as any).tags = (hint as any).tags || {};
 		(hint as any).tags.sentryUtilCapture = true;
-		logger.info({ pid: "sentry" }, `Reporting Error: ${e}`);
+		logger.info(`[SENTRY] Reporting Error: ${e}`);
 		s.captureException(e, hint as ExclusiveEventHintOrCaptureContext);
 	}
 }

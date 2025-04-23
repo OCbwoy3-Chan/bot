@@ -7,7 +7,13 @@ import { Logger } from "pino";
 import chalk from "chalk";
 const logger: Logger = require("pino")({
 	base: {
-		pid: "init"
+		pid: null
+	},
+	transport: {
+		target: "pino-pretty",
+		options: {
+			colorize: true
+		}
 	}
 });
 
@@ -21,10 +27,20 @@ exec("cls");
 exec("clear");
 console.clear();
 
+const branch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
+const version = execSync("git describe --tags").toString().trim();
+const commit = execSync("git rev-parse HEAD").toString().trim();
+
 async function loadServices() {
 	for (const service of SERVICE_LOAD_ORDER) {
 		logger.info(`Loading service "${service}"`);
 		try {
+			process.stdout.write(
+				`\x1b]2;[Loading ${service}] ocbwoy3.dev - ${branch}@${commit.slice(
+					0,
+					6
+				)} (${version})\x1b\x5c`
+			);
 			const mod = require(`./services/${service}`);
 			await new Promise((resolve) => setTimeout(resolve, 100));
 			await mod.StartService();
@@ -36,6 +52,12 @@ async function loadServices() {
 				.error(`Error loading service "${service}"`, e);
 		}
 	}
+	process.stdout.write(
+		`\x1b]2;ocbwoy3.dev - ${branch}@${commit.slice(
+			0,
+			6
+		)} (${version})\x1b\x5c`
+	);
 	logger.info(`112 loaded successfully!`);
 }
 
@@ -45,17 +67,26 @@ async function printFiglet(a: string, b: figlet.Fonts): Promise<string> {
 }
 
 (async () => {
-	const branch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
-	const version = execSync("git describe --tags").toString().trim();
-	const commit = execSync("git rev-parse HEAD").toString().trim();
-
-	process.stdout.write(`\x1b]2;ocbwoy3.dev - ${branch}@${commit.slice(0,6)} (${version})\x1b\x5c`);
+	process.stdout.write(
+		`\x1b]2;ocbwoy3.dev - ${branch}@${commit.slice(
+			0,
+			6
+		)} (${version})\x1b\x5c`
+	);
 	console.log(await printFiglet("ocbwoy3 . dev", "Big"));
 	if (process.platform !== "linux" && process.platform !== "darwin") {
 		if (process.platform === "win32") {
-			console.log(chalk.redBright.bold("WARNING - Windows is not supported, you may run into issues."))
+			console.log(
+				chalk.redBright.bold(
+					"WARNING - Windows is not supported, you may run into issues."
+				)
+			);
 		} else {
-			console.log(chalk.redBright.bold(`WARNING - Your platform (${process.platform}) is not supproted, you may run into issues.`))
+			console.log(
+				chalk.redBright.bold(
+					`WARNING - Your platform (${process.platform}) is not supproted, you may run into issues.`
+				)
+			);
 		}
 	}
 	loadServices();

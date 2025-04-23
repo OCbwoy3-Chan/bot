@@ -25,7 +25,13 @@ class DatabaseService {
 export const Service = new DatabaseService(
 	require("pino")({
 		base: {
-			pid: "db"
+			pid: null
+		},
+		transport: {
+			target: "pino-pretty",
+			options: {
+				colorize: true
+			}
 		}
 	})
 );

@@ -18,10 +18,9 @@ import { ALL_LANGUAGES } from "112-l10n";
 
 const logger = require("pino")({
 	base: {
-		pid: "bot"
+		pid: null
 	}
 });
-
 
 const {
 	DefaultWebSocketManagerOptions: { identifyProperties }
@@ -67,13 +66,16 @@ function loadTranslations() {
 			// console.log(content.replace(/ \/\/\*.*$/im,""));
 		}
 
-		resources[lang].generic.i18n_missing_key = "i18next missing/invalid key {{key}}"
+		resources[lang].generic.i18n_missing_key =
+			"i18next missing/invalid key {{key}}";
 	}
 
 	return resources;
 }
 
-export async function getLocaleNow(context: InternationalizationContext): Promise<string> {
+export async function getLocaleNow(
+	context: InternationalizationContext
+): Promise<string> {
 	if (!context.guild) {
 		return "en";
 	}
@@ -116,9 +118,14 @@ export const client = new SapphireClient({
 	caseInsensitivePrefixes: true,
 	logger: {
 		instance: new PinoLogger({
-			name: "bot",
 			formatters: {
-				bindings: () => ({ pid: `bot` })
+				bindings: () => ({ pid: null })
+			},
+			transport: {
+				target: "pino-pretty",
+				options: {
+					colorize: true
+				}
 			}
 		})
 	},

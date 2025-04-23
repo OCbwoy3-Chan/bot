@@ -5,7 +5,13 @@ import { Logger } from "pino";
 
 export const logger: Logger = require("pino")({
 	base: {
-		pid: "112"
+		pid: null
+	},
+	transport: {
+		target: "pino-pretty",
+		options: {
+			colorize: true
+		}
 	}
 });
 
@@ -125,7 +131,13 @@ export async function getDistroName(): Promise<string> {
 			resolve("Unknown Distro");
 		} catch {
 			const pl = platform();
-			resolve(pl === "win32" ? "Microsoft Windows" : pl === "darwin" ? "macOS" : pl);
+			resolve(
+				pl === "win32"
+					? "Microsoft Windows"
+					: pl === "darwin"
+					? "macOS"
+					: pl
+			);
 		}
 	});
 }
@@ -143,7 +155,11 @@ export function getDistroNameSync(): string {
 		return retval;
 	} catch {
 		const pl = platform();
-		return (pl === "win32" ? "Microsoft Windows" : pl === "darwin" ? "macOS" : pl);
+		return pl === "win32"
+			? "Microsoft Windows"
+			: pl === "darwin"
+			? "macOS"
+			: pl;
 	}
 }
 

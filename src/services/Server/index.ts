@@ -19,7 +19,13 @@ class ServerService {
 export const Service = new ServerService(
 	require("pino")({
 		base: {
-			pid: "server"
+			pid: null
+		},
+		transport: {
+			target: "pino-pretty",
+			options: {
+				colorize: true
+			}
 		}
 	})
 );

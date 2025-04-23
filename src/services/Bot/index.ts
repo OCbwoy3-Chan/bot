@@ -31,7 +31,13 @@ class BotService {
 export const Service = new BotService(
 	require("pino")({
 		base: {
-			pid: "bot"
+			pid: null
+		},
+		transport: {
+			target: "pino-pretty",
+			options: {
+				colorize: true
+			}
 		}
 	})
 );
