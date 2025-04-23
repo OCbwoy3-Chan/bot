@@ -22,6 +22,7 @@ import { Part } from "@google/generative-ai";
 import { GetAIModel } from "../../listeners/OCbwoy3ChanAI";
 import { r } from "112-l10n";
 import { getEmoji } from "@112/EmojiManager";
+import { sep } from "path";
 
 class AskCommand extends Command {
 	public constructor(
@@ -91,7 +92,7 @@ class AskCommand extends Command {
 			? true
 			: false;
 
-		let prompt = "default";
+		let prompt = `ocbwoy3_chan${sep}default`;
 		const channelPrompt = await GetChannelPrompt(interaction.channelId);
 		if (channelPrompt) {
 			prompt = channelPrompt;
