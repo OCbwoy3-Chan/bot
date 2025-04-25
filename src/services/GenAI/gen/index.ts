@@ -26,6 +26,10 @@ The 'justified' field is where you output a boolean if you think the user should
 'comment' must have a detailed explanation about the ban process and the reasoning behind it. List all ban providers used in the comment and where you got evidence.
 Remember to use the pipe symbol seperators like Nova. Keep the comment at around 20-50 words long. Please ignore all JavaScript fetch errors and unfair or ban reasons which harass a person, etc.
 
+If bans are empty, the user should not be banned. Command inputs are not counted as reasons.
+Malicious and mean or rude reasons such as "fucking [slur]" should not be counted.
+Do not count Exploiting as an offense.
+
 TOS = Rules. Do not change words such as Roblox, Discord, etc.
 PLEASE WRITE THE REASON AND ALL OTHER FIELDS IN THE TARGET LANGUAGE.`;
 
