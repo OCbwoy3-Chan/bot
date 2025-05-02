@@ -1,7 +1,8 @@
 // wtf??
 
 generator client {
-    provider = "prisma-client-js"
+    provider      = "prisma-client-js"
+    binaryTargets = ["native"]
 }
 
 datasource db {
@@ -57,8 +58,8 @@ model RobloxUserAppeal {
 // Guild Config
 
 model GuildSetting {
-	id String @id @unique
-	language String? // default en-US
+    id       String  @id @unique
+    language String? // default en-US
 }
 
 // Whitelists
@@ -80,7 +81,7 @@ model Whitelist_OCbwoy3ChanAI {
 }
 
 model Whitelist_OCbwoy3ChanAI_ChannelSpecific {
-    id     String  @id @unique
+    id String @id @unique
 }
 
 // AI Configs
