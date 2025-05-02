@@ -50,7 +50,7 @@ class SlashCommand extends Command {
 		);
 		const distro = getDistroNameSync();
 		const fn = distro === "Microsoft Windows" ? "windows" : distro === "macOS" ? "mac" : distro === "NixOS" ? "nixos" : "linux"
-		const IMAGE_PATH = join(__dirname,"..","..","..","..","..","media","icons","nixos.png")
+		const IMAGE_PATH = join(__dirname,"..","..","..","..","..","media","icons",`${fn}.png`)
 		console.log(distro,IMAGE_PATH)
 		return await interaction.followUp({
 			embeds: [
