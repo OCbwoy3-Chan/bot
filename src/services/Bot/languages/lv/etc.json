@@ -3,12 +3,13 @@
 		"fork_warning": "\n> ***NEOFICIĀLA VERSIJA***"
 	},
 	"bot_info_output": [
-		"> -# **Discord gateway pings:** {{gatewayLatency}}ms",
-		"> -# **Tīkla pings:** {{networkLatency}}ms",
-		"> -# **CPU latentums:** {{cpuLatency}}μs",
-		"> -# **Darbības laiks:** {{uptime}}",
-		"> -# **Atmiņa:** {{devMemUsed}}/{{devMemMax}} GB",
-		"> -# **Banotie lietotāji:** {{numBannedSkids}}"
+		"# {{distro}}",
+		"-# **Discord gateway pings:** {{gatewayLatency}}ms",
+		"-# **Tīkla pings:** {{networkLatency}}ms",
+		"-# **CPU latentums:** {{cpuLatency}}μs",
+		"-# **Darbības laiks:** {{uptime}}",
+		"-# **Atmiņa:** {{devMemUsed}}/{{devMemMax}} GB",
+		"-# **Banotie lietotāji:** {{numBannedSkids}}"
 	],
 	"wl": {
 		"ai_a": "{{user}} tika pievienots MI baltajam sarakstam.",

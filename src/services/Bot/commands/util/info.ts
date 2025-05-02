@@ -1,6 +1,10 @@
 import { Command } from "@sapphire/framework";
-import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
+import { ApplicationIntegrationType, Attachment, AttachmentBuilder, EmbedBuilder, InteractionContextType } from "discord.js";
 import { infoCommand } from "../../../../locale/commands";
+import { getDistroNameSync } from "@112/Utility";
+import { join } from "path";
+import { readFileSync } from "fs";
+import { platform } from "os";
 
 class SlashCommand extends Command {
 	public constructor(
@@ -44,8 +48,25 @@ class SlashCommand extends Command {
 			ping.toString(),
 			interaction
 		);
+		const distro = getDistroNameSync();
+		const fn = platform() === "win32" ? "windows" : platform() === "darwin" ? "mac" : distro === "NixOS" ? "nixos" : "linux"
+		const IMAGE_PATH = join(__dirname,"..","..","..","..","..","media","icons","nixos.png")
+		console.log(distro,IMAGE_PATH)
 		return await interaction.followUp({
-			content: mo,
+			embeds: [
+				new EmbedBuilder({
+					color: 0x89b4fa,
+					title: "ocbwoy3.dev",
+					url: "https://ocbwoy3.dev",
+					description: mo,
+					thumbnail: {
+						url: `attachment://${fn}.png`
+					}
+				})
+			],
+			files: [
+				new AttachmentBuilder(readFileSync(IMAGE_PATH),{name: `${fn}.png`})
+			],
 			ephemeral: false
 		});
 	}

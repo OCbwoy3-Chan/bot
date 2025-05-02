@@ -3,12 +3,13 @@
 		"fork_warning": "\n> ***UNOFFICIAL VERSION***"
 	},
 	"bot_info_output": [
-		"> -# **Discord gateway ping:** {{gatewayLatency}}ms",
-		"> -# **Network ping:** {{networkLatency}}ms",
-		"> -# **CPU latency:** {{cpuLatency}}μs",
-		"> -# **Uptime:** {{uptime}}",
-		"> -# **Memory:** {{devMemUsed}}/{{devMemMax}} GB",
-		"> -# **Banned users:** {{numBannedSkids}}"
+		"# {{distro}}",
+		"-# **Discord gateway ping:** {{gatewayLatency}}ms",
+		"-# **Network ping:** {{networkLatency}}ms",
+		"-# **CPU latency:** {{cpuLatency}}μs",
+		"-# **Uptime:** {{uptime}}",
+		"-# **Memory:** {{devMemUsed}}/{{devMemMax}} GB",
+		"-# **Banned users:** {{numBannedSkids}}"
 	],
 	"wl": {
 		"ai_a": "{{user}} has been added to the AI whitelist.",
