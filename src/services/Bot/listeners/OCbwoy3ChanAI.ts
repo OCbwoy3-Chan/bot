@@ -200,6 +200,17 @@ export class OCbwoy3ChanAI extends Listener {
 			const parts: Array<string | Part> = [];
 			const filesToSend: RawFile[] = [];
 
+			// i know damn well discord's api wont allow empty shit from normal users without embeds and crap
+			if (m.content.length !== 0) {
+				if (/^ +?\<\@\!?[0-9]+\> +?$/i.test(m.content) && m.content.includes(client.user!.id)) {
+					parts.push(`<@!${client.user!.id}> Refer to the following content:`);
+				} else {
+					parts.push(m.content as string);
+				}
+			} else {
+				parts.push("Refer to the following content:");
+			}
+
 			for (const attachment of m.attachments.values()) {
 				void m.react("💾").catch((a) => {});
 				try {
@@ -244,6 +255,7 @@ export class OCbwoy3ChanAI extends Listener {
 				throw "Check failed after 10 iterations 250ms";
 			}
 
+
 			for (const embed of m.embeds) {
 				if (embed.data) {
 					try {
@@ -285,12 +297,6 @@ export class OCbwoy3ChanAI extends Listener {
 						);
 					}
 				}
-			}
-
-			if (m.content.length !== 0) {
-				parts.push(m.content as string);
-			} else {
-				parts.push("[no comment]");
 			}
 
 			if (m.channel.type === ChannelType.GuildText) {
