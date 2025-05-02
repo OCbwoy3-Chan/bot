@@ -49,7 +49,7 @@ class SlashCommand extends Command {
 			interaction
 		);
 		const distro = getDistroNameSync();
-		const fn = platform() === "win32" ? "windows" : platform() === "darwin" ? "mac" : distro === "NixOS" ? "nixos" : "linux"
+		const fn = distro === "Microsoft Windows" ? "windows" : distro === "macOS" ? "mac" : distro === "NixOS" ? "nixos" : "linux"
 		const IMAGE_PATH = join(__dirname,"..","..","..","..","..","media","icons","nixos.png")
 		console.log(distro,IMAGE_PATH)
 		return await interaction.followUp({
