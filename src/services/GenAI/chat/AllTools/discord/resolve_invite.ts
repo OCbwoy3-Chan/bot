@@ -7,7 +7,7 @@ import { GuildNSFWLevel } from "discord.js";
 const meta: FunctionDeclaration = {
 	name: "discord.resolve_invite",
 	description:
-		"Resolves a Discord Invite code (basically the code part of discord.gg/code or discord.com/invite/code)",
+		"Resolves a Discord Invite (basically the code part of discord.gg/code or discord.com/invite/code)",
 	parameters: {
 		required: [],
 		type: SchemaType.OBJECT,

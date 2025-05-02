@@ -30,5 +30,9 @@
 	"errors": {
 		"blocked_by_google": "My response was blocked by Google, here's why: {{reason}}",
 		"unknown": "I couldn't generate a response, here's why: {{reason}}"
+	},
+	"char_preview": {
+		"language": "Language",
+		"name": "Name"
 	}
 }

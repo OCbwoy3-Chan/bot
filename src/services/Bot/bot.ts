@@ -93,6 +93,26 @@ export async function getLocaleNow(
 	return cachedGuildLanguages[context.guild.id];
 }
 
+export async function getLocaleNowOptional(
+	context: InternationalizationContext
+): Promise<string> {
+	if (!context.guild) {
+		return "_";
+	}
+
+	if (!cachedGuildLanguages[context.guild.id]) {
+		const guildSettings = await prisma.guildSetting.findFirst({
+			where: {
+				id: context.guild.id
+			}
+		});
+		cachedGuildLanguages[context.guild.id] =
+			guildSettings?.language || "en";
+		return guildSettings?.language || "en";
+	}
+	return cachedGuildLanguages[context.guild.id];
+}
+
 export const client = new SapphireClient({
 	intents: [
 		GatewayIntentBits.MessageContent,

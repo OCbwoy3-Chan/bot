@@ -2,6 +2,8 @@ import { Logger } from "pino";
 import { RefreshAllBanlands } from "../../lib/BanlandCacheHelper";
 import { prisma } from "./db";
 import { loadAllGbanProviders, loadAllInstances } from "./federation";
+import { runAutoUnban } from "./helpers/AutoUnbanHelper";
+import { BanlandCheckInterval } from "@112/Constants";
 
 class DatabaseService {
 	constructor(private readonly logger: Logger) {}
@@ -19,6 +21,9 @@ class DatabaseService {
 			// this.logger.info("Refreshing banland automatically");
 			await RefreshAllBanlands();
 		}, 5000);
+		setInterval(async () => {
+			await runAutoUnban();
+		}, BanlandCheckInterval);
 	}
 }
 

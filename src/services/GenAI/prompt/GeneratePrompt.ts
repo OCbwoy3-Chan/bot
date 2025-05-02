@@ -5,24 +5,45 @@ April 6 2025 - Upaded to be recursive by OCbwoy3
 
 */
 
+import { LanguageId } from "112-l10n";
 import { getEmojiForAI } from "@112/EmojiManager";
 import { logger } from "@112/Utility";
 import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
 
+// Core Character Information
 export type CharacterInfo = {
+	// AUTOMATIC
 	filename: string;
-	remap?: string;
+
+	// AI
+
 	name: string;
-	description: string;
 	definition?: string;
 	personalityTraits?: string[];
-	promptDefOnly?: boolean;
-	noBullshit?: boolean; // Kept for potential future use, though overridden by logic below
-	hidden?: boolean;
-	name_aichooser?: string;
 	backstory?: Object;
+
+
+	// Metadata and Localization
+	name_aichooser?: string;
+	description: string;
+	metadata_language?: string;
+	metadata_localized?: Record<LanguageId, {
+		name?: string;
+		description?: string;
+		description_info?: string;
+	}>;
+	image?: string;
+
+	// Optional Behavior Flags
 	deprecated?: boolean;
+	promptDefOnly?: boolean;
+	noBullshit?: boolean; // Reserved for potential future use
+	hidden?: boolean;
+
+	// Additional Descriptive Fields
+	remap?: string;
+	description_charinfo?: string;
 };
 
 // read all files from sys/ directory ending with .txt

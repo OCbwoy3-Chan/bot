@@ -30,5 +30,9 @@
 	"errors": {
 		"blocked_by_google": "Manu atbildi bloķēja Google, šeit ir paskaidrojums: {{reason}}",
 		"unknown": "Es nevarēju ģenerēt atbildi, jo: {{reason}}"
+	},
+	"char_preview": {
+		"language": "Valoda",
+		"name": "Vārds"
 	}
 }
