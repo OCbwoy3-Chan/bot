@@ -7,7 +7,8 @@ import {
 	type StringSelectMenuInteraction,
 	ActionRowBuilder,
 	ButtonBuilder,
-	ButtonStyle
+	ButtonStyle,
+	MessageFlags
 } from "discord.js";
 import { general } from "../../../../locale/commands";
 import { r } from "112-l10n";
@@ -42,7 +43,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			if (interaction.user.id !== process.env.OWNER_ID) {
 				return await interaction.reply({
 					content: general.errors.notOwner(),
-					ephemeral: true
+					flags: [MessageFlags.Ephemeral]
 				});
 			}
 
@@ -66,7 +67,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			await interaction.reply({
 				// content: "Choose AI actions",
 				components: [row as any],
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 	}

@@ -5,6 +5,7 @@ import {
 	ApplicationIntegrationType,
 	AttachmentBuilder,
 	InteractionContextType,
+	MessageFlags,
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder
 } from "discord.js";
@@ -190,7 +191,7 @@ class SlashCommand extends Subcommand {
 			content: `> **${wl.length} users whitelisted**${wl.map(
 				(a) => `\n> <@${a.id}>`
 			)}`,
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 
@@ -203,7 +204,7 @@ class SlashCommand extends Subcommand {
 			content: `> **${wl.length} users genai whitelisted**${wl.map(
 				(a) => `\n> <@${a.id}>`
 			)}`,
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 
@@ -214,7 +215,7 @@ class SlashCommand extends Subcommand {
 
 		return interaction.reply({
 			content: `\`\`\`${resetOCbwoy3ChansAPIKey()}\`\`\``,
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 
@@ -250,7 +251,7 @@ class SlashCommand extends Subcommand {
 	) {
 		await interaction.reply({
 			content: `> Killing Process (Will restart if using PM2/Docker)\n> PID: ${process.pid}, Parent PID: ${process.ppid}`,
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 		process.kill(process.pid, "SIGTERM");
 		// love this, absolutely amazing
@@ -261,13 +262,13 @@ class SlashCommand extends Subcommand {
 	) {
 		await interaction.reply({
 			content: `> Wiping ALL AI preferences from every guild and channel.`,
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 		await prisma.oCbwoy3ChanAI_ChannelSettings.deleteMany({});
 		await prisma.oCbwoy3ChanAI_GuildSettings.deleteMany({});
 		await interaction.followUp({
 			content: "> Done",
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 
@@ -277,7 +278,7 @@ class SlashCommand extends Subcommand {
 		const tf = await fetchT(interaction);
 		await interaction.reply({
 			content: tf("generic:ok"),
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 		try {
 			throw "hi sentry!";
@@ -294,14 +295,14 @@ class SlashCommand extends Subcommand {
 		switch (whatToDebug) {
 			case "discordjs_voice": {
 				await interaction.reply({
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 					content: generateDependencyReport()
 				});
 				break;
 			}
 			case "ai_characters": {
 				await interaction.reply({
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 					files: [
 						new AttachmentBuilder(
 							Buffer.from(JSON.stringify(getCachedPromptsJ())),
@@ -330,14 +331,14 @@ class SlashCommand extends Subcommand {
 				}
 
 				await interaction.reply({
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 					content: x.join("\n")
 				});
 				break;
 			}
 			default: {
 				await interaction.reply({
-					ephemeral: true,
+					flags: [MessageFlags.Ephemeral],
 					content: "invalid opt"
 				});
 				break;
@@ -357,24 +358,24 @@ class SlashCommand extends Subcommand {
 				await AddChannelAIWhitelist(channel.id);
 				return interaction.reply({
 					content: `Successfully whitelisted <#${channel.id}>.`,
-					ephemeral: true
+					flags: [MessageFlags.Ephemeral]
 				});
 			} else if (action === "remove") {
 				await RemoveChannelAIWhitelist(channel.id);
 				return interaction.reply({
 					content: `Successfully unwhitelisted <#${channel.id}>.`,
-					ephemeral: true
+					flags: [MessageFlags.Ephemeral]
 				});
 			} else {
 				return interaction.reply({
 					content: "error.",
-					ephemeral: true
+					flags: [MessageFlags.Ephemeral]
 				});
 			}
 		} catch (error) {
 			return interaction.reply({
 				content: `Error: ${error}`,
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 	}

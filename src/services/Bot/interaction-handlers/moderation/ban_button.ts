@@ -7,7 +7,8 @@ import {
 	type StringSelectMenuInteraction,
 	ActionRowBuilder,
 	ButtonBuilder,
-	ButtonStyle
+	ButtonStyle,
+	MessageFlags
 } from "discord.js";
 import { GetUserDetails } from "../../../../lib/roblox";
 import { IsWhitelisted } from "../../../Database/helpers/DiscordWhitelist";
@@ -47,7 +48,6 @@ export class MessageComponentHandler extends InteractionHandler {
 			);
 
 			await interaction.deferReply({
-				ephemeral: false,
 				fetchReply: true
 			});
 
@@ -56,7 +56,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			if (!(await IsWhitelisted(interaction.user.id))) {
 				return await interaction.reply({
 					content: await r(interaction, "errors:missing_wl"),
-					ephemeral: true
+					flags: [MessageFlags.Ephemeral]
 				});
 			}
 
@@ -65,15 +65,14 @@ export class MessageComponentHandler extends InteractionHandler {
 			} catch (e_) {
 				return await interaction.followUp({
 					content: `> ${e_}`,
-					ephemeral: true
+					flags: [MessageFlags.Ephemeral]
 				});
 			}
 
 			return await interaction.followUp({
 				content: await r(interaction, "mod:unban_success", {
 					user: `[${ru.displayName}](https://fxroblox.com/users/${userid})`
-				}),
-				ephemeral: false
+				})
 			});
 		}
 
@@ -81,12 +80,11 @@ export class MessageComponentHandler extends InteractionHandler {
 			if (!(await IsWhitelisted(interaction.user.id))) {
 				return await interaction.reply({
 					content: await r(interaction, "errors:missing_wl"),
-					ephemeral: true
+					flags: [MessageFlags.Ephemeral]
 				});
 			}
 
 			await interaction.deferReply({
-				ephemeral: false,
 				fetchReply: true
 			});
 
@@ -95,7 +93,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			if (!(await GetBanData(userid))) {
 				return await interaction.followUp({
 					content: await r(interaction, "mod:not_banned"),
-					ephemeral: true
+					flags: [MessageFlags.Ephemeral]
 				});
 			}
 
@@ -115,7 +113,7 @@ export class MessageComponentHandler extends InteractionHandler {
 					user: `[${ru.displayName}](https://fxroblox.com/users/${userid})`
 				}),
 				components: [row as any],
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 	}

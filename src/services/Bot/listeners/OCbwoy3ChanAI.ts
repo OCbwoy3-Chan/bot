@@ -202,8 +202,13 @@ export class OCbwoy3ChanAI extends Listener {
 
 			// i know damn well discord's api wont allow empty shit from normal users without embeds and crap
 			if (m.content.length !== 0) {
-				if (/^ +?\<\@\!?[0-9]+\> +?$/i.test(m.content) && m.content.includes(client.user!.id)) {
-					parts.push(`<@!${client.user!.id}> Refer to the following content:`);
+				if (
+					/^ +?\<\@\!?[0-9]+\> +?$/i.test(m.content) &&
+					m.content.includes(client.user!.id)
+				) {
+					parts.push(
+						`<@!${client.user!.id}> Refer to the following content:`
+					);
 				} else {
 					parts.push(m.content as string);
 				}
@@ -254,7 +259,6 @@ export class OCbwoy3ChanAI extends Listener {
 				}
 				throw "Check failed after 10 iterations 250ms";
 			}
-
 
 			for (const embed of m.embeds) {
 				if (embed.data) {

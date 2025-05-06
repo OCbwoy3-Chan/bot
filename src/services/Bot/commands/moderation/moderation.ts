@@ -5,7 +5,8 @@ import {
 	ApplicationIntegrationType,
 	ButtonBuilder,
 	ButtonStyle,
-	InteractionContextType
+	InteractionContextType,
+	MessageFlags
 } from "discord.js";
 import { BanlandScope } from "../../../../lib/Constants";
 import { GetUserDetails, GetUserIdFromName } from "../../../../lib/roblox";
@@ -151,12 +152,11 @@ class SlashCommand extends Subcommand {
 		if (!interaction.options.get("user")?.value) {
 			return await interaction.reply({
 				content: ":skull:",
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
 		await interaction.deferReply({
-			ephemeral: false,
 			fetchReply: true
 		});
 
@@ -166,7 +166,7 @@ class SlashCommand extends Subcommand {
 		if (!userid) {
 			return await interaction.followUp({
 				content: await r(interaction, "errors:username_resolve_no_arg"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 		const ud = await GetUserDetails(userid);
@@ -203,17 +203,19 @@ class SlashCommand extends Subcommand {
 		if (!(await IsWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "errors:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
 		if (!interaction.options.get("user")?.value) {
-			await interaction.reply({ content: ":skull:", ephemeral: true });
+			await interaction.reply({
+				content: ":skull:",
+				flags: [MessageFlags.Ephemeral]
+			});
 			return;
 		}
 
 		await interaction.deferReply({
-			ephemeral: false,
 			fetchReply: true
 		});
 
@@ -240,7 +242,7 @@ class SlashCommand extends Subcommand {
 		if (!userid) {
 			return await interaction.followUp({
 				content: await r(interaction, "errors:username_resolve_no_arg"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 		const ud = await GetUserDetails(userid);
@@ -259,7 +261,7 @@ class SlashCommand extends Subcommand {
 		} catch (e_) {
 			return interaction.followUp({
 				content: `> ${e_}`,
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -284,17 +286,19 @@ class SlashCommand extends Subcommand {
 		if (!(await IsWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "errors:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
 		if (!interaction.options.get("user")?.value) {
-			await interaction.reply({ content: ":skull:", ephemeral: true });
+			await interaction.reply({
+				content: ":skull:",
+				flags: [MessageFlags.Ephemeral]
+			});
 			return;
 		}
 
 		await interaction.deferReply({
-			ephemeral: false,
 			fetchReply: true
 		});
 
@@ -305,7 +309,7 @@ class SlashCommand extends Subcommand {
 		if (!userid) {
 			return await interaction.followUp({
 				content: await r(interaction, "errors:username_resolve_no_arg"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -313,7 +317,7 @@ class SlashCommand extends Subcommand {
 		if (!existingBan) {
 			return await interaction.followUp({
 				content: await r(interaction, "errors:user_not_banned"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -355,7 +359,7 @@ class SlashCommand extends Subcommand {
 		} catch (e_) {
 			return interaction.followUp({
 				content: `> ${e_}`,
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 

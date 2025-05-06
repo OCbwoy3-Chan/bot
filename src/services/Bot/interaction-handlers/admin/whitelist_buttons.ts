@@ -3,6 +3,7 @@ import {
 	InteractionHandlerTypes
 } from "@sapphire/framework";
 import {
+	MessageFlags,
 	type ButtonInteraction,
 	type StringSelectMenuInteraction
 } from "discord.js";
@@ -42,7 +43,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			if (interaction.user.id !== process.env.OWNER_ID) {
 				return await interaction.reply({
 					content: await r(interaction, "errors:not_bot_owner"),
-					ephemeral: true
+					flags: [MessageFlags.Ephemeral]
 				});
 			}
 
@@ -53,7 +54,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			} catch (e_) {
 				return await interaction.reply({
 					content: `> ${e_}`,
-					ephemeral: true
+					flags: [MessageFlags.Ephemeral]
 				});
 			}
 
@@ -61,7 +62,7 @@ export class MessageComponentHandler extends InteractionHandler {
 				content: await r(interaction, "etc:wl.a", {
 					user: `<@${userid}>`
 				}),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 
 			return;
@@ -71,7 +72,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			if (interaction.user.id !== process.env.OWNER_ID) {
 				return await interaction.reply({
 					content: await r(interaction, "errors:not_bot_owner"),
-					ephemeral: true
+					flags: [MessageFlags.Ephemeral]
 				});
 			}
 
@@ -82,7 +83,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			} catch (e_) {
 				return await interaction.reply({
 					content: `> ${e_}`,
-					ephemeral: true
+					flags: [MessageFlags.Ephemeral]
 				});
 			}
 
@@ -90,7 +91,7 @@ export class MessageComponentHandler extends InteractionHandler {
 				content: await r(interaction, "etc:wl.r", {
 					user: `<@${userid}>`
 				}),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 
 			return;

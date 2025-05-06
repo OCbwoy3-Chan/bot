@@ -2,7 +2,7 @@ import {
 	InteractionHandler,
 	InteractionHandlerTypes
 } from "@sapphire/framework";
-import type { StringSelectMenuInteraction } from "discord.js";
+import { MessageFlags, type StringSelectMenuInteraction } from "discord.js";
 import { general } from "../../../../locale/commands";
 import { IsAIWhitelisted } from "../../../Database/helpers/AIWhitelist";
 import { areGenAIFeaturesEnabled } from "../../../GenAI/gemini";
@@ -36,7 +36,7 @@ export class MenuHandler extends InteractionHandler {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: general.errors.missingPermission("GENERATIVE_AI"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
@@ -50,7 +50,7 @@ export class MenuHandler extends InteractionHandler {
 		if (!prompt[0]) {
 			return await interaction.reply({
 				content: await r(interaction, "errors:generic"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 

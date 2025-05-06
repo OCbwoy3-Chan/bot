@@ -3,7 +3,7 @@
 		"fork_warning": "\n> ***UNOFFICIAL VERSION***"
 	},
 	"bot_info_output": [
-		"# {{distro}}",
+		"### {{distro}}",
 		"-# **Discord gateway ping:** {{gatewayLatency}}ms",
 		"-# **Network ping:** {{networkLatency}}ms",
 		"-# **CPU latency:** {{cpuLatency}}μs",

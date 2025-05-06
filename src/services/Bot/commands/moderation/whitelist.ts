@@ -1,6 +1,10 @@
 import { Command, PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
+import {
+	ApplicationIntegrationType,
+	InteractionContextType,
+	MessageFlags
+} from "discord.js";
 import { GetUserDetails, GetUserIdFromName } from "../../../../lib/roblox";
 import {
 	addRobloxWhitelist,
@@ -97,7 +101,6 @@ class SlashCommand extends Subcommand {
 		const user = interaction.options.getUser("user", true);
 
 		await interaction.deferReply({
-			ephemeral: false,
 			fetchReply: true
 		});
 
@@ -105,7 +108,7 @@ class SlashCommand extends Subcommand {
 		if (!userId) {
 			return interaction.followUp({
 				content: await r(interaction, "errors:username_resolve_no_arg"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -117,13 +120,12 @@ class SlashCommand extends Subcommand {
 				content: await r(interaction, "generic:wl_success", {
 					user: `[${ud.displayName}](https://fxroblox.com/users/${userId})`,
 					discord: `<@${user.id}>`
-				}),
-				ephemeral: false
+				})
 			});
 		} catch (error) {
 			return interaction.followUp({
 				content: `${error}`,
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 	}
@@ -134,7 +136,6 @@ class SlashCommand extends Subcommand {
 		const username = interaction.options.getString("username", true);
 
 		await interaction.deferReply({
-			ephemeral: false,
 			fetchReply: true
 		});
 
@@ -142,7 +143,7 @@ class SlashCommand extends Subcommand {
 		if (!userId) {
 			return interaction.followUp({
 				content: await r(interaction, "errors:username_resolve_no_arg"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -154,12 +155,12 @@ class SlashCommand extends Subcommand {
 				content: await r(interaction, "generic:unwl_success", {
 					user: `[${ud.displayName}](https://fxroblox.com/users/${userId})`
 				}),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		} catch (error) {
 			return interaction.followUp({
 				content: `${error}`,
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 	}

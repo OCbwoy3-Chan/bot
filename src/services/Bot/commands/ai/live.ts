@@ -3,7 +3,8 @@ import { Subcommand } from "@sapphire/plugin-subcommands";
 import {
 	ApplicationIntegrationType,
 	ChannelType,
-	InteractionContextType
+	InteractionContextType,
+	MessageFlags
 } from "discord.js";
 import { IsAIWhitelisted } from "../../../Database/helpers/AIWhitelist";
 import { r } from "112-l10n";
@@ -113,22 +114,21 @@ class LiveCommand extends Subcommand {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
 		if (channel.type !== ChannelType.GuildVoice) {
 			return await interaction.reply({
 				content: "Not a VC!",
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
 		const result = await OCbwoy3ChanLive.joinChannel(channel.id);
 
 		return await interaction.reply({
-			content: result,
-			ephemeral: false
+			content: result
 		});
 	}
 
@@ -138,14 +138,14 @@ class LiveCommand extends Subcommand {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
 		if (CurrentLiveSession) {
 			return await interaction.reply({
 				content: "Session still active.",
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -153,8 +153,7 @@ class LiveCommand extends Subcommand {
 			const result = OCbwoy3ChanLive.leaveChannel();
 
 			return await interaction.reply({
-				content: result,
-				ephemeral: false
+				content: result
 			});
 		} catch (error) {
 			if ((error as any).code === "ERR_STREAM_PREMATURE_CLOSE") {
@@ -166,7 +165,7 @@ class LiveCommand extends Subcommand {
 			}
 			return await interaction.reply({
 				content: "An error occurred while leaving the session.",
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 	}
@@ -179,7 +178,7 @@ class LiveCommand extends Subcommand {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -190,20 +189,20 @@ class LiveCommand extends Subcommand {
 						return await interaction.reply({
 							content:
 								"Bot is not in a voice channel. Use `/live join` first.",
-							ephemeral: true
+							flags: [MessageFlags.Ephemeral]
 						});
 					}
 
 					await interaction.deferReply({
 						fetchReply: true,
-						ephemeral: true
+						flags: [MessageFlags.Ephemeral]
 					});
 
 					const connection = OCbwoy3ChanLive.getConnection();
 					if (!connection) {
 						return await interaction.reply({
 							content: "Failed to retrieve voice connection.",
-							ephemeral: true
+							flags: [MessageFlags.Ephemeral]
 						});
 					}
 
@@ -213,8 +212,7 @@ class LiveCommand extends Subcommand {
 					CurrentLiveSession = sessionx;
 
 					await interaction.followUp({
-						content: "Session started! (Hopefully)",
-						ephemeral: false
+						content: "Session started! (Hopefully)"
 					});
 					break;
 
@@ -222,7 +220,7 @@ class LiveCommand extends Subcommand {
 					if (!CurrentLiveSession) {
 						return await interaction.reply({
 							content: "No live session.",
-							ephemeral: true
+							flags: [MessageFlags.Ephemeral]
 						});
 					}
 					CurrentLiveSession.endSession();
@@ -241,7 +239,7 @@ class LiveCommand extends Subcommand {
 					if (!channel) {
 						return await interaction.reply({
 							content: "No VC :(",
-							ephemeral: true
+							flags: [MessageFlags.Ephemeral]
 						});
 					}
 
@@ -263,20 +261,20 @@ class LiveCommand extends Subcommand {
 				default:
 					return await interaction.reply({
 						content: "Invalid action type.",
-						ephemeral: true
+						flags: [MessageFlags.Ephemeral]
 					});
 			}
 		} catch (e_) {
 			return await interaction.reply({
 				content: `> # Action error (${action})\n> ${e_}`,
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
 		// Simulate performing the action
 		return await interaction.reply({
 			content: `dummy action execution feedback: ${action}\ntbd`,
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 
@@ -288,14 +286,13 @@ class LiveCommand extends Subcommand {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
 		// Simulate setting the model
 		return await interaction.reply({
-			content: `Model set to: ${model}`,
-			ephemeral: false
+			content: `Model set to: ${model}`
 		});
 	}
 }

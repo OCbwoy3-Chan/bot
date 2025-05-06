@@ -15,7 +15,9 @@ function IsValidBanningScope(scope: string): boolean {
 		try {
 			throw new Error("ass code");
 		} catch (error) {
-			logger.child({ error }).error(`Unsupported banning scope "${scope}"`);
+			logger
+				.child({ error })
+				.error(`Unsupported banning scope "${scope}"`);
 		}
 		return false;
 	}

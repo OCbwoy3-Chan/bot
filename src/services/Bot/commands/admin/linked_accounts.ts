@@ -25,7 +25,7 @@ class SlashCommand extends Command {
 		registry.registerContextMenuCommand((builder) =>
 			builder
 				.setName("Linked Accounts")
-				.setType(ApplicationCommandType.User)
+				.setType(ApplicationCommandType.User as any) // typescript :bruh:
 				.setContexts(
 					InteractionContextType.BotDM,
 					InteractionContextType.Guild,
@@ -45,7 +45,6 @@ class SlashCommand extends Command {
 		const user = interaction.targetUser;
 
 		await interaction.deferReply({
-			ephemeral: false,
 			fetchReply: true
 		});
 
@@ -95,7 +94,6 @@ class SlashCommand extends Command {
 
 		await interaction.followUp({
 			embeds: [embed],
-			ephemeral: false,
 			files: filesToSend.map((a) => {
 				return new AttachmentBuilder(Buffer.from(a.data as string), {
 					name: a.name

@@ -97,9 +97,7 @@ class SlashCommand extends Subcommand {
 				.addSubcommand((builder) =>
 					builder
 						.setName("char")
-						.setDescription(
-							"List a character's metadata."
-						)
+						.setDescription("List a character's metadata.")
 						.addStringOption((option) =>
 							option
 								.setName("prompt")
@@ -116,7 +114,7 @@ class SlashCommand extends Subcommand {
 	) {
 		return await interaction.reply({
 			content: await r(interaction, "ai:help_msg"),
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 
@@ -126,7 +124,7 @@ class SlashCommand extends Subcommand {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
@@ -140,7 +138,7 @@ class SlashCommand extends Subcommand {
 
 		return await interaction.reply({
 			content: await r(interaction, "ai:chat_clear"),
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 
@@ -150,7 +148,7 @@ class SlashCommand extends Subcommand {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
@@ -170,8 +168,7 @@ class SlashCommand extends Subcommand {
 			} catch {}
 
 			return await interaction.reply({
-				content: await r(interaction, "ai:char_update"),
-				ephemeral: false
+				content: await r(interaction, "ai:char_update")
 			});
 		}
 
@@ -216,7 +213,7 @@ class SlashCommand extends Subcommand {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
@@ -227,31 +224,42 @@ class SlashCommand extends Subcommand {
 
 		const chat_meta = interaction.options.getString("prompt", true);
 
-		const isOwner = interaction.user.id === "486147449703104523" ? true : false;
-		const char = getCachedPromptsJ().find(a=>a.filename===chat_meta);
+		const isOwner =
+			interaction.user.id === "486147449703104523" ? true : false;
+		const char = getCachedPromptsJ().find((a) => a.filename === chat_meta);
 
-
-		if (!char || char.deprecated || !char.metadata_localized || !char.metadata_language) {
+		if (
+			!char ||
+			char.deprecated ||
+			!char.metadata_localized ||
+			!char.metadata_language
+		) {
 			return await interaction.reply({
-				content: "Oh no! OCbwoy3-Chan doesn't know this character, maybe it doesn't exist?",
-				flags: [ MessageFlags.Ephemeral ]
+				content:
+					"Oh no! OCbwoy3-Chan doesn't know this character, maybe it doesn't exist?",
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
 		if (!isOwner && char.hidden) {
 			return await interaction.reply({
-				content: "Oh no! OCbwoy3-Chan can't display this character, maybe it's owner only?",
-				flags: [ MessageFlags.Ephemeral ]
+				content:
+					"Oh no! OCbwoy3-Chan can't display this character, maybe it's owner only?",
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
-		const interactionLang = (await getLocaleNow(
-			interaction
-		)) as LanguageId;
+		const interactionLang = (await getLocaleNow(interaction)) as LanguageId;
 
 		const b = new EmbedBuilder({
-			title: char.metadata_localized[interactionLang]?.name || char.name_aichooser,
-			description: char.metadata_localized[interactionLang]?.description_info || char.metadata_localized[interactionLang]?.description || char.description_charinfo || char.description,
+			title:
+				char.metadata_localized[interactionLang]?.name ||
+				char.name_aichooser,
+			description:
+				char.metadata_localized[interactionLang]?.description_info ||
+				char.metadata_localized[interactionLang]?.description ||
+				char.description_charinfo ||
+				char.description,
 			fields: [
 				{
 					name: await r(interaction, "ai:char_preview.language"),
@@ -262,13 +270,15 @@ class SlashCommand extends Subcommand {
 					value: char.name
 				}
 			],
-			thumbnail: char.image ? {
-				url: char.image
-			} : undefined,
+			thumbnail: char.image
+				? {
+						url: char.image
+					}
+				: undefined,
 			footer: {
 				text: `ID: ${char.filename}`
 			}
-		})
+		});
 
 		return await interaction.reply({
 			embeds: [b]

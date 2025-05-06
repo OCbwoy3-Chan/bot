@@ -6,6 +6,7 @@ import {
 	ApplicationIntegrationType,
 	ButtonBuilder,
 	ButtonStyle,
+	ContextMenuCommandType,
 	InteractionContextType,
 	UserContextMenuCommandInteraction
 } from "discord.js";
@@ -27,7 +28,7 @@ class SlashCommand extends Command {
 		registry.registerContextMenuCommand((builder) =>
 			builder
 				.setName("User info")
-				.setType(ApplicationCommandType.User)
+				.setType(ApplicationCommandType.User as any) // typescript :bruh:
 				.setContexts(
 					InteractionContextType.BotDM,
 					InteractionContextType.Guild,
@@ -47,7 +48,6 @@ class SlashCommand extends Command {
 		const user = interaction.targetUser;
 
 		await interaction.deferReply({
-			ephemeral: false,
 			fetchReply: true
 		});
 
@@ -110,8 +110,7 @@ class SlashCommand extends Command {
 
 		await interaction.followUp({
 			embeds: [embed],
-			components: [row as any],
-			ephemeral: false
+			components: [row as any]
 		});
 	}
 }

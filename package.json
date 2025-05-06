@@ -36,7 +36,7 @@
 		"chalk": "^5.4.1",
 		"chrono-node": "^1.4.9",
 		"commander": "^13.1.0",
-		"discord.js": "^14.16.1",
+		"discord.js": "^14.19.3",
 		"dotenv": "^16.4.5",
 		"exaroton": "^1.11.3",
 		"express": "^4.20.0",

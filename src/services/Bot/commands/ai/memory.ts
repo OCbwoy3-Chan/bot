@@ -6,7 +6,8 @@ import { areGenAIFeaturesEnabled } from "../../../GenAI/gemini";
 import {
 	ApplicationIntegrationType,
 	AttachmentBuilder,
-	InteractionContextType
+	InteractionContextType,
+	MessageFlags
 } from "discord.js";
 import { prisma } from "@db/db";
 import { r } from "112-l10n";
@@ -47,7 +48,7 @@ class AskCommand extends Command {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
@@ -57,7 +58,7 @@ class AskCommand extends Command {
 		}
 
 		await interaction.deferReply({
-			ephemeral: true,
+			flags: [MessageFlags.Ephemeral],
 			fetchReply: true
 		});
 
@@ -79,7 +80,7 @@ class AskCommand extends Command {
 					}
 				)
 			],
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 }

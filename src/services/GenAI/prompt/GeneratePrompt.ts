@@ -23,16 +23,18 @@ export type CharacterInfo = {
 	personalityTraits?: string[];
 	backstory?: Object;
 
-
 	// Metadata and Localization
 	name_aichooser?: string;
 	description: string;
 	metadata_language?: string;
-	metadata_localized?: Record<LanguageId, {
-		name?: string;
-		description?: string;
-		description_info?: string;
-	}>;
+	metadata_localized?: Record<
+		LanguageId,
+		{
+			name?: string;
+			description?: string;
+			description_info?: string;
+		}
+	>;
 	image?: string;
 
 	// Optional Behavior Flags

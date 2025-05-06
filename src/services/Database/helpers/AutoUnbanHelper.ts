@@ -14,7 +14,11 @@ export async function runAutoUnban() {
 			try {
 				const timeSkidUnbanned = Number(skid.bannedUntil);
 				if (timeRn >= timeSkidUnbanned) {
-					logger.child({ skid }).info(`Automatically unbanning skid ID ${skid.userId} because their ban expired.`)
+					logger
+						.child({ skid })
+						.info(
+							`Automatically unbanning skid ID ${skid.userId} because their ban expired.`
+						);
 					await UnbanUser(skid.userId);
 				}
 			} catch (error) {

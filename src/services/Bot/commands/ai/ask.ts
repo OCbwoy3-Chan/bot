@@ -16,7 +16,8 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	GuildChannel,
-	InteractionContextType
+	InteractionContextType,
+	MessageFlags
 } from "discord.js";
 import { Part } from "@google/generative-ai";
 import { GetAIModel } from "../../listeners/OCbwoy3ChanAI";
@@ -73,7 +74,7 @@ class AskCommand extends Command {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
@@ -83,7 +84,6 @@ class AskCommand extends Command {
 		}
 
 		await interaction.deferReply({
-			ephemeral: false,
 			fetchReply: true
 		});
 
@@ -246,7 +246,7 @@ class AskCommand extends Command {
 						})
 					],
 					components: rows as any,
-					ephemeral: true
+					flags: [MessageFlags.Ephemeral]
 				});
 			}
 		} catch (e_) {
@@ -257,13 +257,12 @@ class AskCommand extends Command {
 		if (err !== false) {
 			return await interaction.followUp({
 				content: `> ${err}`,
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
 		return await interaction.followUp({
 			content: response,
-			ephemeral: false,
 			components: rows as any
 		});
 	}
