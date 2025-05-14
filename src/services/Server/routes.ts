@@ -1,71 +1,91 @@
-import express, { Request, Response } from "express";
+import { Elysia, t } from "elysia";
 import {
 	AddToBanlandCacheManager,
 	BanlandCacheHelper
 } from "../../lib/BanlandCacheHelper";
-import { router, setNumBans } from "./router/stats";
+import { router as statsRouter, setNumBans } from "./router/stats";
 import { aiRouter } from "./router/chat";
 import { execSync } from "child_process";
 import { getDistroNameSync } from "@112/Utility";
+import cors from "@elysiajs/cors";
+import swagger from "@elysiajs/swagger";
 
-export const app = express();
+const branch = execSync("git rev-parse --abbrev-ref HEAD")
+	.toString()
+	.trim();
+const version = execSync("git describe --tags").toString().trim();
+const commit = execSync("git rev-parse HEAD").toString().trim();
 
-app.use(function (req, res, next) {
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header(
-		"Access-Control-Allow-Headers",
-		"Origin, X-Requested-With, Content-Type, Accept"
-	);
-	next();
-});
+const distro = getDistroNameSync();
 
-app.get("/discord", async (req: Request, res: Response) => {
-	res.redirect("https://ocbwoy3.dev/discord");
-});
+export const app = new Elysia().use(cors()).use(
+	swagger({
+		path: "/docs",
+		documentation: {
+			info: {
+				title: "ocbwoy3 :3",
+				description: `https://ocbwoy3.dev GBan + Website API (Running on ${distro})\nhttps://bsky.app/profile/did:plc:s7cesz7cr6ybltaryy4meb6y \n![i use nix btw](https://lionsmane.us-east.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:s7cesz7cr6ybltaryy4meb6y&cid=bafkreiftmixjo7zscth33n35jppuhzojczkwshfmtczoxprfsj43cld4bu)`,
+				version: `${version} (${branch})`
+			}
+		}
+	})
+);
 
-(async () => {
-	const branch = execSync("git rev-parse --abbrev-ref HEAD")
-		.toString()
-		.trim();
-	const version = execSync("git describe --tags").toString().trim();
-	const commit = execSync("git rev-parse HEAD").toString().trim();
+app.get(
+	"/",
+	`ocbwoy3.dev - [112 / OCbwoy3-Chan] ${branch}@${commit} (${version}) running on ${distro}`
+);
 
-	const distro = getDistroNameSync();
-
-	app.get("/", async (req: Request, res: Response) => {
-		// res.redirect(307,"https://ocbwoy3.dev")
-		res.status(418)
-			.header("Content-Type", "text/plain")
-			.send(
-				`ocbwoy3.dev - [112 / OCbwoy3-Chan] ${branch}@${commit} (${version}) running on ${distro}`
-			);
-	});
-})().catch((a) => {});
-
-app.use(router);
+app.use(statsRouter);
 
 const AllBanlandCacheHelper = new BanlandCacheHelper("All");
 AllBanlandCacheHelper._updateBanCountFunc = setNumBans;
 
 AddToBanlandCacheManager(AllBanlandCacheHelper);
 
-app.get("/banland.json", async (req: Request, res: Response) => {
-	res.header("Content-Type", "application/json").send(
-		await AllBanlandCacheHelper.GetCachedBanland()
-	);
-});
+function banlandRoute(r: string) {
+	app.get(r, () => AllBanlandCacheHelper.getBans(), {
+		tags: ["gbans"],
+		response: {
+			200: t.Record(
+				t.String({
+					pattern: "^([0-9]*)$",
+					default: "5366745988",
+					description: "User ID"
+				}), // User ID as a string
+				t.Object({
+					Reason: t.String({
+						default: "Testing account for Nova",
+						description: "Ban reason"
+					}),
+					Moderator: t.String({
+						default: "UsernameHere",
+						description: "Moderator name"
+					}),
+					Expiry: t.String({
+						default: "-1",
+						description: "Ban expiry in UNIX seconds (-1 is never)",
+						pattern: "^(\\-?[0-9]+)$"
+					})
+				}, {
+					default: {
+						Reason: "Testing account for Nova",
+						Moderator: "UsernameHere",
+						Expiry: "-1"
+					}
+				}),
+				{
+					title: "Globally banned users",
+					minProperties: 0
+				}
+			)
+		}
+	});
+}
 
-app.get("/bans", async (req: Request, res: Response) => {
-	res.header("Content-Type", "application/json").send(
-		await AllBanlandCacheHelper.GetCachedBanland()
-	);
-});
-
-app.get("/.prikolshub/banland.json", async (req: Request, res: Response) => {
-	res.header("Content-Type", "application/json").send(
-		await AllBanlandCacheHelper.GetCachedBanland()
-	);
-});
+banlandRoute("/.prikolshub/banland.json");
+banlandRoute("/banland.json");
+banlandRoute("/bans");
 
 app.use(aiRouter);
 

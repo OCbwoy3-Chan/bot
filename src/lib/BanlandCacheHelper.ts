@@ -41,6 +41,7 @@ export class BanlandCacheHelper {
 				Expiry: u.bannedUntil
 			};
 		});
+		this.bans = b;
 		this.cachedBanlandJSON = JSON.stringify(b);
 	}
 

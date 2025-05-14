@@ -11,10 +11,13 @@ import { logger } from "@112/Utility";
 import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
 
+// export type LanguageId = "en" | "lv" | "ru";
+
 // Core Character Information
 export type CharacterInfo = {
 	// AUTOMATIC
 	filename: string;
+	remap?: string;
 
 	// AI
 
@@ -24,9 +27,10 @@ export type CharacterInfo = {
 	backstory?: Object;
 
 	// Metadata and Localization
-	name_aichooser?: string;
-	description: string;
-	metadata_language?: string;
+
+	name_aichooser?: string; // Name shown character select menu, keep it short
+	description: string; // keep it very short because it's going in a discord dropdown component, 5-20 chars.
+	metadata_language?: string; // :flag_gb: English | :flag_us: English | For all other characters use the country's respective flag and the language name in said lanaugage e.g. Latviešu
 	metadata_localized?: Record<
 		LanguageId,
 		{
@@ -44,8 +48,9 @@ export type CharacterInfo = {
 	hidden?: boolean;
 
 	// Additional Descriptive Fields
-	remap?: string;
-	description_charinfo?: string;
+	description_charinfo?: string; // only shown in embed
+	nsfw?: boolean;
+	ai_generated?: boolean; // Determines if OCbwoy3 used ChatGPT to generate this character.
 };
 
 // read all files from sys/ directory ending with .txt
