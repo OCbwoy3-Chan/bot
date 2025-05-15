@@ -23,8 +23,8 @@ export const app = new Elysia().use(cors()).use(
 		path: "/docs",
 		documentation: {
 			info: {
-				title: "ocbwoy3 :3",
-				description: `https://ocbwoy3.dev GBan + Website API (Running on ${distro})\nhttps://bsky.app/profile/did:plc:s7cesz7cr6ybltaryy4meb6y \n![i use nix btw](https://lionsmane.us-east.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:s7cesz7cr6ybltaryy4meb6y&cid=bafkreiftmixjo7zscth33n35jppuhzojczkwshfmtczoxprfsj43cld4bu)`,
+				title: "OCbwoy3-Chan AI Gban API",
+				description: `The OCbwoy3-Chan AI GBan Infernece API\n![](https://lionsmane.us-east.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:s7cesz7cr6ybltaryy4meb6y&cid=bafkreiftmixjo7zscth33n35jppuhzojczkwshfmtczoxprfsj43cld4bu)`,
 				version: `${version} (${branch})`
 			}
 		}
