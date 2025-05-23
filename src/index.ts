@@ -5,6 +5,7 @@ import { exec, execSync } from "child_process";
 import figlet from "figlet";
 import { Logger } from "pino";
 import chalk from "chalk";
+import { libocbwoy3Greet } from "@ocbwoy3/libocbwoy3";
 const logger: Logger = require("pino")({
 	base: {
 		pid: null
@@ -16,6 +17,8 @@ const logger: Logger = require("pino")({
 		}
 	}
 });
+
+libocbwoy3Greet();
 
 declare global {
 	var NODE_ENV: string | "development" | "production";
