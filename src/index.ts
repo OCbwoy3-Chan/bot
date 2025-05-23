@@ -67,11 +67,8 @@ async function printFiglet(a: string, b: figlet.Fonts): Promise<string> {
 }
 
 (async () => {
-	process.stdout.write(
-		`\x1b]2;ocbwoy3.dev - ${branch}@${commit.slice(
-			0,
-			6
-		)} (${version})\x1b\x5c`
+	setConsoleTitle(
+		`ocbwoy3.dev - ${branch}@${commit.slice(0, 6)} (${version})`
 	);
 	console.log(await printFiglet("ocbwoy3 . dev", "Big"));
 	if (process.platform !== "linux" && process.platform !== "darwin") {
