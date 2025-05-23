@@ -5,7 +5,7 @@ import { exec, execSync } from "child_process";
 import figlet from "figlet";
 import { Logger } from "pino";
 import chalk from "chalk";
-import { libocbwoy3Greet } from "@ocbwoy3/libocbwoy3";
+import { libocbwoy3Greet, setConsoleTitle } from "@ocbwoy3/libocbwoy3";
 const logger: Logger = require("pino")({
 	base: {
 		pid: null
@@ -38,11 +38,11 @@ async function loadServices() {
 	for (const service of SERVICE_LOAD_ORDER) {
 		logger.info(`Loading service "${service}"`);
 		try {
-			process.stdout.write(
-				`\x1b]2;[Loading ${service}] ocbwoy3.dev - ${branch}@${commit.slice(
+			setConsoleTitle(
+				`[Loading ${service}] ocbwoy3.dev - ${branch}@${commit.slice(
 					0,
 					6
-				)} (${version})\x1b\x5c`
+				)} (${version})`
 			);
 			const mod = require(`./services/${service}`);
 			await new Promise((resolve) => setTimeout(resolve, 100));
@@ -55,11 +55,8 @@ async function loadServices() {
 				.error(`Error loading service "${service}"`, e);
 		}
 	}
-	process.stdout.write(
-		`\x1b]2;ocbwoy3.dev - ${branch}@${commit.slice(
-			0,
-			6
-		)} (${version})\x1b\x5c`
+	setConsoleTitle(
+		`ocbwoy3.dev - ${branch}@${commit.slice(0, 6)} (${version})`
 	);
 	logger.info(`112 loaded successfully!`);
 }
