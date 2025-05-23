@@ -8,6 +8,8 @@ import { freemem, totalmem, uptime } from "os";
 import { Interaction } from "discord.js";
 import { r } from "112-l10n";
 
+import libocbwoy3PackageJson from "@ocbwoy3/libocbwoy3/package.json";
+
 const distro = getDistroNameSync();
 
 export const infoCommand = {
@@ -37,7 +39,9 @@ export const infoCommand = {
 			uptime: uptimeStr,
 			devMemUsed: usedMemoryGB,
 			devMemMax: totalMemoryGB,
-			numBannedSkids: (await prisma.robloxUserBan.findMany()).length
+			numBannedSkids: (await prisma.robloxUserBan.count()),
+			libocbwoy3Version: libocbwoy3PackageJson.version,
+			libocbwoy3NpmUrl: `https://www.npmjs.com/package/${libocbwoy3PackageJson.name}`
 		})) as any as string[];
 
 		return m.join("\n");

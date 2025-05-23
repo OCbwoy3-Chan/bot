@@ -6,6 +6,7 @@ import figlet from "figlet";
 import { Logger } from "pino";
 import chalk from "chalk";
 import { libocbwoy3Greet, setConsoleTitle } from "@ocbwoy3/libocbwoy3";
+import { _libocbwoy3Version } from "@ocbwoy3/libocbwoy3/dist/constants";
 const logger: Logger = require("pino")({
 	base: {
 		pid: null
@@ -19,6 +20,7 @@ const logger: Logger = require("pino")({
 });
 
 libocbwoy3Greet();
+console.log(`libocbwoy3 version: ${_libocbwoy3Version}`)
 
 declare global {
 	var NODE_ENV: string | "development" | "production";

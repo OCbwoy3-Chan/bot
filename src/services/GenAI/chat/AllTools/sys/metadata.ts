@@ -7,10 +7,14 @@ import { hostname, platform } from "os";
 import { cwd } from "process";
 import { getDistroNameSync } from "@112/Utility";
 
+import { _libocbwoy3Version } from "@ocbwoy3/libocbwoy3/dist/constants";
+import libocbwoy3PackageJson from "@ocbwoy3/libocbwoy3/package.json";
+
+
 const meta: FunctionDeclaration = {
 	name: "sys.version",
 	description:
-		"Gets the metadata about the current 112 or the bot's version, including the branch, version, commit, node_env, gban providers, hostname, device details, current working dir and federating instances"
+		"Gets the metadata about the current 112 or the bot's version, including the branch, version, commit, node_env, libocbwoy3 version metadata, gban providers, hostname, device details, current working dir and federating instances"
 };
 
 addTest(meta.name, {
@@ -26,6 +30,12 @@ async function func(args: any): Promise<any> {
 		device: {
 			operatingSystem: getDistroNameSync(),
 			platform: platform()
+		},
+		libocbwoy3: {
+			version: _libocbwoy3Version,
+			npmVersion: libocbwoy3PackageJson.version,
+			package: libocbwoy3PackageJson.name,
+			npmUrl: `https://www.npmjs.com/package/${libocbwoy3PackageJson.name}`
 		},
 		runtime: {
 			hostname: hostname(),

@@ -9,7 +9,8 @@
 		"-# **CPU latency:** {{cpuLatency}}μs",
 		"-# **Uptime:** {{uptime}}",
 		"-# **Memory:** {{devMemUsed}}/{{devMemMax}} GB",
-		"-# **Banned users:** {{numBannedSkids}}"
+		"-# **Banned users:** {{numBannedSkids}}",
+		"-# **[`@ocbwoy3/libocbwoy3`](<{{libocbwoy3NpmUrl}}>) version:** v{{libocbwoy3Version}}"
 	],
 	"wl": {
 		"ai_a": "{{user}} has been added to the AI whitelist.",
