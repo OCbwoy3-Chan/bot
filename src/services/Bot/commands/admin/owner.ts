@@ -23,6 +23,7 @@ import {
 import { getCachedPromptsJ } from "@ocbwoy3chanai/prompt/GeneratePrompt";
 import { GetChannelPrompt, GetGuildPrompt } from "@db/helpers/AISettings";
 import { sep } from "path";
+import { randomBytes } from "crypto";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -71,6 +72,18 @@ class SlashCommand extends Subcommand {
 				{
 					name: "s_wl",
 					chatInputRun: "chatInputSetChannelWhitelist"
+				},
+				{
+					name: "add_gban_provider",
+					chatInputRun: "chatInputAddGbanProvider"
+				},
+				{
+					name: "remove_gban_provider",
+					chatInputRun: "chatInputRemoveGbanProvider"
+				},
+				{
+					name: "reset_gban_key",
+					chatInputRun: "chatInputResetGbanKey"
 				}
 			]
 		});
@@ -176,6 +189,45 @@ class SlashCommand extends Subcommand {
 											value: "remove"
 										}
 									])
+							)
+					)
+					.addSubcommand((command) =>
+						command
+							.setName("add_gban_provider")
+							.setDescription("Adds a new GBan provider")
+							.addStringOption((option) =>
+								option
+									.setName("handler_id")
+									.setDescription("The unique handler ID for the provider")
+									.setRequired(true)
+							)
+					)
+					.addSubcommand((command) =>
+						command
+							.setName("remove_gban_provider")
+							.setDescription("Removes an existing GBan provider")
+							.addStringOption((option) =>
+								option
+									.setName("handler_id")
+									.setDescription("The unique handler ID for the provider")
+									.setRequired(true)
+							)
+							.addBooleanOption((option) =>
+								option
+									.setName("delete_bans")
+									.setDescription("Deletes the provider's bans if true")
+									.setRequired(true)
+							)
+					)
+					.addSubcommand((command) =>
+						command
+							.setName("reset_gban_key")
+							.setDescription("Resets the API key for a GBan provider")
+							.addStringOption((option) =>
+								option
+									.setName("handler_id")
+									.setDescription("The unique handler ID for the provider")
+									.setRequired(true)
 							)
 					)
 			// .addStringOption(x=>x.setName("user").setDescription("The Username of the user to ban").setRequired(true))
@@ -375,6 +427,105 @@ class SlashCommand extends Subcommand {
 		} catch (error) {
 			return interaction.reply({
 				content: `Error: ${error}`,
+				flags: [MessageFlags.Ephemeral]
+			});
+		}
+	}
+
+	public async chatInputAddGbanProvider(
+		interaction: Command.ChatInputCommandInteraction
+	) {
+		const handlerId = interaction.options.getString("handler_id", true);
+
+		try {
+			const existingProvider = await prisma.gbanSyncKey.findUnique({
+				where: { handlerId }
+			});
+
+			if (existingProvider) {
+				return interaction.reply({
+					content: `> A GBan provider with the handler ID \`${handlerId}\` already exists.`,
+					flags: [MessageFlags.Ephemeral]
+				});
+			}
+
+			const apiKey = randomBytes(32).toString("hex");
+
+			await prisma.gbanSyncKey.create({
+				data: {
+					handlerId,
+					key: apiKey
+				}
+			});
+
+			return interaction.reply({
+				content: `> Successfully added GBan provider \`${handlerId}\` with API key: \`${apiKey}\`.`,
+				flags: [MessageFlags.Ephemeral]
+			});
+		} catch (error) {
+			return interaction.reply({
+				content: `> Error adding GBan provider: ${error}`,
+				flags: [MessageFlags.Ephemeral]
+			});
+		}
+	}
+
+	public async chatInputRemoveGbanProvider(
+		interaction: Command.ChatInputCommandInteraction
+	) {
+		const handlerId = interaction.options.getString("handler_id", true);
+		const deleteBans = interaction.options.getBoolean("delete_bans") ?? false;
+
+		try {
+			if (deleteBans) {
+				// Delete all bans associated with the provider
+				const deletedBans = await prisma.robloxUserBan_ThirdPartyFed.deleteMany({
+					where: { banHandlerId: handlerId }
+				});
+
+				await interaction.reply({
+					content: `> Deleted ${deletedBans.count} bans associated with GBan provider \`${handlerId}\`.`,
+					flags: [MessageFlags.Ephemeral]
+				});
+			}
+
+			// Delete the provider itself
+			const deletedProvider = await prisma.gbanSyncKey.delete({
+				where: { handlerId }
+			});
+
+			return interaction.followUp({
+				content: `> Successfully removed GBan provider \`${deletedProvider.handlerId}\`.`,
+				flags: [MessageFlags.Ephemeral]
+			});
+		} catch (error) {
+			return interaction.reply({
+				content: `> Error removing GBan provider: ${error}`,
+				flags: [MessageFlags.Ephemeral]
+			});
+		}
+	}
+
+	public async chatInputResetGbanKey(
+		interaction: Command.ChatInputCommandInteraction
+	) {
+		const handlerId = interaction.options.getString("handler_id", true);
+
+		try {
+			const newApiKey = randomBytes(32).toString("hex");
+
+			const updatedProvider = await prisma.gbanSyncKey.update({
+				where: { handlerId },
+				data: { key: newApiKey }
+			});
+
+			return interaction.reply({
+				content: `> Successfully reset API key for GBan provider \`${updatedProvider.handlerId}\`. New API key: \`${newApiKey}\`.`,
+				flags: [MessageFlags.Ephemeral]
+			});
+		} catch (error) {
+			return interaction.reply({
+				content: `> Error resetting API key: ${error}`,
 				flags: [MessageFlags.Ephemeral]
 			});
 		}

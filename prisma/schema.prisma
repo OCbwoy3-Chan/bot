@@ -43,7 +43,11 @@ model RobloxUserBan_ThirdPartyFed {
     moderatorId  String?
 
     @@id([userId, banHandlerId])
-    @@ignore
+}
+
+model GbanSyncKey {
+    handlerId String @id @unique
+    key       String @unique
 }
 
 // Appeals

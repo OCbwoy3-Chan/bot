@@ -38,12 +38,24 @@ function IsValidBanningScope(scope: string): boolean {
 export async function GetAllBans(): Promise<RobloxUserBan[]> {
 	try {
 		const b = await prisma.robloxUserBan.findMany();
-		return b;
+		const c = (await prisma.robloxUserBan_ThirdPartyFed.findMany()).map((a) => ({
+			userId: a.userId,
+			reason: a.reason,
+			bannedUntil: "-1",
+			privateReason: `Federated from GBan provider "${a.banHandlerId}" using 112's third-party ban sync system.`,
+			moderatorId: a.moderatorId || "Unknown",
+			moderatorName: `<@${a.moderatorId}>`,
+			bannedFrom: "All",
+			hackBan: false,
+			noFederate: true
+		}));
+		return [...b, ...c];
 	} catch (e_) {
 		logger.child({ error: e_ }).error("An error has occoured");
 		return [];
 	}
 }
+
 /**
  * Checks if a user is banned.
  * @param userId The Roblox User ID of the user to check

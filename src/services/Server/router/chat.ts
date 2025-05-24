@@ -1,4 +1,3 @@
-import express, { Request, Response } from "express";
 import { execSync } from "child_process";
 import { getDistroNameSync } from "@112/Utility";
 import { randomUUID } from "crypto";
