@@ -59,7 +59,7 @@ class AskCommand extends Command {
 
 		await interaction.deferReply({
 			flags: [MessageFlags.Ephemeral],
-			fetchReply: true
+			withResponse: true
 		});
 
 		const m = await prisma.oCbwoy3ChanAI_UserMemory.findMany({

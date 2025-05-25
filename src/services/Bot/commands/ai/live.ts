@@ -194,7 +194,7 @@ class LiveCommand extends Subcommand {
 					}
 
 					await interaction.deferReply({
-						fetchReply: true,
+						withResponse: true,
 						flags: [MessageFlags.Ephemeral]
 					});
 

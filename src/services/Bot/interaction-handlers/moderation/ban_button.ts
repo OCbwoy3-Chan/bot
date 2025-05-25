@@ -48,7 +48,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			);
 
 			await interaction.deferReply({
-				fetchReply: true
+				withResponse: true
 			});
 
 			const ru = await GetUserDetails(parseInt(userid));
@@ -85,7 +85,7 @@ export class MessageComponentHandler extends InteractionHandler {
 			}
 
 			await interaction.deferReply({
-				fetchReply: true
+				withResponse: true
 			});
 
 			const userid = interaction.customId.replace("112-unban-", "");

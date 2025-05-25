@@ -10,7 +10,7 @@
 		"-# **Uptime:** {{uptime}}",
 		"-# **Memory:** {{devMemUsed}}/{{devMemMax}} GB",
 		"-# **Banned users:** {{numBannedSkids}}",
-		"-# **[`@ocbwoy3/libocbwoy3`](<{{libocbwoy3NpmUrl}}>) version:** v{{libocbwoy3Version}}"
+		"-# **[`@ocbwoy3/libocbwoy3`](<{{libocbwoy3NpmUrl}}>) version:** {{libocbwoy3Version}} (npm)"
 	],
 	"wl": {
 		"ai_a": "{{user}} has been added to the AI whitelist.",

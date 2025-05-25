@@ -48,7 +48,7 @@ class SlashCommand extends Command {
 		const user = interaction.targetUser;
 
 		await interaction.deferReply({
-			fetchReply: true
+			withResponse: true
 		});
 
 		const embed: APIEmbed = {

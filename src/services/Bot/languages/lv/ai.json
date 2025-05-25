@@ -31,6 +31,8 @@
 		"blocked_by_google": "Manu atbildi bloķēja Google, šeit ir paskaidrojums: {{reason}}",
 		"unknown": "Es nevarēju ģenerēt atbildi, jo: {{reason}}"
 	},
+	"ohno": "Ak, nē! OCbwoy3-Chan nevarēja izveidot atbildi!",
+	"ohno_google": "Ak, nē! Google nepatika mana atbilde~!",
 	"char_preview": {
 		"language": "Valoda",
 		"name": "Vārds"

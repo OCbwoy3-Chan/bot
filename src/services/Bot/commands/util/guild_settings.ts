@@ -52,7 +52,7 @@ class SlashCommand extends Subcommand {
 	) {
 		if (!interaction.guild) return;
 		await interaction.deferReply({
-			fetchReply: true
+			withResponse: true
 		});
 
 		const lang = interaction.options.getString("language");

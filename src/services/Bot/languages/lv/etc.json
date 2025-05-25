@@ -10,7 +10,7 @@
 		"-# **Darbības laiks:** {{uptime}}",
 		"-# **Atmiņa:** {{devMemUsed}}/{{devMemMax}} GB",
 		"-# **Banotie lietotāji:** {{numBannedSkids}}",
-		"-# **[`@ocbwoy3/libocbwoy3`](<{{libocbwoy3NpmUrl}}>) versija:** [v{{libocbwoy3Version}}](<{{libocbwoy3NpmUrl}}>)"
+		"-# **[`@ocbwoy3/libocbwoy3`](<{{libocbwoy3NpmUrl}}>) versija:** {{libocbwoy3Version} (npm)"
 	],
 	"wl": {
 		"ai_a": "{{user}} tika pievienots MI baltajam sarakstam.",

@@ -45,7 +45,7 @@ class SlashCommand extends Command {
 		const user = interaction.targetUser;
 
 		await interaction.deferReply({
-			fetchReply: true
+			withResponse: true
 		});
 
 		const linkedAccounts = await prisma.whitelist_RobloxUser.findMany({

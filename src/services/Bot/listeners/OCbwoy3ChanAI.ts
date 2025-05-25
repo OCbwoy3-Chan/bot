@@ -3,9 +3,12 @@ import { container, Listener } from "@sapphire/framework";
 import {
 	AttachmentBuilder,
 	ChannelType,
+	ContainerBuilder,
 	Events,
 	Message,
-	RawFile
+	MessageFlags,
+	RawFile,
+	TextDisplayBuilder
 } from "discord.js";
 import {
 	IsAIWhitelisted,
@@ -49,96 +52,103 @@ export function GetAIModel() {
 	return AIModel;
 }
 
-export async function triggerOCbwoy3ChanOnMessage(m2: Message) {
-	// console.log(m2.channel.isDMBased() ? 'dms' : m2.channel.name)
-	if (m2.author.id === client.user!.id) return;
-	if (!m2.mentions.has(client.user!.id)) return;
-	if (BlacklistedMentions.test(m2.content)) return;
-	if (!m2.channel.isDMBased()) {
-		// if (!m2.channel.permissionsFor(client.user!.id)?.has("SendMessages")) return;
-	}
-	if ((await IsChannelAIWhitelisted(m2.channel.id)) !== true) {
-		if ((await IsAIWhitelisted(m2.author.id)) !== true) return;
-	}
+export async function triggerOCbwoy3ChanOnMessage(
+	m2: Message,
+	isManualTrigger: boolean = false
+) {
+	if (isManualTrigger === false) {
+		// console.log(m2.channel.isDMBased() ? 'dms' : m2.channel.name)
+		if (m2.author.id === client.user!.id) return;
+		if (!m2.mentions.has(client.user!.id)) return;
+		if (BlacklistedMentions.test(m2.content)) return;
+		if (!m2.channel.isDMBased()) {
+			// if (!m2.channel.permissionsFor(client.user!.id)?.has("SendMessages")) return;
+		}
+		if ((await IsChannelAIWhitelisted(m2.channel.id)) !== true) {
+			if ((await IsAIWhitelisted(m2.author.id)) !== true) return;
+		}
 
-	if (m2.author.id === process.env.OWNER_ID!) {
-		if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Update")) {
-			await m2.reply("ok");
-			exec("./upd.sh");
-			return;
-		}
-		if (m2.content.startsWith("$OCbwoy3ChanAI_Dev ToolTest")) {
-			await m2.reply("testing");
-			const testResults = await testAllTools(m2);
-			await m2.reply({
-				content: "ocbwoy3chanai tool test result",
-				files: [
-					new AttachmentBuilder(
-						Buffer.from(JSON.stringify(testResults)),
-						{
-							name: "results.json"
-						}
-					)
-				]
-			});
-			return;
-		}
-		if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Tools")) {
-			const tools = await getToolMetas();
-			const tString = tools
-				.map((a) => {
-					let b: string[] = [];
-					if (a.parameters) {
-						b = [
-							a.parameters.description ||
-								"No description provided",
-							`Type: ${a.parameters.type}`,
-							`Required: ${a.parameters.required?.join(", ")}`,
-							Object.entries(a.parameters!.properties!)
-								.map(([name, data]) => {
-									return `Param: ${name} - ${JSON.stringify(
-										data
-									)}`;
-								})
-								.join("\n")
-						];
-					}
-					return `${a.name} - ${a.description}\n${b.join("\n")}`;
-				})
-				.join("\n\n");
-			await m2.reply({
-				content: "ok",
-				files: [
-					new AttachmentBuilder(Buffer.from(tString), {
-						name: "tools.txt"
-					})
-				]
-			});
-			return;
-		}
-		if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Prompt")) {
-			let prompt = ChatPrompt;
-			const channelPrompt = await GetChannelPrompt(m2.channel.id);
-			if (channelPrompt) {
-				prompt = channelPrompt;
-			} else if (m2.guild) {
-				const guildPrompt = await GetGuildPrompt(m2.guild.id);
-				if (guildPrompt) {
-					prompt = guildPrompt;
-				}
+		if (m2.author.id === process.env.OWNER_ID!) {
+			if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Update")) {
+				await m2.reply("ok");
+				exec("./upd.sh");
+				return;
 			}
-			await m2.reply({
-				content: `${m2.author.id} ${AIModel} ${prompt}`,
-				files: [
-					new AttachmentBuilder(
-						Buffer.from(getPrompt(prompt)?.toString() || ""),
-						{
-							name: "system.txt"
+			if (m2.content.startsWith("$OCbwoy3ChanAI_Dev ToolTest")) {
+				await m2.reply("testing");
+				const testResults = await testAllTools(m2);
+				await m2.reply({
+					content: "ocbwoy3chanai tool test result",
+					files: [
+						new AttachmentBuilder(
+							Buffer.from(JSON.stringify(testResults)),
+							{
+								name: "results.json"
+							}
+						)
+					]
+				});
+				return;
+			}
+			if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Tools")) {
+				const tools = await getToolMetas();
+				const tString = tools
+					.map((a) => {
+						let b: string[] = [];
+						if (a.parameters) {
+							b = [
+								a.parameters.description ||
+									"No description provided",
+								`Type: ${a.parameters.type}`,
+								`Required: ${a.parameters.required?.join(
+									", "
+								)}`,
+								Object.entries(a.parameters!.properties!)
+									.map(([name, data]) => {
+										return `Param: ${name} - ${JSON.stringify(
+											data
+										)}`;
+									})
+									.join("\n")
+							];
 						}
-					)
-				]
-			});
-			return;
+						return `${a.name} - ${a.description}\n${b.join("\n")}`;
+					})
+					.join("\n\n");
+				await m2.reply({
+					content: "ok",
+					files: [
+						new AttachmentBuilder(Buffer.from(tString), {
+							name: "tools.txt"
+						})
+					]
+				});
+				return;
+			}
+			if (m2.content.startsWith("$OCbwoy3ChanAI_Dev Prompt")) {
+				let prompt = ChatPrompt;
+				const channelPrompt = await GetChannelPrompt(m2.channel.id);
+				if (channelPrompt) {
+					prompt = channelPrompt;
+				} else if (m2.guild) {
+					const guildPrompt = await GetGuildPrompt(m2.guild.id);
+					if (guildPrompt) {
+						prompt = guildPrompt;
+					}
+				}
+				await m2.reply({
+					content: `${m2.author.id} ${AIModel} ${prompt}`,
+					files: [
+						new AttachmentBuilder(
+							Buffer.from(getPrompt(prompt)?.toString() || ""),
+							{
+								name: "system.txt"
+							}
+						)
+					]
+				});
+				return;
+			}
 		}
 	}
 
@@ -325,7 +335,35 @@ export async function triggerOCbwoy3ChanOnMessage(m2: Message) {
 
 	try {
 		if (err !== false) {
-			return await m.reply("> " + `${err}`);
+			let loc = "ai:ohno";
+			if (`${err}`.startsWith("PromptFeedback,")) {
+				loc = "ai:ohno_google";
+				err = `${err}`.replaceAll(`PromptFeedback,`, "");
+			}
+			if (`${err}`.startsWith("NoResult,")) {
+				loc = "ai:ohno";
+				err = `${err}`.replaceAll(`NoResult,`, "");
+			}
+			if (`${err}`.includes("429 Too Many Requests")) {
+				loc = "ai:ohno_google";
+				err = `Google rate-limited us. SLOW DOWN WITH THE MESSAGES.`;
+			}
+			return await m.reply({
+				components: [
+					new ContainerBuilder()
+						.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(
+								`## ${await r(m2, loc)}`
+							)
+						)
+						.addTextDisplayComponents(
+							new TextDisplayBuilder().setContent(
+								"```\n" + `${err}` + "\n```"
+							)
+						)
+				],
+				flags: [MessageFlags.IsComponentsV2]
+			});
 		}
 
 		return await m.reply({

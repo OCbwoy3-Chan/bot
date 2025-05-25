@@ -101,7 +101,7 @@ class SlashCommand extends Subcommand {
 		const user = interaction.options.getUser("user", true);
 
 		await interaction.deferReply({
-			fetchReply: true
+			withResponse: true
 		});
 
 		const userId = await GetUserIdFromName(username);
@@ -136,7 +136,7 @@ class SlashCommand extends Subcommand {
 		const username = interaction.options.getString("username", true);
 
 		await interaction.deferReply({
-			fetchReply: true
+			withResponse: true
 		});
 
 		const userId = await GetUserIdFromName(username);

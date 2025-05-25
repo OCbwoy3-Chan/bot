@@ -10,7 +10,7 @@ import {
 import crypto from "crypto";
 import { readdirSync } from "fs";
 import { logger } from "../../../lib/Utility";
-import { getGeminiInstance } from "../gemini";
+import { areGenAIFeaturesEnabled, getGeminiInstance } from "../gemini";
 import { getPrompt } from "../prompt/GeneratePrompt";
 import { getToolMetas, getTools } from "./tools";
 import assert from "assert";
@@ -152,8 +152,9 @@ export class Chat {
 		ctx?: AIContext
 	): Promise<[string, string[]]> {
 		if (!this.chatSession) throw "No chat session present";
+		if (!areGenAIFeaturesEnabled()) throw "NoResult,Generative AI has been disabled.";
 
-		logger.info(`User: ${question}`);
+		logger.info(`User (${ctx?.askingUserId || "UNKNOWN FUCK"}): ${question}`);
 
 		let result: GenerateContentResponse | null = null;
 		let loopCount = 0;
@@ -230,7 +231,7 @@ export class Chat {
 
 		// console.log(this.chatSession, ctx, ...question)
 
-		assert(result, "No result :( @ocbwoy3 fix the code");
+		assert(result, "NoResult,");
 
 		let didTheThing = true;
 		while (loopCount < 6) {
@@ -239,7 +240,7 @@ export class Chat {
 					`[OCbwoy3-Chan AI] Generation iter #${loopCount}: ${result.text?.trim()}`
 				);
 			} catch {
-				throw `My response was most likely blocked, it might be Google's fault! Here's the error: ${JSON.stringify(
+				throw `PromptFeedback,${JSON.stringify(
 					result.promptFeedback
 				)}`;
 			}
@@ -339,7 +340,7 @@ export class Chat {
 			// 	`AI (${loopCount} last iter): ${result.response.text().trim()}`
 			// );
 		} catch {
-			throw `Response blocked by Google: ${JSON.stringify(
+			throw `PromptFeedback,${JSON.stringify(
 				result.promptFeedback
 			)}`;
 		}

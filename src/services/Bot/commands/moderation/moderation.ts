@@ -157,7 +157,7 @@ class SlashCommand extends Subcommand {
 		}
 
 		await interaction.deferReply({
-			fetchReply: true
+			withResponse: true
 		});
 
 		const userid = await GetUserIdFromName(
@@ -216,7 +216,7 @@ class SlashCommand extends Subcommand {
 		}
 
 		await interaction.deferReply({
-			fetchReply: true
+			withResponse: true
 		});
 
 		const reason =
@@ -299,7 +299,7 @@ class SlashCommand extends Subcommand {
 		}
 
 		await interaction.deferReply({
-			fetchReply: true
+			withResponse: true
 		});
 
 		const userid = await GetUserIdFromName(

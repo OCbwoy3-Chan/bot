@@ -109,7 +109,7 @@ class SlashCommand extends Subcommand {
 			);
 		}
 
-		await interaction.deferReply({ fetchReply: true });
+		await interaction.deferReply({ withResponse: true });
 
 		const username = interaction.options.getString("username", true);
 		const userId = await GetUserIdFromName(username);

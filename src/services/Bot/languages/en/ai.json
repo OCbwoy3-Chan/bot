@@ -31,6 +31,8 @@
 		"blocked_by_google": "My response was blocked by Google, here's why: {{reason}}",
 		"unknown": "I couldn't generate a response, here's why: {{reason}}"
 	},
+	"ohno": "Oh, no! OCbwoy3-Chan failed to generate a response!",
+	"ohno_google": "Oh, no! It seems Google didn't like my response~!",
 	"char_preview": {
 		"language": "Language",
 		"name": "Name"

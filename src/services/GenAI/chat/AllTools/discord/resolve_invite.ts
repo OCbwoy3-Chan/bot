@@ -34,6 +34,13 @@ async function func(args: any): Promise<any> {
 					name: i.guild.name,
 					id: i.guild.id,
 					features: i.guild.features,
+					indicators: {
+						discordPartner: i.guild.features.includes("PARTNERED"), // discord is stupid for discontinuing this
+						isVisibleInDiscovery: i.guild.features.includes("DISCOVERABLE"),
+						isStudentHub: i.guild.features.includes("HUB") || i.guild.features.includes("LINKED_TO_HUB"),
+						isMonetized: i.guild.features.includes("MONETIZATION_ENABLED"),
+						isCommunity: i.guild.features.includes("COMMUNITY")
+					},
 					nsfwLevel:
 						i.guild.nsfwLevel === GuildNSFWLevel.Default
 							? null
@@ -45,7 +52,7 @@ async function func(args: any): Promise<any> {
 										  GuildNSFWLevel.AgeRestricted
 										? "age_restricted"
 										: "unknown",
-					numNitroBoosters: i.guild.premiumSubscriptionCount,
+					discordNitroBoostCount: i.guild.premiumSubscriptionCount,
 					vanityInviteCode: i.guild.vanityURLCode,
 					description: i.guild.description
 				}

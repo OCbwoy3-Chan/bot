@@ -15,9 +15,11 @@ import {
 	AttachmentBuilder,
 	ButtonBuilder,
 	ButtonStyle,
+	ContainerBuilder,
 	GuildChannel,
 	InteractionContextType,
-	MessageFlags
+	MessageFlags,
+	TextDisplayBuilder
 } from "discord.js";
 import { Part } from "@google/generative-ai";
 import { GetAIModel } from "../../listeners/OCbwoy3ChanAI";
@@ -84,7 +86,7 @@ class AskCommand extends Command {
 		}
 
 		await interaction.deferReply({
-			fetchReply: true
+			withResponse: true
 		});
 
 		const message = interaction.options.getString("message", true);
@@ -143,7 +145,7 @@ class AskCommand extends Command {
 				? {
 						name: interaction.guild.name,
 						id: interaction.guild.id
-					}
+				  }
 				: null,
 			currentChannelM: {
 				name: interaction.channel
@@ -255,10 +257,37 @@ class AskCommand extends Command {
 		}
 
 		if (err !== false) {
-			return await interaction.followUp({
-				content: `> ${err}`,
-				flags: [MessageFlags.Ephemeral]
-			});
+			if (err !== false) {
+				let loc = "ai:ohno";
+				if (`${err}`.startsWith("PromptFeedback,")) {
+					loc = "ai:ohno_google";
+					err = `${err}`.replaceAll(`PromptFeedback,`, "");
+				}
+				if (`${err}`.startsWith("NoResult,")) {
+					loc = "ai:ohno";
+					err = `${err}`.replaceAll(`NoResult,`, "");
+				}
+				if (`${err}`.includes("429 Too Many Requests")) {
+					loc = "ai:ohno_google";
+					err = `Google rate-limited us. SLOW DOWN WITH THE MESSAGES.`;
+				}
+				return await interaction.followUp({
+					components: [
+						new ContainerBuilder()
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									`## ${await r(interaction, loc)}`
+								)
+							)
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									"```\n" + `${err}` + "\n```"
+								)
+							)
+					],
+					flags: [MessageFlags.IsComponentsV2]
+				});
+			}
 		}
 
 		return await interaction.followUp({
