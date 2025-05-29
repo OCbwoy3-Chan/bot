@@ -1,7 +1,7 @@
 import { execSync } from "child_process";
 import { getDistroNameSync } from "@112/Utility";
 import { randomUUID } from "crypto";
-import { AIContext } from "@ocbwoy3chanai/chat";
+import { AIContext, toolMetas } from "@ocbwoy3chanai/chat";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
 import Elysia, { status, t } from "elysia";
 import assert from "assert";
@@ -27,6 +27,9 @@ export function resetOCbwoy3ChansAPIKey(): string {
 	API_KEY = randomString();
 	return API_KEY;
 }
+
+router.get("/ocbwoy3chan/funcs", ()=>toolMetas)
+
 
 router.get(
 	"/ocbwoy3chan",

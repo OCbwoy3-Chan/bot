@@ -25,7 +25,7 @@ export function areGenAIFeaturesEnabled(): boolean {
 }
 
 export const AllVoiceModels: { [a: string]: string } = {
-	"Gemini 2.0 Flash Live": "gemini-2.0-flash-live-001"
+	"Gemini 2.5 Flash Preview Native Audio Dialog": "gemini-2.5-flash-preview-native-audio-dialog"
 };
 
 export const AllModels: { [a: string]: { m: string; t: string } } = {

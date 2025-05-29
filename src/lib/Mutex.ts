@@ -1,22 +1,28 @@
-type CreatedMutex = {
-	resolve: () => void;
-	await: () => Promise<void>;
-};
-
-export function createMutex(): CreatedMutex {
-	let resolveF = (...a: any) => {};
-
-	const promise = new Promise((resolve, reject) => {
-		resolveF = resolve;
-	});
+export function createMutex() {
+	let locked = false;
+	const waiting: (() => void)[] = [];
 
 	return {
-		resolve: () => {
-			resolveF(1);
+		lock: async () => {
+			if (locked) {
+				return new Promise<void>((resolve) => {
+					waiting.push(resolve);
+				});
+			} else {
+				locked = true;
+			}
 		},
-		await: async () => {
-			await promise;
-			return;
-		}
+		unlock: () => {
+			if (waiting.length > 0) {
+				const resolve = waiting.shift();
+				if (resolve) {
+					resolve();
+					locked = true;
+				}
+			} else {
+				locked = false;
+			}
+		},
+		isLocked: () => locked
 	};
 }

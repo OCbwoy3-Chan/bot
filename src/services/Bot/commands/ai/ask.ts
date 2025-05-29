@@ -269,7 +269,7 @@ class AskCommand extends Command {
 				}
 				if (`${err}`.includes("429 Too Many Requests")) {
 					loc = "ai:ohno_google";
-					err = `Google rate-limited us. SLOW DOWN WITH THE MESSAGES.`;
+					err = `Google rate-limited us. PLEASE SLOW DOWN WITH THE MESSAGES.`;
 				}
 				return await interaction.followUp({
 					components: [
