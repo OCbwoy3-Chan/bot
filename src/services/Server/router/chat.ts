@@ -129,10 +129,7 @@ router.post(
 		tags: ["ai"],
 		body: t.Object({
 			msg: t.String(),
-			ctx: t.Object({
-				currentChannel: t.String(),
-				currentAiModel: t.String()
-			})
+			ctx: t.Any()
 		}),
 		response: {
 			200: t.Object({
