@@ -33,8 +33,8 @@ router.get("/ocbwoy3chan/funcs", ()=>toolMetas)
 
 router.get(
 	"/ocbwoy3chan",
-	async ({ headers }) => {
-		const authHeader = headers.Authorization;
+	async ({ request }) => {
+		const authHeader = request.headers.get('Authorization');
 		if (!authHeader || authHeader !== `${API_KEY}`) {
 			return status(403, { error: "Forbidden" });
 		}
@@ -71,10 +71,7 @@ router.get(
 				version: t.String({ default: "v0.2.0-115-gac1d7ba "}),
 				commit: t.String({ default: "gac1d7ba..." }),
 			})
-		},
-		headers: t.Object({
-			Authorization: t.String()
-		})
+		}
 	}
 );
 
@@ -83,8 +80,8 @@ const jobResults: { [jobid: string]: { tools: string[]; resp: string } } = {};
 
 router.post(
 	"/ocbwoy3chan/queue_job",
-	async ({ headers, body }) => {
-		const authHeader = headers.Authorization;
+	async ({ request, body }) => {
+		const authHeader = request.headers.get('Authorization');
 		if (!authHeader || authHeader !== `${API_KEY}`) {
 			return status(403, { error: "Forbidden" });
 		}
@@ -141,17 +138,14 @@ router.post(
 				error: t.String({ default: "Unauthorized" })
 			}),
 
-		},
-		headers: t.Object({
-			Authorization: t.String()
-		})
+		}
 	}
 );
 
 router.post(
 	"/ocbwoy3chan/get_response",
-	async ({ headers, body }) => {
-		const authHeader = headers.Authorization;
+	async ({ request, body }) => {
+		const authHeader = request.headers.get('Authorization');
 		if (!authHeader || authHeader !== `${API_KEY}`) {
 			return status(403, { error: "Forbidden" });
 		}
@@ -190,10 +184,7 @@ router.post(
 				tools: t.Optional(t.Array(t.String())),
 				resp: t.Optional(t.String())
 			})
-		},
-		headers: t.Object({
-			Authorization: t.String()
-		})
+		}
 	}
 );
 
