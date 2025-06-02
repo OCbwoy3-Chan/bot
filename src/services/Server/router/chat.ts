@@ -5,6 +5,7 @@ import { AIContext, toolMetas } from "@ocbwoy3chanai/chat";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
 import Elysia, { status, t } from "elysia";
 import assert from "assert";
+import { sep } from "path";
 
 const router = new Elysia();
 
@@ -101,7 +102,7 @@ router.post(
 		const chat = chatManager.getChat(
 			ct.currentChannel,
 			ct.currentAiModel,
-			"ocbwoy3_chan"
+			`ocbwoy3s_multiverse${sep}roleplay${sep}darktru` // linux user pain adding windows support
 		);
 
 		(async () => {
