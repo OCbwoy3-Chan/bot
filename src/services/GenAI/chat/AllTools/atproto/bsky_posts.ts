@@ -2,6 +2,7 @@ import { BskyAgent } from "@atproto/api";
 import { HandleResolver } from "@atproto/identity";
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { addTest, registerTool } from "../../tools";
+import { agent } from "./libatproto";
 
 async function fetchWithTimeout(url: string, opts?: any) {
 	const timeout = 2500;
@@ -40,10 +41,6 @@ const meta: FunctionDeclaration = {
 
 addTest(meta.name, {
 	didOrHandle: "ocbwoy3.dev"
-});
-
-const agent = new BskyAgent({
-	service: "https://public.api.bsky.app"
 });
 
 async function func(args: any): Promise<any> {

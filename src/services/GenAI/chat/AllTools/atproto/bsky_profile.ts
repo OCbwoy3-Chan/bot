@@ -3,6 +3,7 @@ import { HandleResolver } from "@atproto/identity";
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { addTest, registerTool } from "../../tools";
 import { LabelerViewDetailed } from "@atproto/api/dist/client/types/app/bsky/labeler/defs";
+import { agent } from "./libatproto";
 
 async function fetchWithTimeout(url: string, opts?: any) {
 	const timeout = 2500;
@@ -42,10 +43,6 @@ const meta: FunctionDeclaration = {
 
 addTest(meta.name, {
 	didOrHandle: "ocbwoy3.dev"
-});
-
-const agent = new BskyAgent({
-	service: process.env.ATPROTO_PDS || "https://bsky.social"
 });
 
 const LABELER_DIDS = `did:plc:zkd45zaim752t2nhdp4hx3tl
