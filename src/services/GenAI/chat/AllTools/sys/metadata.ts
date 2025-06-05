@@ -10,11 +10,10 @@ import { getDistroNameSync } from "@112/Utility";
 import { _libocbwoy3Version } from "@ocbwoy3/libocbwoy3/dist/constants";
 import libocbwoy3PackageJson from "@ocbwoy3/libocbwoy3/package.json";
 
-
 const meta: FunctionDeclaration = {
-	name: "sys.version",
+	name: "sys.metadata",
 	description:
-		"Gets the metadata about the current 112 or the bot's version, including the branch, version, commit, node_env, libocbwoy3 version metadata, gban providers, hostname, device details, current working dir and federating instances"
+		"Gets the metadata about the current bot's version, including the branch, version, commit, node_env, libocbwoy3 version metadata, gban providers, hostname, device details, current working dir, federated/federating instances and more!"
 };
 
 addTest(meta.name, {

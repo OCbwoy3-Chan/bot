@@ -132,7 +132,7 @@ export const client = new SapphireClient({
 		Partials.ThreadMember,
 		Partials.User
 	],
-	defaultPrefix: "!",
+	defaultPrefix: "?>",
 	loadMessageCommandListeners: true,
 	caseInsensitiveCommands: true,
 	caseInsensitivePrefixes: true,

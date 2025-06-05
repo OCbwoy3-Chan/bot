@@ -17,6 +17,11 @@ export function registerTool(f: Function, m: FunctionDeclaration): void {
 	);
 }
 
+
+export async function callToolHack(toolName: string, toolArgs?: any, aiMetadata?: any): Promise<any> {
+	return await tools[toolName](toolArgs, aiMetadata)
+}
+
 export function addTest(toolName?: string, args?: any) {
 	assert(toolName, "No tool name :(");
 	tests.push({ tool: toolName!, args });
