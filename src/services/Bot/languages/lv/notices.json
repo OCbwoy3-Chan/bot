@@ -12,7 +12,7 @@
 		"ai_hello": "Uzziniet vairāk par OCbwoy3-Chan vietnē [ocbwoy3.dev](<https://ocbwoy3.dev/chan>).",
 		"eu": "Mēs piemērojam papildu datu aizsardzības noteikumus mūsu lietotājiem Eiropā saskaņā ar [GDPR](<https://gdpr-info.eu/>). [Uzzini vairāk](<https://ocbwoy3.dev/chan/legal/privacy>).",
 		"world_age": "Lai izmantotu mūsu pakalpojumus, tev jābūt vismaz 13 gadus vecam.",
-		"america_coppa_protested_edition": "Lai izmantotu mūsu pakalpojumus, tev jābūt vismaz 16 gadus vecam saskaņā ar COPPA 2.0.",
+		"america_coppa_protested_edition": "Saskaņā ar COPPA 2.0, lai izmantotu mūsu pakalpojumus ASV, tev jābūt vismaz {{age_of_digial_consent}} gadus vecam.",
 		"europe_gdpr_age": "Saskaņā ar GDPR noteikumiem tavā valstī, tev jābūt vismaz {{age_of_digial_consent}} gadus vecam, lai izmantotu mūsu pakalpojumus."
 	}
 }

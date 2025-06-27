@@ -368,6 +368,9 @@ export async function triggerOCbwoy3ChanOnMessage(
 
 		return await m.reply({
 			content: response,
+			allowedMentions: {
+				parse: ["users"]
+			},
 			files: filesToSend.map((a) => {
 				return new AttachmentBuilder(Buffer.from(a.data as string), {
 					name: a.name
