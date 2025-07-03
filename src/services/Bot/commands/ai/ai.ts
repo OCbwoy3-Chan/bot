@@ -197,6 +197,7 @@ class SlashCommand extends Subcommand {
 							)
 							.setValue(a.filename);
 					})
+					.splice(0,20)
 			);
 
 		const row = new ActionRowBuilder().addComponents(select);
@@ -204,7 +205,7 @@ class SlashCommand extends Subcommand {
 		await interaction.reply({
 			content: await r(interaction, "ai:char_update_select"),
 			components: [row as any]
-		});
+		}).catch(a=>console.error(a));
 	}
 
 	public async chatInputListCharacterMetadata(
