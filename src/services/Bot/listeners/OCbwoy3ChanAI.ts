@@ -17,7 +17,7 @@ import {
 import { AIContext, Chat } from "@ocbwoy3chanai/chat/index";
 import { areGenAIFeaturesEnabled } from "@ocbwoy3chanai/gemini";
 import { getPrompt } from "@ocbwoy3chanai/prompt/GeneratePrompt";
-import { testAllTools } from "@ocbwoy3chanai/ToolTest";
+import { testAllTools, testSingleTool } from "@ocbwoy3chanai/ToolTest";
 import { chatManager } from "@ocbwoy3chanai/ChatManager";
 import {
 	GetChannelPrompt,
@@ -77,6 +77,22 @@ export async function triggerOCbwoy3ChanOnMessage(
 			if (m2.content.startsWith("$OCbwoy3ChanAI_Dev ToolTest")) {
 				await m2.reply("testing");
 				const testResults = await testAllTools(m2);
+				await m2.reply({
+					content: "ocbwoy3chanai tool test result",
+					files: [
+						new AttachmentBuilder(
+							Buffer.from(JSON.stringify(testResults)),
+							{
+								name: "results.json"
+							}
+						)
+					]
+				});
+				return;
+			}
+			if (m2.content.startsWith("$OCbwoy3ChanAI_Dev T ")) {
+				await m2.reply("testing");
+				const testResults = await testSingleTool(m2.content.replaceAll("$OCbwoy3ChanAI_Dev T ",""), m2);
 				await m2.reply({
 					content: "ocbwoy3chanai tool test result",
 					files: [

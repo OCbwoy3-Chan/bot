@@ -1,6 +1,7 @@
 import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
-import { translate } from "@navetacandra/ddg";
 import { addTest, registerTool } from "../../tools";
+import { LanguageName } from "@navetacandra/ddg/dist/types";
+import { translate, languages } from "@navetacandra/ddg";
 
 const meta: FunctionDeclaration = {
 	name: "ddg.translate",
@@ -11,8 +12,9 @@ const meta: FunctionDeclaration = {
 		description: "Translate parameters",
 		properties: {
 			target: {
-				description: "The target language ISO code (e.g., en).",
-				type: SchemaType.STRING
+				description: "The target language",
+				type: SchemaType.STRING,
+				enum: Object.values(languages)
 			},
 			query: {
 				description: "The text to translate.",
@@ -24,19 +26,19 @@ const meta: FunctionDeclaration = {
 
 addTest(meta.name, {
 	query: "Sveiki, Pasaule!",
-	target: "de"
+	target: "English"
 });
 
 async function func(args: any): Promise<any> {
 	const query = (args as any).query as string;
 	const targetLangISO639 = (args as any).target as string;
 
-	const translated = await translate(query, "", targetLangISO639);
+	const translated = await translate(query, "", targetLangISO639 as LanguageName);
 
 	return {
 		detected_lang: translated.detected_language,
-		translated: translated.translated
+		translated: translated.text
 	};
 }
 
-registerTool(func, meta);
+// registerTool(func, meta);

@@ -5,7 +5,7 @@ import { exec, execSync } from "child_process";
 import figlet from "figlet";
 import { Logger } from "pino";
 import chalk from "chalk";
-import { libocbwoy3Greet, setConsoleTitle } from "@ocbwoy3/libocbwoy3";
+import { isBun, libocbwoy3Greet, setConsoleTitle } from "@ocbwoy3/libocbwoy3";
 import { _libocbwoy3Version } from "@ocbwoy3/libocbwoy3/dist/constants";
 const logger: Logger = require("pino")({
 	base: {
@@ -21,6 +21,11 @@ const logger: Logger = require("pino")({
 
 libocbwoy3Greet();
 console.log(`libocbwoy3 version: ${_libocbwoy3Version}`)
+
+if (!isBun()) {
+	console.log("Download and install Bun to run this: https://bun.sh")
+	throw Error("OCbwoy3-Chan can only run under Bun!")
+}
 
 declare global {
 	var NODE_ENV: string | "development" | "production";
