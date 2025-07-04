@@ -64,7 +64,8 @@ async function scrapeDuckduckgo(query: string) {
 	const p = new JSDOM(theHtml,{
 		contentType: "text/html",
 		url: searchLink,
-		userAgent
+		userAgent,
+		runScripts: "outside-only"
 	})
 
 	for (const a of p.window.document.querySelectorAll(".results .result .result__body")) {
