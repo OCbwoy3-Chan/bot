@@ -2,14 +2,15 @@ import { FunctionDeclaration, SchemaType } from "@google/generative-ai";
 import { addTest, registerTool } from "../../tools";
 
 import { client } from "services/Bot/bot";
-import { GuildNSFWLevel } from "discord.js";
+import { GuildNSFWLevel, Invite } from "discord.js";
+import axios from "axios";
 
 const meta: FunctionDeclaration = {
 	name: "discord.resolve_invite",
 	description:
 		"Resolves a Discord Invite (basically the code part of discord.gg/code or discord.com/invite/code)",
 	parameters: {
-		required: [],
+		required: ["code"],
 		type: SchemaType.OBJECT,
 		description: "resolveDiscordInvite parameters",
 		properties: {
@@ -22,11 +23,12 @@ const meta: FunctionDeclaration = {
 };
 
 addTest(meta.name, {
-	url: "darktru"
+	code: "darktru"
 });
 
 async function func(args: any): Promise<any> {
-	const i = await client.fetchInvite(args.code as string);
+	const theProfile = JSON.parse(await axios.get(`https://discord.com/api/v9/invites/${args.code}`))
+	const i = await client.fetchInvite(`${args.code}`);
 
 	return {
 		guild: i.guild
@@ -54,10 +56,15 @@ async function func(args: any): Promise<any> {
 										: "unknown",
 					discordNitroBoostCount: i.guild.premiumSubscriptionCount,
 					vanityInviteCode: i.guild.vanityURLCode,
-					description: i.guild.description
+					description: i.guild.description,
 				}
 			: null,
+		isTemporary: i.temporary || false,
+		maxAge: i.maxAge,
+		maxUses: i.maxUses,
+		expiresTimestamp: i.expiresTimestamp,
 		members: i.memberCount,
+		serverProfile: theProfile.profile || null,
 		invitedBy: i.inviter
 			? {
 					name: i.inviter.displayName,
