@@ -27,7 +27,8 @@ addTest(meta.name, {
 });
 
 async function func(args: any): Promise<any> {
-	const theProfile = JSON.parse(await axios.get(`https://discord.com/api/v9/invites/${args.code}`))
+	const theProfile = await (await axios.get(`https://discord.com/api/v9/invites/${args.code}`)).data
+	// console.log(theProfile)
 	const i = await client.fetchInvite(`${args.code}`);
 
 	return {
@@ -75,5 +76,7 @@ async function func(args: any): Promise<any> {
 		json: i.toJSON()
 	};
 }
+
+// console.log(await func({code:"darktru"}))
 
 registerTool(func, meta);
