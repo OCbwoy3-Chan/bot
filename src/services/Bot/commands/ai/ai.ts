@@ -23,6 +23,7 @@ import {
 	PaginatedMessage,
 	PaginatedMessageEmbedFields
 } from "@sapphire/discord.js-utilities";
+import { logger } from "@112/Utility";
 
 class SlashCommand extends Subcommand {
 	public constructor(
@@ -235,9 +236,10 @@ class SlashCommand extends Subcommand {
 			!char.metadata_localized ||
 			!char.metadata_language
 		) {
+			if (char) logger.warn(`[AI CHAR] Missing char.metadata_localized or char.metadata_language!`);
 			return await interaction.reply({
 				content:
-					"Oh no! OCbwoy3-Chan doesn't know this character, maybe it doesn't exist?",
+					"Oh no! OCbwoy3-Chan doesn't know this character, it is deprecated, is missing some JSON fields or maybe it doesn't exist?",
 				flags: [MessageFlags.Ephemeral]
 			});
 		}
