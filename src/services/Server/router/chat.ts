@@ -92,7 +92,7 @@ router.post(
 		const jobid = randomUUID();
 
 		const { msg: message, ctx: context } = body;
-		const ct: Partial<AIContext> = context;
+		const ct: Partial<AIContext> & {charId?: string} = context;
 
 		assert(ct.currentChannel);
 		assert(ct.currentAiModel);
@@ -102,7 +102,7 @@ router.post(
 		const chat = chatManager.getChat(
 			ct.currentChannel,
 			ct.currentAiModel,
-			`ocbwoy3s_multiverse${sep}roleplay${sep}darktru` // linux user pain adding windows support
+			ct.charId?.replaceAll("/", sep) || `ocbwoy3s_multiverse${sep}roleplay${sep}darktru` // linux user pain adding windows support
 		);
 
 		(async () => {
