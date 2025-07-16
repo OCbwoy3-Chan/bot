@@ -15,13 +15,17 @@ import {
 	AttachmentBuilder,
 	ButtonBuilder,
 	ButtonStyle,
+	ContainerBuilder,
 	GuildChannel,
-	InteractionContextType
+	InteractionContextType,
+	MessageFlags,
+	TextDisplayBuilder
 } from "discord.js";
 import { Part } from "@google/generative-ai";
 import { GetAIModel } from "../../listeners/OCbwoy3ChanAI";
 import { r } from "112-l10n";
 import { getEmoji } from "@112/EmojiManager";
+import { sep } from "path";
 
 class AskCommand extends Command {
 	public constructor(
@@ -72,7 +76,7 @@ class AskCommand extends Command {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
@@ -82,8 +86,7 @@ class AskCommand extends Command {
 		}
 
 		await interaction.deferReply({
-			ephemeral: false,
-			fetchReply: true
+			withResponse: true
 		});
 
 		const message = interaction.options.getString("message", true);
@@ -91,7 +94,7 @@ class AskCommand extends Command {
 			? true
 			: false;
 
-		let prompt = "default";
+		let prompt = `ocbwoy3_chan${sep}default`;
 		const channelPrompt = await GetChannelPrompt(interaction.channelId);
 		if (channelPrompt) {
 			prompt = channelPrompt;
@@ -206,8 +209,7 @@ class AskCommand extends Command {
 				toolsUsed.includes("exaroton.credits")
 			) {
 				t.push({
-					emoji:
-						getEmoji("Exaroton"),
+					emoji: getEmoji("Exaroton"),
 					label: await r(interaction, "ai:tools.exaroton"),
 					id: "ocbwoy3chan_tool_noop_exaroton"
 				});
@@ -246,7 +248,7 @@ class AskCommand extends Command {
 						})
 					],
 					components: rows as any,
-					ephemeral: true
+					flags: [MessageFlags.Ephemeral]
 				});
 			}
 		} catch (e_) {
@@ -255,15 +257,41 @@ class AskCommand extends Command {
 		}
 
 		if (err !== false) {
-			return await interaction.followUp({
-				content: `> ${err}`,
-				ephemeral: true
-			});
+			if (err !== false) {
+				let loc = "ai:ohno";
+				if (`${err}`.startsWith("PromptFeedback,")) {
+					loc = "ai:ohno_google";
+					err = `${err}`.replaceAll(`PromptFeedback,`, "");
+				}
+				if (`${err}`.startsWith("NoResult,")) {
+					loc = "ai:ohno";
+					err = `${err}`.replaceAll(`NoResult,`, "");
+				}
+				if (`${err}`.includes("429 Too Many Requests")) {
+					loc = "ai:ohno_google";
+					err = `Google rate-limited us. PLEASE SLOW DOWN WITH THE MESSAGES.`;
+				}
+				return await interaction.followUp({
+					components: [
+						new ContainerBuilder()
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									`## ${await r(interaction, loc)}`
+								)
+							)
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									"```\n" + `${err}` + "\n```"
+								)
+							)
+					],
+					flags: [MessageFlags.IsComponentsV2]
+				});
+			}
 		}
 
 		return await interaction.followUp({
 			content: response,
-			ephemeral: false,
 			components: rows as any
 		});
 	}

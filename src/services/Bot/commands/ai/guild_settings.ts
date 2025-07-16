@@ -1,6 +1,10 @@
 import { PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
+import {
+	ApplicationIntegrationType,
+	InteractionContextType,
+	MessageFlags
+} from "discord.js";
 import { general } from "../../../../locale/commands";
 import { IsAIWhitelisted } from "../../../Database/helpers/AIWhitelist";
 import {
@@ -58,12 +62,8 @@ class GuildSettingsCommand extends Subcommand {
 			builder
 				.setName(this.name)
 				.setDescription(this.description)
-				.setContexts(
-					InteractionContextType.Guild
-				)
-				.setIntegrationTypes(
-					ApplicationIntegrationType.GuildInstall
-				)
+				.setContexts(InteractionContextType.Guild)
+				.setIntegrationTypes(ApplicationIntegrationType.GuildInstall)
 				.addSubcommand((builder) =>
 					builder
 						.setName("reset")
@@ -134,7 +134,7 @@ class GuildSettingsCommand extends Subcommand {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: general.errors.missingPermission("GENERATIVE_AI"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -142,7 +142,7 @@ class GuildSettingsCommand extends Subcommand {
 
 		return await interaction.reply({
 			content: "Guild AI prompt cleared",
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 
@@ -152,7 +152,7 @@ class GuildSettingsCommand extends Subcommand {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: general.errors.missingPermission("GENERATIVE_AI"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -161,7 +161,7 @@ class GuildSettingsCommand extends Subcommand {
 
 		return await interaction.reply({
 			content: "Guild AI prompt set",
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 
@@ -171,7 +171,7 @@ class GuildSettingsCommand extends Subcommand {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -181,7 +181,7 @@ class GuildSettingsCommand extends Subcommand {
 			content: prompt
 				? await r(interaction, "ai:current_prompt_server", { prompt })
 				: await r(interaction, "ai:no_prompt_set"),
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 
@@ -191,7 +191,7 @@ class GuildSettingsCommand extends Subcommand {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -204,7 +204,7 @@ class GuildSettingsCommand extends Subcommand {
 
 		return await interaction.reply({
 			content: await r(interaction, "generic:done"),
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 
@@ -214,7 +214,7 @@ class GuildSettingsCommand extends Subcommand {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -228,7 +228,7 @@ class GuildSettingsCommand extends Subcommand {
 
 		return await interaction.reply({
 			content: await r(interaction, "generic:done"),
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 
@@ -238,7 +238,7 @@ class GuildSettingsCommand extends Subcommand {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -249,7 +249,7 @@ class GuildSettingsCommand extends Subcommand {
 			content: prompt
 				? await r(interaction, "ai:current_prompt_channel", { prompt })
 				: await r(interaction, "ai:no_prompt_set"),
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 }

@@ -4,6 +4,7 @@ import {
 	InteractionHandlerTypes
 } from "@sapphire/framework";
 import {
+	MessageFlags,
 	type ButtonInteraction,
 	type StringSelectMenuInteraction
 } from "discord.js";
@@ -35,7 +36,7 @@ export class MessageComponentHandler extends InteractionHandler {
 
 		await interaction.reply({
 			content: await r(interaction, "ai:help_msg"),
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 }

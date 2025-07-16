@@ -6,7 +6,8 @@ import { areGenAIFeaturesEnabled } from "../../../GenAI/gemini";
 import {
 	ApplicationIntegrationType,
 	AttachmentBuilder,
-	InteractionContextType
+	InteractionContextType,
+	MessageFlags
 } from "discord.js";
 import { prisma } from "@db/db";
 import { r } from "112-l10n";
@@ -47,7 +48,7 @@ class AskCommand extends Command {
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
@@ -57,8 +58,8 @@ class AskCommand extends Command {
 		}
 
 		await interaction.deferReply({
-			ephemeral: true,
-			fetchReply: true
+			flags: [MessageFlags.Ephemeral],
+			withResponse: true
 		});
 
 		const m = await prisma.oCbwoy3ChanAI_UserMemory.findMany({
@@ -72,14 +73,33 @@ class AskCommand extends Command {
 			files: [
 				new AttachmentBuilder(
 					Buffer.from(
-						m.map((a) => `ID: ${a.id} | ${a.memory}`).join("\n")
+						`# OCbwoy3-Chan Memory Export (${interaction.user.username})
+						Here is everything I remember about you! These are **ALL ${m.length} entries** tied to you in the database.
+						Some info may not be in the DB, such as information for characters such as ${atob(`RGFya3RydQ==`)}, OCbwoy3 and the insane amount of variations.
+
+						${m.length === 0 ? "Well, I don't have anything about you saved." : "Here is everything I know:"}
+
+						${m.length === 0 ? "" : m.map((a) => `- ${a.memory}`).join("\n")}
+
+						## Here is the same data in a machine-readable format!
+
+						${JSON.stringify(m)}
+
+						## Request Metadata
+
+						Discord ID: ${interaction.user.id}
+				metadata.db		Discord Username: ${interaction.user.username}
+						Requested in: ${interaction.guildId ? "a Server" : "DMs"} (${interaction.guildId})
+						Channel ID: ${interaction.channelId}
+
+						`.replaceAll("\t","")
 					),
 					{
 						name: "memory.txt"
 					}
 				)
 			],
-			ephemeral: true
+			flags: [MessageFlags.Ephemeral]
 		});
 	}
 }

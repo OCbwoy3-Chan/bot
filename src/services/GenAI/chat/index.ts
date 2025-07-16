@@ -1,5 +1,6 @@
 import {
-	Chat as ChatGemini, FunctionCall,
+	Chat as ChatGemini,
+	FunctionCall,
 	GenerateContentConfig,
 	GenerateContentResponse,
 	HarmBlockThreshold,
@@ -9,7 +10,7 @@ import {
 import crypto from "crypto";
 import { readdirSync } from "fs";
 import { logger } from "../../../lib/Utility";
-import { getGeminiInstance } from "../gemini";
+import { areGenAIFeaturesEnabled, getGeminiInstance } from "../gemini";
 import { getPrompt } from "../prompt/GeneratePrompt";
 import { getToolMetas, getTools } from "./tools";
 import assert from "assert";
@@ -65,7 +66,11 @@ export class Chat {
 	constructor(
 		public chatModel: string = "gemini-1.5-flash-8b",
 		public prompt: string = "ocbwoy3-chan",
-		public cfg: GenerationConfig | Partial<GenerateContentConfig> = { temperature: 1, topP: 0.95, topK: 40 }
+		public cfg: GenerationConfig | Partial<GenerateContentConfig> = {
+			temperature: 1,
+			topP: 0.95,
+			topK: 40
+		}
 	) {
 		const gemini = getGeminiInstance();
 
@@ -80,36 +85,39 @@ export class Chat {
 		const chatSession = this.chatSession
 			? this.chatSession
 			: gemini.chats.create({
-			model: chatModel,
-			config: {
-				tools: [
-					{
-						functionDeclarations: toolMetas
-					}
-				],
-				safetySettings: [
-					{
-						category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-						threshold: HarmBlockThreshold.BLOCK_NONE
+					model: chatModel,
+					config: {
+						tools: [
+							{
+								functionDeclarations: toolMetas
+							}
+						],
+						safetySettings: [
+							{
+								category:
+									HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+								threshold: HarmBlockThreshold.BLOCK_NONE
+							},
+							{
+								category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+								threshold: HarmBlockThreshold.BLOCK_NONE
+							},
+							{
+								category:
+									HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+								threshold: HarmBlockThreshold.BLOCK_NONE
+							},
+							{
+								category:
+									HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+								threshold: HarmBlockThreshold.BLOCK_NONE
+							}
+						],
+						systemInstruction: getPrompt(prompt),
+						...generationConfig
 					},
-					{
-						category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-						threshold: HarmBlockThreshold.BLOCK_NONE
-					},
-					{
-						category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-						threshold: HarmBlockThreshold.BLOCK_NONE
-					},
-					{
-						category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-						threshold: HarmBlockThreshold.BLOCK_NONE
-					}
-				],
-				systemInstruction: getPrompt(prompt),
-				...generationConfig
-			},
-			history: []
-		});
+					history: []
+				});
 
 		this.chatSession = chatSession;
 	}
@@ -144,8 +152,9 @@ export class Chat {
 		ctx?: AIContext
 	): Promise<[string, string[]]> {
 		if (!this.chatSession) throw "No chat session present";
+		if (!areGenAIFeaturesEnabled()) throw "NoResult,Generative AI has been disabled.";
 
-		logger.info(`User: ${question}`);
+		logger.info(`User (${ctx?.askingUserId || "UNKNOWN FUCK"}): ${question}`);
 
 		let result: GenerateContentResponse | null = null;
 		let loopCount = 0;
@@ -162,7 +171,7 @@ export class Chat {
 
 		if (ctx && !this.usersInChat.includes(ctx.askingUserId)) {
 			ctx.mustFetchMemories = true;
-			this.usersInChat.push(ctx.askingUserId)
+			this.usersInChat.push(ctx.askingUserId);
 			let qRemap: Part[] = [];
 			if (typeof question === "string") {
 				qRemap = [{ text: question }];
@@ -195,7 +204,9 @@ export class Chat {
 					]
 				}
 			);
-			logger.info("[OCbwoy3-Chan AI] Appending an automatic memory.get call");
+			logger.info(
+				"[OCbwoy3-Chan AI] Appending an automatic memory.get call"
+			);
 			toolsUsed.push("memory.get");
 			result = await this.chatSession.sendMessage({
 				message: [
@@ -220,14 +231,16 @@ export class Chat {
 
 		// console.log(this.chatSession, ctx, ...question)
 
-		assert(result, "No result :( @ocbwoy3 fix the code");
+		assert(result, "NoResult,");
 
 		let didTheThing = true;
 		while (loopCount < 6) {
 			try {
-				logger.info(`[OCbwoy3-Chan AI] Generation iter #${loopCount}: ${result.text?.trim()}`);
+				logger.info(
+					`[OCbwoy3-Chan AI] Generation iter #${loopCount}: ${result.text?.trim()}`
+				);
 			} catch {
-				throw `My response was most likely blocked, it might be Google's fault! Here's the error: ${JSON.stringify(
+				throw `PromptFeedback,${JSON.stringify(
 					result.promptFeedback
 				)}`;
 			}
@@ -245,8 +258,7 @@ export class Chat {
 
 			// but then openai has to be a pain in the ass with forcing everyone to moderate their shit
 
-			const functionCalls =
-				result.functionCalls as FunctionCall[];
+			const functionCalls = result.functionCalls as FunctionCall[];
 			if (functionCalls || [].length !== 0) didTheThing = true;
 			const functionResults = await Promise.all(
 				(functionCalls || []).map(async (funcCall) => {
@@ -280,22 +292,25 @@ export class Chat {
 						.child({ args: funcCall.args })
 						.info(`[OCbwoy3-Chan AI] Calling ${funcCall.name}`);
 					try {
-						res = await ((tools as any)[funcCall.name!] as Function)(
-							funcCall.args as any,
-							ctx
-						);
+						res = await (
+							(tools as any)[funcCall.name!] as Function
+						)(funcCall.args as any, ctx);
 						if (process.env.NODE_ENV === "development") {
 							logger
 								.child({
 									response: res
 								})
-								.info(`[OCbwoy3-Chan AI] Tool response for ${funcCall.name}`);
+								.info(
+									`[OCbwoy3-Chan AI] Tool response for ${funcCall.name}`
+								);
 						}
 						this.callHistory[callHash] = res; // Store the result
 					} catch (e_) {
 						logger
 							.child({ error: `${e_}` })
-							.info(`[OCbwoy3-Chan AI] Error calling ${funcCall.name}`);
+							.info(
+								`[OCbwoy3-Chan AI] Error calling ${funcCall.name}`
+							);
 						res = {
 							"*comment":
 								"TELL THE USER ABOUT THIS JAVASCRIPT ERROR WHILE RUNNING TOOL",
@@ -320,12 +335,12 @@ export class Chat {
 		try {
 			if (result.promptFeedback) throw "";
 			if (!result.text) throw "";
-			result.text!.trim()
+			result.text!.trim();
 			// logger.info(
 			// 	`AI (${loopCount} last iter): ${result.response.text().trim()}`
 			// );
 		} catch {
-			throw `Response blocked by Google: ${JSON.stringify(
+			throw `PromptFeedback,${JSON.stringify(
 				result.promptFeedback
 			)}`;
 		}
@@ -344,10 +359,7 @@ export class Chat {
 
 		// console.log(await this.chatSession?.getHistory())
 
-		return [
-			result.text.trim(),
-			toolsUsed
-		];
+		return [result.text.trim(), toolsUsed];
 	}
 
 	public async generateResponse(

@@ -12,6 +12,7 @@
 		"unfair": "Es uzskatu, ka {{user}} aizliegums ir negodīgs."
 	},
 	"ban_acted": "Veiksmīgi aizliegts {{user}} ar iemeslu: {{reason}}",
+	"ban_no_perms": "Tu neesi baltajā sarakstā, jūs tikai varat ģenerēt banu iemeslus.",
 	"tools": {
 		"memory_update": "Atmiņa atjaunota",
 		"atproto": "AT Protokols",
@@ -29,5 +30,11 @@
 	"errors": {
 		"blocked_by_google": "Manu atbildi bloķēja Google, šeit ir paskaidrojums: {{reason}}",
 		"unknown": "Es nevarēju ģenerēt atbildi, jo: {{reason}}"
+	},
+	"ohno": "Ak, nē! OCbwoy3-Chan nevarēja izveidot atbildi!",
+	"ohno_google": "Ak, nē! Google nepatika mana atbilde~!",
+	"char_preview": {
+		"language": "Valoda",
+		"name": "Vārds"
 	}
 }

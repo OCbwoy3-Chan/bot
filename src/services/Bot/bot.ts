@@ -18,10 +18,9 @@ import { ALL_LANGUAGES } from "112-l10n";
 
 const logger = require("pino")({
 	base: {
-		pid: "bot"
+		pid: null
 	}
 });
-
 
 const {
 	DefaultWebSocketManagerOptions: { identifyProperties }
@@ -67,15 +66,38 @@ function loadTranslations() {
 			// console.log(content.replace(/ \/\/\*.*$/im,""));
 		}
 
-		resources[lang].generic.i18n_missing_key = "i18next missing/invalid key {{key}}"
+		resources[lang].generic.i18n_missing_key =
+			"i18next missing/invalid key {{key}}";
 	}
 
 	return resources;
 }
 
-export async function getLocaleNow(context: InternationalizationContext): Promise<string> {
+export async function getLocaleNow(
+	context: InternationalizationContext
+): Promise<string> {
 	if (!context.guild) {
 		return "en";
+	}
+
+	if (!cachedGuildLanguages[context.guild.id]) {
+		const guildSettings = await prisma.guildSetting.findFirst({
+			where: {
+				id: context.guild.id
+			}
+		});
+		cachedGuildLanguages[context.guild.id] =
+			guildSettings?.language || "en";
+		return guildSettings?.language || "en";
+	}
+	return cachedGuildLanguages[context.guild.id];
+}
+
+export async function getLocaleNowOptional(
+	context: InternationalizationContext
+): Promise<string> {
+	if (!context.guild) {
+		return "_";
 	}
 
 	if (!cachedGuildLanguages[context.guild.id]) {
@@ -110,15 +132,20 @@ export const client = new SapphireClient({
 		Partials.ThreadMember,
 		Partials.User
 	],
-	defaultPrefix: "!",
+	defaultPrefix: "?>",
 	loadMessageCommandListeners: true,
 	caseInsensitiveCommands: true,
 	caseInsensitivePrefixes: true,
 	logger: {
 		instance: new PinoLogger({
-			name: "bot",
 			formatters: {
-				bindings: () => ({ pid: `bot` })
+				bindings: () => ({ pid: null })
+			},
+			transport: {
+				target: "pino-pretty",
+				options: {
+					colorize: true
+				}
 			}
 		})
 	},

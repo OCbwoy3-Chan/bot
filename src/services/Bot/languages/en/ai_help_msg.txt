@@ -1,5 +1,5 @@
 # OCbwoy3-Chan
-**This is an experimental AI chatbot built for assisting users Discord.**
+**This is an experimental AI chatbot built for assisting users on Discord.**
 I am built on Google's Gemini API and can generate content from text, audio, video and code.
 
 OCbwoy3-Chan will become more helpful as you chat, picking up on details and preferences to tailor its responses to your needs and selected character, similar to ChatGPT.
@@ -23,4 +23,4 @@ Sometimes OCbwoy3-Chan would not save something, so asking it to do so would mos
 
 OCbwoy3-Chan can also roleplay as specific preset characters via the `/ai set_character` command.
 
-You can always contribute to the development of 112-SB on our [GitHub](<https://github.com/OCbwoy3-Chan/112>).
+You can always contribute to the development of 112-SB on our [GitHub](<https://github.com/OCbwoy3-Chan/bot>).

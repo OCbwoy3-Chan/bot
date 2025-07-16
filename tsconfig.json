@@ -13,6 +13,7 @@
 		"strict": true,
 		"skipLibCheck": true,
 		"baseUrl": "./src/",
+		"resolveJsonModule": true,
 		"paths": {
 			"@l10n/*": ["locale/commands/*"],
 			"@ocbwoy3chanai/*": [

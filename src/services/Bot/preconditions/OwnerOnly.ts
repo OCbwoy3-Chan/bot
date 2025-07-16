@@ -1,8 +1,9 @@
 import { Precondition } from "@sapphire/framework";
-import type {
-	CommandInteraction,
-	ContextMenuCommandInteraction,
-	Message
+import {
+	MessageFlags,
+	type CommandInteraction,
+	type ContextMenuCommandInteraction,
+	type Message
 } from "discord.js";
 import { r } from "112-l10n";
 
@@ -17,7 +18,7 @@ export class OwnerOnlyPrecondition extends Precondition {
 		} else {
 			interaction.reply({
 				content: await r(interaction, "errors:not_bot_owner"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 			return this.error({
 				message: await r(interaction, "errors:not_bot_owner")

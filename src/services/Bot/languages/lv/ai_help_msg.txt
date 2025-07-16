@@ -1,5 +1,5 @@
 # OCbwoy3-Chan
-**Šis ir eksperimentāls MI čatbots, kas ir paredzēts Discord lietotājiem.**
+**Šis ir eksperimentāls MI čatbots, kurš ir paredzēts palīdzēt Discord lietotājiem.**
 Es esmu balstīts uz Google Gemini API un varu ģenerēt saturu no teksta, audio, video un koda.
 
 OCbwoy3-Chan kļūs noderīgāks, jo vairāk tērzēsiet, uztverot detaļas un preferences, lai pielāgotu atbildes jūsu vajadzībām un izvēlētajam raksturam, līdzīgi ChatGPT.
@@ -23,4 +23,4 @@ Dažreiz OCbwoy3-Chan var kaut ko nesaglabāt, tāpēc lūgums to darīt vistica
 
 OCbwoy3-Chan var arī atveidot noteiktus iepriekš iestatītus raksturus, izmantojot komandu `/ai set_character`.
 
-Jūs vienmēr varat piedalīties 112-SB izstrādē mūsu [GitHub](<https://github.com/OCbwoy3-Chan/112>).
+Jūs vienmēr varat piedalīties 112-SB izstrādē mūsu [GitHub](<https://github.com/OCbwoy3-Chan/bot>).

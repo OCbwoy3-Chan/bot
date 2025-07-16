@@ -1,6 +1,15 @@
 import { PreconditionEntryResolvable } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { ApplicationIntegrationType, InteractionContextType } from "discord.js";
+import {
+	ApplicationIntegrationType,
+	ContainerBuilder,
+	InteractionContextType,
+	MessageFlags,
+	SeparatorBuilder,
+	SeparatorComponent,
+	TextDisplayBuilder,
+	TextDisplayComponent
+} from "discord.js";
 import { IsAIWhitelisted } from "../../../Database/helpers/AIWhitelist";
 import { areGenAIFeaturesEnabled } from "../../../GenAI/gemini";
 import { generateBanReason } from "../../../GenAI/gen";
@@ -82,16 +91,11 @@ class SlashCommand extends Subcommand {
 	public async chatInputGenerateBanReason(
 		interaction: Subcommand.ChatInputCommandInteraction
 	) {
-		if (!(await IsAIWhitelisted(interaction.user.id))) {
-			return await interaction.reply({
-				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
-			});
-		}
+		const canIBanSkids = await IsAIWhitelisted(interaction.user.id);
 		if (!(await IsWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "errors:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
@@ -105,7 +109,7 @@ class SlashCommand extends Subcommand {
 			);
 		}
 
-		await interaction.deferReply({ ephemeral: false });
+		await interaction.deferReply({ withResponse: true });
 
 		const username = interaction.options.getString("username", true);
 		const userId = await GetUserIdFromName(username);
@@ -114,7 +118,7 @@ class SlashCommand extends Subcommand {
 				content: await r(interaction, "errors:username_resolve", {
 					user: username
 				}),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -140,12 +144,32 @@ class SlashCommand extends Subcommand {
 			}
 		);
 
+		const ctn = new ContainerBuilder()
+			.setAccentColor(0x89b4fa)
+			.addTextDisplayComponents(
+				new TextDisplayBuilder().setContent(`## ${vibe_check}`)
+			)
+			.addTextDisplayComponents(
+				new TextDisplayBuilder().setContent(
+					`\`\`\`${banReason.ban_reason}\`\`\``
+				)
+			)
+			.addSeparatorComponents(new SeparatorBuilder())
+			.addTextDisplayComponents(
+				new TextDisplayBuilder().setContent(banReason.explanation)
+			);
+
+		if (!canIBanSkids) {
+			ctn.addTextDisplayComponents(
+				new TextDisplayBuilder().setContent(
+					`-# ${await r(interaction, "ai:ban_no_perms")}`
+				)
+			);
+		}
+
 		return interaction.followUp({
-			content: `${vibe_check}
-\`\`\`${banReason.ban_reason}\`\`\`\n
-${banReason.explanation}
--# ${banReason.comment}`,
-			ephemeral: false
+			flags: [MessageFlags.IsComponentsV2],
+			components: [ctn]
 		});
 	}
 
@@ -155,13 +179,13 @@ ${banReason.explanation}
 		if (!(await IsAIWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
 				content: await r(interaction, "ai:missing_wl"),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 		if (!(await IsWhitelisted(interaction.user.id))) {
 			return await interaction.reply({
-				content: await r(interaction, "errors:missing_wl"),
-				ephemeral: true
+				content: await r(interaction, "ai:ban_no_perms"),
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 		if (!areGenAIFeaturesEnabled()) {
@@ -175,7 +199,7 @@ ${banReason.explanation}
 			);
 		}
 
-		await interaction.deferReply({ ephemeral: false });
+		await interaction.deferReply({});
 
 		const username = interaction.options.getString("username", true);
 		const userId = await GetUserIdFromName(username);
@@ -184,7 +208,7 @@ ${banReason.explanation}
 				content: await r(interaction, "errors:username_resolve", {
 					user: username
 				}),
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 
@@ -212,7 +236,7 @@ ${banReason.explanation}
 					BannedFrom: "All", // DEPRECATED
 					BannedUntil: "-1", // Banned forever
 					Reason: banReason.ban_reason,
-					PrivateReason: `AI Generated Ban - Justified: ${banReason.justified} | ${banReason.comment} | ${banReason.explanation}`,
+					PrivateReason: `AI Generated Ban - Justified: ${banReason.justified} | ${banReason.explanation}`,
 					hackBan: false,
 					noFederate: true
 				});
@@ -225,7 +249,7 @@ ${banReason.explanation}
 						BannedFrom: "All", // DEPRECATED
 						BannedUntil: "-1", // Banned forever
 						Reason: banReason.ban_reason,
-						PrivateReason: `AI Generated Ban - Justified: ${banReason.justified} | ${banReason.comment} | ${banReason.explanation}`,
+						PrivateReason: `AI Generated Ban - Justified: ${banReason.justified} | ${banReason.explanation}`,
 						hackBan: false,
 						noFederate: true
 					});
@@ -235,13 +259,12 @@ ${banReason.explanation}
 				content: await r(interaction, "ai:ban_acted", {
 					user: `[${userDetails.displayName}](https://fxroblox.com/users/${userId})`,
 					reason: `\`\`\`${banReason.ban_reason}\`\`\``
-				}),
-				ephemeral: false
+				})
 			});
 		} catch (error) {
 			return interaction.followUp({
 				content: `Failed to ban user: ${error}`,
-				ephemeral: true
+				flags: [MessageFlags.Ephemeral]
 			});
 		}
 	}

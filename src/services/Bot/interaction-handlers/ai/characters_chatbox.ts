@@ -30,14 +30,11 @@ export class AutocompleteHandler extends InteractionHandler {
 
 		switch (focusedOption.name) {
 			case "prompt": {
-				const isOwner = interaction.user.id === "486147449703104523" ? true : false;
+				const isOwner =
+					interaction.user.id === "486147449703104523" ? true : false;
 				const sr: [string, string][] = [];
 				getCachedPromptsJ()
-					.filter((a) =>
-						isOwner
-							? true
-							: !a.hidden
-					)
+					.filter((a) => (isOwner ? true : !a.hidden))
 					.forEach((v) => {
 						if (
 							`${v.name}\0${v.filename}\0${v.description}`
@@ -47,7 +44,12 @@ export class AutocompleteHandler extends InteractionHandler {
 									focusedOption.value.toUpperCase().trim()
 								)
 						) {
-							sr.push([isOwner ? `${v.name_aichooser || v.name} (${v.filename})` : v.name, v.filename]);
+							sr.push([
+								isOwner
+									? `${v.name_aichooser || v.name} (${v.filename})`
+									: v.name,
+								v.filename
+							]);
 						}
 					});
 

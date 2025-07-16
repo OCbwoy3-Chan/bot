@@ -5,8 +5,7 @@ import { getAllEmojisForAI } from "@112/EmojiManager";
 
 const meta: FunctionDeclaration = {
 	name: "ai.get_emojis",
-	description:
-		"Gets ALL emojis the current AI agent can say in chat.",
+	description: "Gets ALL emojis the current AI agent can say in chat."
 };
 
 addTest(meta.name, null);

@@ -5,7 +5,13 @@ import { Logger } from "pino";
 
 export const logger: Logger = require("pino")({
 	base: {
-		pid: "112"
+		pid: null
+	},
+	transport: {
+		target: "pino-pretty",
+		options: {
+			colorize: true
+		}
 	}
 });
 
@@ -116,15 +122,22 @@ export async function getDistroName(): Promise<string> {
 		}, 500);
 		try {
 			const d = readFileSync("/etc/os-release").toString().split("\n");
-			if (/nix\-snowflake/.test(d.join("\n"))) return "NixOS";
+			if (/NixOS/.test(d.join("\n"))) return "NixOS";
 			d.forEach((a: string) => {
-				if (a.startsWith("PRETTY_NAME=")) {
-					resolve(a.replace(/(^PRETTY_NAME=\"?)|(\"?$)/g, "").trim());
+				if (a.startsWith("NAME=")) {
+					resolve(a.replace(/(^NAME=\"?)|(\"?$)/g, "").trim());
 				}
 			});
 			resolve("Unknown Distro");
 		} catch {
-			resolve(platform());
+			const pl = platform();
+			resolve(
+				pl === "win32"
+					? "Microsoft Windows"
+					: pl === "darwin"
+						? "macOS"
+						: pl
+			);
 		}
 	});
 }
@@ -132,16 +145,22 @@ export async function getDistroName(): Promise<string> {
 export function getDistroNameSync(): string {
 	try {
 		const d = readFileSync("/etc/os-release").toString().split("\n");
-		if (/nix\-snowflake/.test(d.join("\n"))) return "NixOS";
-		let retval: string = platform();
+		if (/NixOS/.test(d.join("\n"))) return "NixOS";
 		d.forEach((a: string) => {
-			if (a.startsWith("PRETTY_NAME=")) {
-				retval = a.replace(/(^PRETTY_NAME=\"?)|(\"?$)/g, "").trim();
+			if (a.startsWith("NAME=")) {
+				return a.replace(/(^NAME=\"?)|(\"?$)/g, "").trim();
 			}
 		});
-		return retval;
+		return "Unknown Distro";
 	} catch {
-		return platform();
+		const pl = platform();
+		return (
+			pl === "win32"
+				? "Microsoft Windows"
+				: pl === "darwin"
+					? "macOS"
+					: pl
+		);
 	}
 }
 

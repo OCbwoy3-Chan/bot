@@ -1,7 +1,14 @@
+import staticPlugin from "@elysiajs/static";
 import { Activity, Presence } from "discord.js";
-import express from "express";
+import Elysia, { t } from "elysia";
+import { join } from "path";
 
-export const router = express.Router();
+export const router = new Elysia().use(
+	staticPlugin({
+		assets: join(__dirname, "..", "..", "..", "..", "media"),
+		prefix: "/assets"
+	})
+);
 
 let presence: Presence | null = {
 	userId: "486147449703104523",
@@ -44,12 +51,18 @@ export function setNumBans(p: number) {
 	numBans = p;
 }
 
-router.get("/stats.json", (req, res) => {
-	res.json({
+router.get(
+	"/stats.json",
+	() => ({
 		numBans
-	});
-});
+	}),
+	{
+		response: t.Object({
+			numBans: t.Number()
+		})
+	}
+);
 
-router.get("/ocbwoy3dev/rpc.json", (req, res) => {
-	res.json(presence);
+router.get("/ocbwoy3dev/rpc.json", () => presence, {
+	response: t.Any()
 });

@@ -52,7 +52,7 @@ class SlashCommand extends Subcommand {
 	) {
 		if (!interaction.guild) return;
 		await interaction.deferReply({
-			fetchReply: true
+			withResponse: true
 		});
 
 		const lang = interaction.options.getString("language");
@@ -73,8 +73,7 @@ class SlashCommand extends Subcommand {
 		_clearCachedGuildLang(interaction.guild.id);
 
 		return await interaction.followUp({
-			content: await r(interaction, "settings:update_language_success"),
-			ephemeral: false
+			content: await r(interaction, "settings:update_language_success")
 		});
 	}
 }
