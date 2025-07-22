@@ -82,7 +82,7 @@ Our handling of your data is governed by the laws of the Republic of Latvia and 
 
 ## 10. International Data Transfers
 
-Some data collected through OCbwoy3‑Chan (such as chat messages processed by Google's Gemini AI Model) may be transmitted to servers outside the European Union, including to the United States or other jurisdictions where data protection laws may differ from those in the EU.
+Some data collected through OCbwoy3-Chan (such as chat messages processed by Google's Gemini AI Model) may be transmitted to servers outside the European Union, including to the United States or other jurisdictions where data protection laws may differ from those in the EU.
 
 By using the Service, you consent to the transfer, processing, and storage of your data outside of your country of residence, including to jurisdictions that may not provide the same level of data protection as your local laws.
 
