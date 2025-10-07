@@ -29,12 +29,29 @@ export const AllVoiceModels: { [a: string]: string } = {
 };
 
 export const AllModels: { [a: string]: { m: string; t: string } } = {
+	
 	// GEMINI 2.5
 
-	"Gemini 2.5 Pro Experimental 02-05": {
-		m: "gemini-2.5-pro-exp-03-25",
+	"Nano Banana (Gemini 2.5 Image)": {
+		m: "gemini-2.5-image",
 		t: "1mil"
 	},
+
+	"Gemini 2.5 Pro": {
+		m: "gemini-2.5-pro",
+		t: "1mil"
+	},
+
+	"Gemini 2.5 Flash-latest": {
+		m: "gemini-2.5-flash",
+		t: "1mil"
+	},
+
+	"Gemini 2.5 Flash-Lite": {
+		m: "gemini-2.5-flash-lite-latest",
+		t: "1mil"
+	},
+
 
 	// GEMINI 2.0
 
@@ -50,19 +67,8 @@ export const AllModels: { [a: string]: { m: string; t: string } } = {
 	// PREVIEW
 	// "Gemini 2.0 Flash Experimental": { m: "gemini-2.0-flash-exp", t: "1mil" },
 
-	"LearnLM 1.5 Pro": {
-		m: "learnlm-1.5-pro-experimental",
-		t: "32k"
-	},
-
-	"LearnLM 2.0 Flash": {
+	"LearnLM 2.0 Flash Experimental": {
 		m: "learnlm-2.0-flash-experimental",
 		t: "1m"
-	},
-
-	// GEMINI 1.5
-
-	"Gemini 1.5 Pro": { m: "gemini-1.5-pro", t: "2mil" },
-	"Gemini 1.5 Flash": { m: "gemini-1.5-flash", t: "1mil" },
-	"Gemini 1.5 Flash 8B": { m: "gemini-1.5-flash-8b", t: "1mil" }
+	}
 };
