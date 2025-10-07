@@ -41,7 +41,7 @@ const userAgents = [
 ];
 
 // #1 best duckduckgo scraping method imagined
-async function scrapeDuckduckgo(query: string) {
+export async function scrapeDuckduckgo(query: string) {
 	const userAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
 
 	const searchUrl = new URL("https://html.duckduckgo.com/html/")
@@ -61,12 +61,12 @@ async function scrapeDuckduckgo(query: string) {
 
 	let metadatas: { title: string; url: string; description: string }[] = [];
 
-	const p = new JSDOM(theHtml,{
+	const p = new JSDOM(theHtml) /*,{
 		contentType: "text/html",
 		url: searchLink,
 		userAgent,
 		runScripts: "outside-only"
-	})
+	})*/
 
 	for (const a of p.window.document.querySelectorAll(".results .result .result__body")) {
 		const titleThing = a.querySelector(".result__a")!
