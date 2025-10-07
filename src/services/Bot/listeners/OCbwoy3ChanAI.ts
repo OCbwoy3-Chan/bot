@@ -33,7 +33,7 @@ import { client } from "../bot";
 let savedChatSession: Chat | null = null;
 
 let ChatPrompt = `ocbwoy3_chan${sep}default`;
-let AIModel = "gemini-2.5-flash-latest";
+let AIModel = "gemini-flash-latest";
 
 const BlacklistedMentions = /@(?:here|everyone)/;
 

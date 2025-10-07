@@ -42,13 +42,13 @@ export const AllModels: { [a: string]: { m: string; t: string } } = {
 		t: "1mil"
 	},
 
-	"Gemini 2.5 Flash-latest": {
-		m: "gemini-2.5-flash",
+	"Gemini Flash Latest": {
+		m: "gemini-flash-latest",
 		t: "1mil"
 	},
 
-	"Gemini 2.5 Flash-Lite": {
-		m: "gemini-2.5-flash-lite-latest",
+	"Gemini Flash-Lite Latest": {
+		m: "gemini-flash-lite-latest",
 		t: "1mil"
 	},
 
