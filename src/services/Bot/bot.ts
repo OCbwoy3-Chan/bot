@@ -151,7 +151,7 @@ export const client = new SapphireClient({
 	},
 	ws: {
 		properties: {
-			$browser: "Discord Embedded"
+			$browser: "Discord iOS"
 		}
 	} as any,
 	presence: {
@@ -163,7 +163,7 @@ export const client = new SapphireClient({
 			// 	type: ActivityType.Watching,
 			// },
 			{
-				name: ".gg/yokstar",
+				name: ".gg/uuwrhfsXEZ",
 				state: "join now",
 				type: ActivityType.Listening
 			}
