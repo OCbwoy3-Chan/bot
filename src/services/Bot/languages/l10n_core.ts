@@ -6,7 +6,7 @@ export const ALL_LANGUAGES: {
 	english: string;
 	flag?: string;
 }[] = [
-	{ id: "en", name: "English", english: "English", flag: "gb" },
+	{ id: "en", name: "English", english: "English", flag: "us" },
 	{ id: "lv", name: "Latviešu", english: "Latvian" },
 	{ id: "ru", name: "Русский", english: "Russian" }
 ];
