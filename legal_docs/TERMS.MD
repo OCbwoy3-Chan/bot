@@ -1,6 +1,6 @@
 # Terms of Service
 
-**Revision #2 – Effective Date:** July 16, 2025
+**Revision #2 – Effective Date:** November 21, 2025
 
 This is a legally binding agreement between you ("the User") and OCbwoy3. By using "OCbwoy3‑Chan" (the "Bot" or "the Service"), you agree to comply with these Terms. If you do not agree, you must immediately cease all use of our services.
 
@@ -43,7 +43,7 @@ By using the Bot, you agree:
 
 The Bot uses Google's Gemini AI Model to generate responses. AI-generated content may be inaccurate, incomplete, or inappropriate. You use such content at your own risk.
 
-Sending NSFW (Not Safe For Work) content to OCbwoy3-Chan is strictly prohibited. If your actions cause our Gemini API key to be banned, you may be held legally responsible for any resulting damages.
+Sending (Not Safe For Work) content to OCbwoy3-Chan or enabling such content to be produced is strictly prohibited. If your actions cause our Gemini API key to be banned, you may be held legally responsible for any resulting damages.
 
 ---
 
@@ -100,8 +100,4 @@ OCbwoy3 and the Service are **not affiliated with or endorsed by** Discord, Disc
 For Service-related inquiries, contact the owner through any of the following methods:
 
 * **Discord:** `ocbwoy3` (User ID: `486147449703104523`)
-* **Email:** `ocbwoy3 [at] ocbwoy3 [dot] dev`
-
----
-
-Let me know if you'd like help drafting the referenced Privacy Policy or enforcing arbitration more strictly.
+* **Email:** ocbwoy3@ocbwoy3.dev
