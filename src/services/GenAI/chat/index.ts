@@ -10,7 +10,13 @@ import {
 import crypto from "crypto";
 import { readdirSync } from "fs";
 import { logger } from "../../../lib/Utility";
-import { areGenAIFeaturesEnabled, getGeminiInstance } from "../gemini";
+import {
+	areGenAIFeaturesEnabled,
+	getGeminiInstance,
+	getGeminiTokenPoolSize,
+	isGeminiRateLimitError,
+	rotateGeminiToken
+} from "../gemini";
 import { getPrompt } from "../prompt/GeneratePrompt";
 import { getToolMetas, getTools } from "./tools";
 import assert from "assert";
@@ -72,54 +78,77 @@ export class Chat {
 			topK: 40
 		}
 	) {
-		const gemini = getGeminiInstance();
+		this.chatSession = this.createChatSession([]);
+	}
 
+	private createChatSession(history: any[]) {
+		const gemini = getGeminiInstance();
 		const generationConfig: Partial<GenerateContentConfig> = {
-			temperature: cfg.temperature || 1,
-			topP: cfg.topP || 0.95,
-			topK: cfg.topK || 40,
+			temperature: this.cfg.temperature || 1,
+			topP: this.cfg.topP || 0.95,
+			topK: this.cfg.topK || 40,
 			maxOutputTokens: 8192,
 			responseMimeType: "text/plain"
 		};
 
-		const chatSession = this.chatSession
-			? this.chatSession
-			: gemini.chats.create({
-					model: chatModel,
-					config: {
-						tools: [
-							{
-								functionDeclarations: toolMetas
-							}
-						],
-						safetySettings: [
-							{
-								category:
-									HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-								threshold: HarmBlockThreshold.BLOCK_NONE
-							},
-							{
-								category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-								threshold: HarmBlockThreshold.BLOCK_NONE
-							},
-							{
-								category:
-									HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-								threshold: HarmBlockThreshold.BLOCK_NONE
-							},
-							{
-								category:
-									HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-								threshold: HarmBlockThreshold.BLOCK_NONE
-							}
-						],
-						systemInstruction: getPrompt(prompt),
-						...generationConfig
+		return gemini.chats.create({
+			model: this.chatModel,
+			config: {
+				tools: [
+					{
+						functionDeclarations: toolMetas
+					}
+				],
+				safetySettings: [
+					{
+						category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+						threshold: HarmBlockThreshold.BLOCK_NONE
 					},
-					history: []
-				});
+					{
+						category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+						threshold: HarmBlockThreshold.BLOCK_NONE
+					},
+					{
+						category:
+							HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+						threshold: HarmBlockThreshold.BLOCK_NONE
+					},
+					{
+						category:
+							HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+						threshold: HarmBlockThreshold.BLOCK_NONE
+					}
+				],
+				systemInstruction: getPrompt(this.prompt),
+				...generationConfig
+			},
+			history
+		});
+	}
 
-		this.chatSession = chatSession;
+	private resetChatSession() {
+		const history = (this.chatSession as any)?.history || [];
+		this.chatSession = this.createChatSession(history);
+	}
+
+	private async sendMessageWithFailover(payload: any) {
+		const maxAttempts = getGeminiTokenPoolSize();
+		let lastError: unknown = null;
+		for (let attempt = 0; attempt < Math.max(1, maxAttempts); attempt++) {
+			try {
+				return await this.chatSession!.sendMessage(payload);
+			} catch (error) {
+				lastError = error;
+				if (!isGeminiRateLimitError(error)) {
+					throw error;
+				}
+				if (!rotateGeminiToken()) {
+					throw error;
+				}
+				this.resetChatSession();
+			}
+		}
+		throw lastError;
 	}
 
 	private generateCallHash(funcName: string, args: any): string {
@@ -208,7 +237,7 @@ export class Chat {
 				"[OCbwoy3-Chan AI] Appending an automatic memory.get call"
 			);
 			toolsUsed.push("memory.get");
-			result = await this.chatSession.sendMessage({
+			result = await this.sendMessageWithFailover({
 				message: [
 					{
 						functionResponse: {
@@ -219,7 +248,7 @@ export class Chat {
 				]
 			});
 		} else {
-			result = await this.chatSession.sendMessage({
+			result = await this.sendMessageWithFailover({
 				message: [
 					{
 						text: "CurrentContext: " + JSON.stringify(ctx)
@@ -328,7 +357,7 @@ export class Chat {
 				})
 			);
 
-			result = await this.chatSession.sendMessage({
+			result = await this.sendMessageWithFailover({
 				message: functionResults
 			});
 		}

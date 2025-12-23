@@ -1,4 +1,9 @@
-import { getGeminiInstance } from "@ocbwoy3chanai/gemini";
+import {
+	getGeminiInstance,
+	getGeminiTokenPoolSize,
+	isGeminiRateLimitError,
+	rotateGeminiToken
+} from "@ocbwoy3chanai/gemini";
 import { SchemaType } from "@google/generative-ai";
 import { getUserBanStatus } from "@db/GBanProvider";
 
@@ -15,7 +20,6 @@ export async function generateBanReason(
 ): Promise<BanReason> {
 	const banReasons = await getUserBanStatus(userid);
 
-	const gemini = getGeminiInstance();
 	const prompt = `
 Target locale: ${targetLanguage}
 
@@ -33,35 +37,10 @@ Do not count Exploiting as an offense.
 TOS = Rules. Do not change words such as Roblox, Discord, etc.
 PLEASE WRITE THE REASON AND ALL OTHER FIELDS IN THE TARGET LANGUAGE.`;
 
-	const session = gemini.chats.create({
-		model: "gemini-2.0-flash-lite",
-		config: {
-			systemInstruction: prompt,
-			temperature: 1,
-			topP: 0.95,
-			topK: 40,
-			maxOutputTokens: 8192,
-			responseMimeType: "application/json",
-			responseSchema: {
-				type: SchemaType.OBJECT,
-				properties: {
-					ban_reason: {
-						type: SchemaType.STRING
-					},
-					justified: {
-						type: SchemaType.BOOLEAN
-					},
-					explanation: {
-						type: SchemaType.STRING
-					}
-				},
-				required: ["ban_reason", "justified", "explanation"]
-			}
-		}
-	});
-
-	const resp = await session.sendMessage({
-		message: [
+	const resp = await sendGeminiRequestWithFailover(
+		prompt,
+		"gemini-2.0-flash-lite",
+		[
 			"```json\n" +
 				JSON.stringify(
 					{ targetLanguage, bans: banReasons },
@@ -70,7 +49,7 @@ PLEASE WRITE THE REASON AND ALL OTHER FIELDS IN THE TARGET LANGUAGE.`;
 				) +
 				"\n```"
 		]
-	});
+	);
 
 	/*
 
@@ -94,4 +73,55 @@ PLEASE WRITE THE REASON AND ALL OTHER FIELDS IN THE TARGET LANGUAGE.`;
 	if (resp.promptFeedback) throw resp.promptFeedback;
 	if (!resp.text) throw "No message :(";
 	return JSON.parse(resp.text) as BanReason;
+}
+
+async function sendGeminiRequestWithFailover(
+	prompt: string,
+	model: string,
+	message: Array<string>
+) {
+	const maxAttempts = getGeminiTokenPoolSize();
+	let lastError: unknown = null;
+	for (let attempt = 0; attempt < Math.max(1, maxAttempts); attempt++) {
+		const gemini = getGeminiInstance();
+		const session = gemini.chats.create({
+			model,
+			config: {
+				systemInstruction: prompt,
+				temperature: 1,
+				topP: 0.95,
+				topK: 40,
+				maxOutputTokens: 8192,
+				responseMimeType: "application/json",
+				responseSchema: {
+					type: SchemaType.OBJECT,
+					properties: {
+						ban_reason: {
+							type: SchemaType.STRING
+						},
+						justified: {
+							type: SchemaType.BOOLEAN
+						},
+						explanation: {
+							type: SchemaType.STRING
+						}
+					},
+					required: ["ban_reason", "justified", "explanation"]
+				}
+			}
+		});
+
+		try {
+			return await session.sendMessage({ message });
+		} catch (error) {
+			lastError = error;
+			if (!isGeminiRateLimitError(error)) {
+				throw error;
+			}
+			if (!rotateGeminiToken()) {
+				throw error;
+			}
+		}
+	}
+	throw lastError;
 }

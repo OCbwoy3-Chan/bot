@@ -108,6 +108,11 @@ model OCbwoy3ChanAI_UserMemory {
     memory String
 }
 
+model GeminiApiToken {
+    name  String @id
+    token String
+}
+
 // Forms
 
 model Form {

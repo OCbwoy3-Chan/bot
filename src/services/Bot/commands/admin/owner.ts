@@ -11,7 +11,19 @@ import {
 } from "discord.js";
 import { general } from "../../../../locale/commands";
 import { prisma } from "../../../Database/db";
-import { AllModels, areGenAIFeaturesEnabled } from "../../../GenAI/gemini";
+import {
+	AddGeminiToken,
+	GetGeminiTokenByName,
+	GetGeminiTokens,
+	RemoveGeminiToken
+} from "@db/helpers/GeminiTokens";
+import {
+	AllModels,
+	areGenAIFeaturesEnabled,
+	setGeminiFallbackToken,
+	setGeminiTokenPool,
+	testGeminiToken
+} from "../../../GenAI/gemini";
 import { resetOCbwoy3ChansAPIKey } from "services/Server/router/chat";
 import { captureSentryException } from "@112/SentryUtil";
 import { fetchT } from "@sapphire/plugin-i18next";
@@ -84,6 +96,18 @@ class SlashCommand extends Subcommand {
 				{
 					name: "reset_gban_key",
 					chatInputRun: "chatInputResetGbanKey"
+				},
+				{
+					name: "gemini_token_add",
+					chatInputRun: "chatInputGeminiTokenAdd"
+				},
+				{
+					name: "gemini_token_remove",
+					chatInputRun: "chatInputGeminiTokenRemove"
+				},
+				{
+					name: "gemini_token_test",
+					chatInputRun: "chatInputGeminiTokenTest"
 				}
 			]
 		});
@@ -227,6 +251,45 @@ class SlashCommand extends Subcommand {
 								option
 									.setName("handler_id")
 									.setDescription("The unique handler ID for the provider")
+									.setRequired(true)
+							)
+					)
+					.addSubcommand((command) =>
+						command
+							.setName("gemini_token_add")
+							.setDescription("Adds a Gemini API token")
+							.addStringOption((option) =>
+								option
+									.setName("name")
+									.setDescription("Unique token name")
+									.setRequired(true)
+							)
+							.addStringOption((option) =>
+								option
+									.setName("token")
+									.setDescription("Gemini API token")
+									.setRequired(true)
+							)
+					)
+					.addSubcommand((command) =>
+						command
+							.setName("gemini_token_remove")
+							.setDescription("Removes a Gemini API token")
+							.addStringOption((option) =>
+								option
+									.setName("name")
+									.setDescription("Unique token name")
+									.setRequired(true)
+							)
+					)
+					.addSubcommand((command) =>
+						command
+							.setName("gemini_token_test")
+							.setDescription("Tests a Gemini API token by name")
+							.addStringOption((option) =>
+								option
+									.setName("name")
+									.setDescription("Unique token name")
 									.setRequired(true)
 							)
 					)
@@ -526,6 +589,77 @@ class SlashCommand extends Subcommand {
 		} catch (error) {
 			return interaction.reply({
 				content: `> Error resetting API key: ${error}`,
+				flags: [MessageFlags.Ephemeral]
+			});
+		}
+	}
+
+	public async chatInputGeminiTokenAdd(
+		interaction: Command.ChatInputCommandInteraction
+	) {
+		const name = interaction.options.getString("name", true);
+		const token = interaction.options.getString("token", true);
+
+		try {
+			await AddGeminiToken(name, token);
+			const tokens = await GetGeminiTokens();
+			setGeminiFallbackToken(process.env.GEMINI_API_KEY || null);
+			setGeminiTokenPool(tokens);
+			return interaction.reply({
+				content: `> Added Gemini token \`${name}\`.`,
+				flags: [MessageFlags.Ephemeral]
+			});
+		} catch (error) {
+			return interaction.reply({
+				content: `> Error adding Gemini token: ${error}`,
+				flags: [MessageFlags.Ephemeral]
+			});
+		}
+	}
+
+	public async chatInputGeminiTokenRemove(
+		interaction: Command.ChatInputCommandInteraction
+	) {
+		const name = interaction.options.getString("name", true);
+
+		try {
+			await RemoveGeminiToken(name);
+			const tokens = await GetGeminiTokens();
+			setGeminiFallbackToken(process.env.GEMINI_API_KEY || null);
+			setGeminiTokenPool(tokens);
+			return interaction.reply({
+				content: `> Removed Gemini token \`${name}\`.`,
+				flags: [MessageFlags.Ephemeral]
+			});
+		} catch (error) {
+			return interaction.reply({
+				content: `> Error removing Gemini token: ${error}`,
+				flags: [MessageFlags.Ephemeral]
+			});
+		}
+	}
+
+	public async chatInputGeminiTokenTest(
+		interaction: Command.ChatInputCommandInteraction
+	) {
+		const name = interaction.options.getString("name", true);
+
+		try {
+			const token = await GetGeminiTokenByName(name);
+			if (!token) {
+				return interaction.reply({
+					content: `> Gemini token \`${name}\` was not found.`,
+					flags: [MessageFlags.Ephemeral]
+				});
+			}
+			await testGeminiToken(token.token);
+			return interaction.reply({
+				content: `> Gemini token \`${name}\` is valid.`,
+				flags: [MessageFlags.Ephemeral]
+			});
+		} catch (error) {
+			return interaction.reply({
+				content: `> Gemini token \`${name}\` failed test: ${error}`,
 				flags: [MessageFlags.Ephemeral]
 			});
 		}

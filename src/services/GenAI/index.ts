@@ -1,14 +1,16 @@
 import { Logger } from "pino";
-import { initGemini } from "./gemini";
+import { GetGeminiTokens } from "@db/helpers/GeminiTokens";
+import { setGeminiFallbackToken, setGeminiTokenPool } from "./gemini";
 
 class GenAIService {
 	constructor(private readonly logger: Logger) {}
 
 	/* Starts the service */
 	public async _StartService(): Promise<void> {
-		if (!process.env.GEMINI_API_KEY) {
+		const tokens = await GetGeminiTokens();
+		if (tokens.length === 0 && !process.env.GEMINI_API_KEY) {
 			this.logger.error(
-				"GEMINI_API_KEY is not set in process.env, AI features will be disabled."
+				"No Gemini API tokens found in DB and GEMINI_API_KEY is not set, AI features will be disabled."
 			);
 			this.logger.error(
 				"Get your API Key at https://aistudio.google.com/apikey"
@@ -16,7 +18,11 @@ class GenAIService {
 			return;
 		}
 		this.logger.info("Starting GenAI Service");
-		initGemini(process.env.GEMINI_API_KEY);
+		setGeminiFallbackToken(process.env.GEMINI_API_KEY || null);
+		if (tokens.length > 0) {
+			this.logger.info(`Loaded ${tokens.length} Gemini token(s) from DB`);
+			setGeminiTokenPool(tokens);
+		}
 	}
 }
 
