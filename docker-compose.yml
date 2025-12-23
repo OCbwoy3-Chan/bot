@@ -6,5 +6,5 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./data/dev.db:/app/prisma/dev.db
+      - ./prisma:/app/prisma
     restart: unless-stopped
